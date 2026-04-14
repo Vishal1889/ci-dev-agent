@@ -1,0 +1,103 @@
+{
+  "name": "ODataSender",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:ODataSender/tp::HTTP/mp::OData V2/direction::Sender/version::1.3.1",
+  "componentVersion": "1.3.1",
+  "messageProtocol": "OData V2",
+  "transportProtocol": "HTTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.3",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "basic",
+      "label": "Authorization",
+      "key": "authentication",
+      "values": [
+        {
+          "key": "basic",
+          "label": "User Role"
+        },
+        {
+          "key": "certificate",
+          "label": "Client Certificate"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Client Certificate",
+      "key": "clientCertificates",
+      "when": "authentication in ['certificate']",
+      "columns": [
+        {
+          "key": "clientCertificate.subjectDN",
+          "label": "Subject DN",
+          "mandatory": true
+        },
+        {
+          "key": "clientCertificate.issuerDN",
+          "label": "Issuer DN",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "ESBMessaging.send",
+      "label": "User Role",
+      "key": "userRole",
+      "when": "authentication in ['basic']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "EDMX",
+      "key": "edmxPath"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "GET_FEED",
+      "label": "Operation",
+      "key": "operation",
+      "values": [
+        {
+          "key": "GET_FEED",
+          "label": "Query(GET)"
+        },
+        {
+          "key": "GET_ENTRY",
+          "label": "Read(GET)"
+        },
+        {
+          "key": "CREATE_ENTRY",
+          "label": "Create(POST)"
+        },
+        {
+          "key": "UPDATE_ENTRY",
+          "label": "Update(PUT)"
+        },
+        {
+          "key": "DELETE_ENTRY",
+          "label": "Delete(DELETE)"
+        },
+        {
+          "key": "FUNCTION_IMPORT",
+          "label": "Function Import"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Entity Set",
+      "key": "entitySet"
+    }
+  ]
+}

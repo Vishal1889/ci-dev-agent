@@ -1,0 +1,23 @@
+{
+  "name": "Persist Message",
+  "flavor": "Persist",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::Persist/version::1.0.2",
+  "componentVersion": "1.0.2",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Step ID",
+      "key": "stepid"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Encrypt Stored Message",
+      "key": "enableEncrypt"
+    }
+  ]
+}

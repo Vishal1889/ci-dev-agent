@@ -1,0 +1,22 @@
+{
+  "name": "MIME Multipart Decoder",
+  "flavor": "MIME Multipart Message Decode",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::MIME Multipart Message Decode/version::1.0.2",
+  "componentVersion": "1.0.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Multipart Headers Inline",
+      "key": "MultipartHeadersInline"
+    },
+    {
+      "key": "encoderType",
+      "defaultValue": "MIME Multipart Message Decode",
+      "label": "Encoder Type"
+    }
+  ]
+}

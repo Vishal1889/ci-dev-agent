@@ -1,0 +1,44 @@
+{
+  "name": "XML Modifier",
+  "flavor": "XmlModifier",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::XmlModifier/version::1.1.0",
+  "componentVersion": "1.1.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Remove XML Declaration",
+      "key": "removeXmlDeclaration"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Remove External DTDs",
+      "key": "removeExternalDTDs"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "Invalid XML Character Handling",
+      "key": "xmlCharacterHandling",
+      "values": [
+        {
+          "key": "none",
+          "label": "None"
+        },
+        {
+          "key": "remove",
+          "label": "Remove"
+        },
+        {
+          "key": "substitute",
+          "label": "Substitute"
+        }
+      ]
+    }
+  ]
+}

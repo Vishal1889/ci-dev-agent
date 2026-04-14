@@ -1,0 +1,61 @@
+{
+  "name": "Message Mapping",
+  "flavor": "MessageMapping",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::MessageMapping/version::1.3.1",
+  "componentVersion": "1.3.1",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "static",
+      "label": "Reference Type",
+      "key": "mappingReference",
+      "values": [
+        {
+          "key": "static",
+          "label": "Static"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Expression",
+      "key": "mappingSourceValue",
+      "when": "mappingReference in ['dynamic']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "key": "mappingname",
+      "when": "mappingname in ['false']"
+    },
+    {
+      "mandatory": true,
+      "dataType": "xsd:idref",
+      "label": "Resource",
+      "key": "mappingpath",
+      "when": "mappingReference in ['static']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "key": "mappinguri",
+      "when": "mappinguri in ['false']"
+    },
+    {
+      "key": "messageMappingBundleId",
+      "when": "mappingReference in ['static']"
+    },
+    {
+      "key": "mappingType",
+      "defaultValue": "MessageMapping",
+      "label": "Mapping Type"
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "name": "SuccessFactors",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::REST/direction::Receiver/version::1.1.4",
+  "componentVersion": "1.1.4",
+  "messageProtocol": "REST",
+  "transportProtocol": "HTTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "SAP BASIS 7.31",
+  "ComponentSWCVId": "1.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::REST/direction::Receiver/version::1.1.4",
+      "messageProtocol": "REST",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.1.4"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::OData V4/direction::Receiver/version::1.11.0",
+      "messageProtocol": "OData V4",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.11.0"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::OData V2/direction::Receiver/version::1.21.1",
+      "messageProtocol": "OData V2",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.21.1"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::SOAP/direction::Receiver/version::1.7.1",
+      "messageProtocol": "SOAP",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.7.1"
+    }
+  ],
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "address"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address Suffix",
+      "key": "resourcePath"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "alias"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "default",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "proxyHost",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "xsd:integer",
+      "label": "Proxy Port",
+      "key": "proxyPort",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "GET",
+      "label": "Operation",
+      "key": "recieverOperation",
+      "values": [
+        {
+          "key": "GET",
+          "label": "GET"
+        },
+        {
+          "key": "POST",
+          "label": "POST"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Entity",
+      "key": "entity"
+    },
+    {
+      "externalizable": true,
+      "label": "Parameters",
+      "key": "query"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "200",
+      "dataType": "xsd:integer",
+      "label": "Page Size",
+      "key": "batchSize"
+    }
+  ]
+}

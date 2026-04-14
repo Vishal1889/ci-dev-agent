@@ -1,0 +1,357 @@
+{
+  "name": "EDI to XML Converter",
+  "flavor": "EDItoXMLConverter",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::EDItoXMLConverter/version::2.8.0",
+  "componentVersion": "2.8.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "ISO-8859-1",
+      "label": "Source Encoding",
+      "key": "edifactSourceEncoding",
+      "values": [
+        {
+          "key": "ISO-8859-1",
+          "label": "ISO-8859-1"
+        },
+        {
+          "key": "UTF-8",
+          "label": "UTF-8"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "ISO-8859-1",
+      "label": "Target Encoding",
+      "key": "edifactTargetEncoding",
+      "values": [
+        {
+          "key": "ISO-8859-1",
+          "label": "ISO-8859-1"
+        },
+        {
+          "key": "UTF-8",
+          "label": "UTF-8"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "fromIncomingPayload",
+      "label": "Target Decimal Character",
+      "key": "edifactDecimalCharacter",
+      "values": [
+        {
+          "key": "dot",
+          "label": "Dot(.)"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        },
+        {
+          "key": "fromIncomingPayload",
+          "label": "From Incoming Payload"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "IntegrationProject",
+      "label": "EDI Schema Definition",
+      "key": "edifactEdiSchemaSource",
+      "values": [
+        {
+          "key": "IntegrationProject",
+          "label": "Integration Flow"
+        },
+        {
+          "key": "Header",
+          "label": "Header"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "Schemas",
+      "key": "edifactSchemaTable",
+      "when": "edifactEdiSchemaSource in ['IntegrationProject']",
+      "columns": [
+        {
+          "key": "edifactSchemaName",
+          "label": "Schema Name",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Header Name",
+      "key": "edifactHeaderName",
+      "when": "edifactEdiSchemaSource in ['Header']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Exclude",
+      "label": "Empty Segment",
+      "key": "edifactEmptySegment",
+      "values": [
+        {
+          "key": "Exclude",
+          "label": "Exclude"
+        },
+        {
+          "key": "Include",
+          "label": "Include"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Exclude Interchange and Group envelopes",
+      "key": "edifactEnvelopeTruncator"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "interchange",
+      "label": "Target Root Element",
+      "key": "edifactTargetRootElement",
+      "when": "edifactEnvelopeTruncator in ['false']",
+      "values": [
+        {
+          "key": "interchange",
+          "label": "Interchange"
+        },
+        {
+          "key": "fromIncomingPayload",
+          "label": "Message Specification from Incoming Payload"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "ISO-8859-1",
+      "label": "Source Encoding",
+      "key": "x12SourceEncoding",
+      "values": [
+        {
+          "key": "ISO-8859-1",
+          "label": "ISO-8859-1"
+        },
+        {
+          "key": "UTF-8",
+          "label": "UTF-8"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "IntegrationProject",
+      "label": "EDI Schema Definition",
+      "key": "x12EdiSchemaSource",
+      "values": [
+        {
+          "key": "IntegrationProject",
+          "label": "Integration Flow"
+        },
+        {
+          "key": "Header",
+          "label": "Header"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "Schemas",
+      "key": "x12SchemaTable",
+      "when": "x12EdiSchemaSource in ['IntegrationProject']",
+      "columns": [
+        {
+          "key": "x12SchemaName",
+          "label": "Schema Name",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Header Name",
+      "key": "x12HeaderName",
+      "when": "x12EdiSchemaSource in ['Header']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Exclude",
+      "label": "Empty Segment",
+      "key": "x12EmptySegment",
+      "values": [
+        {
+          "key": "Exclude",
+          "label": "Exclude"
+        },
+        {
+          "key": "Include",
+          "label": "Include"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Exclude Interchange and Group envelopes",
+      "key": "x12EnvelopeTruncator"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "interchange",
+      "label": "Target Root Element",
+      "key": "x12TargetRootElement",
+      "when": "x12EnvelopeTruncator in ['false']",
+      "values": [
+        {
+          "key": "interchange",
+          "label": "Interchange"
+        },
+        {
+          "key": "fromIncomingPayload",
+          "label": "Message Specification from Incoming Payload"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "ISO-8859-1",
+      "label": "Source Encoding",
+      "key": "tradacomsSourceEncoding",
+      "values": [
+        {
+          "key": "ISO-8859-1",
+          "label": "ISO-8859-1"
+        },
+        {
+          "key": "UTF-8",
+          "label": "UTF-8"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "No",
+      "label": "Conversion Preference",
+      "key": "tradacomsConversionPreference",
+      "values": [
+        {
+          "key": "No",
+          "label": "No"
+        },
+        {
+          "key": "Yes",
+          "label": "Yes"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "IntegrationProject",
+      "label": "EDI Schema Definition",
+      "key": "tradacomsEdiSchemaSource",
+      "when": "NOT (tradacomsConversionPreference in ['No'])",
+      "values": [
+        {
+          "key": "IntegrationProject",
+          "label": "Integration Flow"
+        },
+        {
+          "key": "Header",
+          "label": "Header"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Header Name",
+      "key": "tradacomsHeaderName",
+      "when": "NOT (tradacomsEdiSchemaSource in ['IntegrationProject'])"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Schemas",
+      "key": "tradacomsSchemaTable",
+      "columns": [
+        {
+          "key": "tradacomsSchemaName",
+          "label": "Schema Name",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Exclude",
+      "label": "Empty Segment",
+      "key": "tradacomsEmptySegment",
+      "when": "NOT (tradacomsConversionPreference in ['No'])",
+      "values": [
+        {
+          "key": "Exclude",
+          "label": "Exclude"
+        },
+        {
+          "key": "Include",
+          "label": "Include"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    }
+  ]
+}

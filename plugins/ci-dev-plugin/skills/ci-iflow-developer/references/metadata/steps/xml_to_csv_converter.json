@@ -1,0 +1,100 @@
+{
+  "name": "XML to CSV Converter",
+  "flavor": "XmlToCsvConverter",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::XmlToCsvConverter/version::1.2.0",
+  "componentVersion": "1.2.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Path to Source Element in XML",
+      "key": "XPath_Field_Location"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": ",",
+      "label": "Field Separator in CSV",
+      "key": "Field_Separator_in_CSV",
+      "values": [
+        {
+          "key": "\\t",
+          "label": "Tab(\\t)"
+        },
+        {
+          "key": ";",
+          "label": "Semicolon(;)"
+        },
+        {
+          "key": ":",
+          "label": "Colon(:)"
+        },
+        {
+          "key": "|",
+          "label": "Pipe(|)"
+        },
+        {
+          "key": ".",
+          "label": "Dot(.)"
+        },
+        {
+          "key": ",",
+          "label": "Comma(,)"
+        },
+        {
+          "key": "Space",
+          "label": "Space"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "CSV Header",
+      "key": "CSV_Header",
+      "values": [
+        {
+          "key": "none",
+          "label": "None"
+        },
+        {
+          "key": "xsd",
+          "label": "XSD annotation based"
+        },
+        {
+          "key": "xml",
+          "label": "XML based"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "XML Schema",
+      "key": "XML_Schema_File_Path",
+      "when": "CSV_Header in ['xsd']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Include Parent Element",
+      "key": "Include_Master"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Path to Parent Element",
+      "key": "Master_XPath_Field_Location",
+      "when": "Include_Master in ['true']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Include Attribute Values",
+      "key": "Include_Attribute"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "GZIP Compression",
+  "flavor": "GZIP Compress",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::GZIP Compress/version::1.0.1",
+  "componentVersion": "1.0.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "key": "encoderType",
+      "defaultValue": "GZIP Compress",
+      "label": "Encoder Type"
+    }
+  ]
+}

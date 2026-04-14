@@ -1,0 +1,56 @@
+{
+  "name": "Data Store Get",
+  "flavor": "get",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::get/version::1.7.1",
+  "componentVersion": "1.7.1",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Data Store Name",
+      "key": "storageName"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "local",
+      "label": "Visibility",
+      "key": "visibility",
+      "values": [
+        {
+          "key": "local",
+          "label": "Integration Flow"
+        },
+        {
+          "key": "global",
+          "label": "Global"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Entry ID",
+      "key": "dataStoreId"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Delete On Completion",
+      "key": "delete"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Throw Exception on Missing Entry",
+      "key": "stopOnMissingEntry"
+    },
+    {
+      "key": "operation",
+      "defaultValue": "get",
+      "label": "Operation"
+    }
+  ]
+}

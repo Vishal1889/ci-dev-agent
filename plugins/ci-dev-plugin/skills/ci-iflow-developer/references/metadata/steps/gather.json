@@ -1,0 +1,42 @@
+{
+  "name": "Gather",
+  "flavor": "Gather",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::Gather/version::1.2.0",
+  "componentVersion": "1.2.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "label": "Aggregation Algorithm",
+      "key": "aggregationAlgorithm",
+      "defaultValue": "sap-identical-multi-mapping",
+      "values": [
+        {
+          "key": "sap-identical-multi-mapping",
+          "label": "Combine (same structure)"
+        },
+        {
+          "key": "sap-combine-mapping",
+          "label": "Combine (different structure)"
+        }
+      ]
+    },
+    {
+      "label": "Message Type",
+      "key": "messageType",
+      "defaultValue": "SameXMLFormat"
+    },
+    {
+      "label": "Source XPath",
+      "key": "sourceXPath"
+    },
+    {
+      "label": "Target XPath",
+      "key": "targetXPath"
+    },
+    {
+      "label": "Gather File Names",
+      "key": "gatherFileNames"
+    }
+  ]
+}

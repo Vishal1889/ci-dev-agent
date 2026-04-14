@@ -1,0 +1,215 @@
+{
+  "name": "XI",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:XI/tp::HTTP/mp::XI/direction::Sender/version::1.19.2",
+  "componentVersion": "1.19.2",
+  "messageProtocol": "XI",
+  "transportProtocol": "HTTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.19.2",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "Address_inbound"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "RoleBased",
+      "label": "Authorization",
+      "key": "senderAuthType",
+      "values": [
+        {
+          "key": "RoleBased",
+          "label": "User Role"
+        },
+        {
+          "key": "ClientCertificate",
+          "label": "Client Certificate"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Client Certificate Authorization",
+      "key": "clientCertificates",
+      "when": "senderAuthType in ['ClientCertificate']",
+      "columns": [
+        {
+          "key": "clientCertificate.subjectDN",
+          "label": "Subject DN",
+          "mandatory": true
+        },
+        {
+          "key": "clientCertificate.issuerDN",
+          "label": "Issuer DN",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "ESBMessaging.send",
+      "label": "User Role",
+      "key": "userRole",
+      "when": "senderAuthType in ['RoleBased']"
+    },
+    {
+      "externalizable": true,
+      "label": "Communication Party",
+      "key": "CommunicationPartyReceiver"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "DefaultXIService",
+      "label": "Communication Component",
+      "key": "CommunicationComponentReceiver"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "ExactlyOnce",
+      "label": "Quality Of Service",
+      "key": "QualityOfService_inbound",
+      "values": [
+        {
+          "key": "ExactlyOnce",
+          "label": "At Least Once"
+        },
+        {
+          "key": "RealExactlyOnce",
+          "label": "Exactly Once"
+        },
+        {
+          "key": "BestEffort",
+          "label": "Best Effort"
+        },
+        {
+          "key": "HandledByIflow",
+          "label": "Handled by Integration Flow"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "DataStore",
+      "label": "Temporary Storage",
+      "key": "TempStorage_inbound",
+      "when": "QualityOfService_inbound in ['ExactlyOnce'] OR QualityOfService_inbound in ['RealExactlyOnce']",
+      "values": [
+        {
+          "key": "DataStore",
+          "label": "Data Store"
+        },
+        {
+          "key": "JMSQueue",
+          "label": "JMS Queue"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "10",
+      "dataType": "xsd:integer",
+      "label": "Lock Timeout (in min)",
+      "key": "LockTimeout_inbound",
+      "when": "None in [] OR None in []"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Poll Interval (in s)",
+      "key": "PollDelay_inbound",
+      "when": "None in [] OR None in []"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Number of Concurrent Processes",
+      "key": "NumberConcurrentProcesses_inbound"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "30",
+      "dataType": "xsd:integer",
+      "label": "Expiration Period (in d)",
+      "key": "ExpirationPeriod_inbound",
+      "when": "QualityOfService_inbound in ['ExactlyOnce'] OR QualityOfService_inbound in ['RealExactlyOnce']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Retry Interval (in min)",
+      "key": "RetryInterval_inbound",
+      "when": "QualityOfService_inbound in ['ExactlyOnce'] OR QualityOfService_inbound in ['RealExactlyOnce']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Exponential Backoff",
+      "key": "ExponentialBackoff_inbound",
+      "when": "QualityOfService_inbound in ['ExactlyOnce'] OR QualityOfService_inbound in ['RealExactlyOnce']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "60",
+      "dataType": "xsd:integer",
+      "label": "Maximum Retry Interval (in min)",
+      "key": "MaxRetryInterval_inbound",
+      "when": "None in [] OR None in []"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Dead-Letter Queue",
+      "key": "useDeadLetterQueue_inbound"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Compress Stored Message",
+      "key": "UseMessageCompression_inbound"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Encrypt Message During Persistence",
+      "key": "EncryptRMPersistence_inbound",
+      "when": "QualityOfService_inbound in ['ExactlyOnce'] OR QualityOfService_inbound in ['RealExactlyOnce']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "40",
+      "dataType": "xsd:integer",
+      "label": "Body Size (in MB)",
+      "key": "maximumBodySize"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "100",
+      "dataType": "xsd:integer",
+      "label": "Attachments Size (in MB)",
+      "key": "maximumAttachmentSize"
+    }
+  ]
+}

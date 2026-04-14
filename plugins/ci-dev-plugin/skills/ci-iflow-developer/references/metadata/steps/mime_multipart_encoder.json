@@ -1,0 +1,64 @@
+{
+  "name": "MIME Multipart Encoder",
+  "flavor": "MIME Multipart Message Encode",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::MIME Multipart Message Encode/version::1.2.0",
+  "componentVersion": "1.2.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "Mixed",
+      "label": "Multipart Subtype",
+      "key": "MultipartSubtype",
+      "values": [
+        {
+          "key": "Alternative",
+          "label": "Alternative"
+        },
+        {
+          "key": "Digest",
+          "label": "Digest"
+        },
+        {
+          "key": "Mixed",
+          "label": "Mixed"
+        },
+        {
+          "key": "Parallel",
+          "label": "Parallel"
+        },
+        {
+          "key": "Related",
+          "label": "Related"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Add Multipart Headers Inline",
+      "key": "MultipartAddHeadersInline"
+    },
+    {
+      "externalizable": true,
+      "label": "Include Headers",
+      "key": "IncludeHeaders",
+      "when": "MultipartAddHeadersInline in ['true']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Fold Long Headers",
+      "key": "FoldLongHeaders",
+      "when": "MultipartAddHeadersInline in ['false']"
+    },
+    {
+      "key": "encoderType",
+      "defaultValue": "MIME Multipart Message Encode",
+      "label": "Encoder Type"
+    }
+  ]
+}

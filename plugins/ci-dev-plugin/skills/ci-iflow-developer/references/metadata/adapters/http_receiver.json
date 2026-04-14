@@ -1,0 +1,303 @@
+{
+  "name": "HTTP",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:HTTP/tp::HTTP/mp::None/direction::Receiver/version::1.17.0",
+  "componentVersion": "1.17.0",
+  "messageProtocol": "None",
+  "transportProtocol": "HTTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.17.0",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "httpAddressWithoutQuery"
+    },
+    {
+      "externalizable": true,
+      "label": "Query",
+      "key": "httpAddressQuery"
+    },
+    {
+      "label": "Type",
+      "key": "apiArtifactType"
+    },
+    {
+      "externalizable": true,
+      "key": "providerRelativeUrl",
+      "when": "apiArtifactType in ['API Provider']"
+    },
+    {
+      "label": "Destination",
+      "key": "providerName",
+      "when": "apiArtifactType in ['API Provider']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "default",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "when": "NOT (apiArtifactType in ['API Provider'])",
+      "values": [
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "sapcc",
+          "label": "On-Premise"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "label": "Proxy Type",
+      "key": "internetProxyType",
+      "when": "apiArtifactType in ['API Provider']"
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "locationID",
+      "when": "proxyType in ['sapcc']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "proxyHost",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "xsd:integer",
+      "label": "Proxy Port",
+      "key": "proxyPort",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "POST",
+      "label": "Method",
+      "key": "httpMethod",
+      "values": [
+        {
+          "key": "DYNAMIC",
+          "label": "Dynamic"
+        },
+        {
+          "key": "DELETE",
+          "label": "DELETE"
+        },
+        {
+          "key": "GET",
+          "label": "GET"
+        },
+        {
+          "key": "HEAD",
+          "label": "HEAD"
+        },
+        {
+          "key": "POST",
+          "label": "POST"
+        },
+        {
+          "key": "PUT",
+          "label": "PUT"
+        },
+        {
+          "key": "TRACE",
+          "label": "TRACE"
+        },
+        {
+          "key": "PATCH",
+          "label": "PATCH"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Expression",
+      "key": "methodSourceExpression",
+      "when": "httpMethod in ['DYNAMIC']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Send Body",
+      "key": "httpShouldSendBody",
+      "when": "httpMethod in ['DYNAMIC'] OR httpMethod in ['GET'] OR httpMethod in ['DELETE'] OR httpMethod in ['HEAD']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Client Certificate",
+      "label": "Authentication",
+      "key": "authenticationMethod",
+      "when": "NOT (apiArtifactType in ['API Provider'])",
+      "values": [
+        {
+          "key": "Basic",
+          "label": "Basic"
+        },
+        {
+          "key": "None",
+          "label": "None"
+        },
+        {
+          "key": "OAuth2 Client Credentials",
+          "label": "OAuth2 Client Credentials"
+        },
+        {
+          "key": "OAuth2 SAML Bearer Assertion",
+          "label": "OAuth2 SAML Bearer Assertion"
+        },
+        {
+          "key": "Client Certificate",
+          "label": "Client Certificate"
+        },
+        {
+          "key": "Principal Propagation",
+          "label": "Principal Propagation"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "credentialName",
+      "when": "authenticationMethod in ['Basic'] OR authenticationMethod in ['OAuth2 SAML Bearer Assertion'] OR authenticationMethod in ['OAuth2 Client Credentials']"
+    },
+    {
+      "externalizable": true,
+      "label": "Private Key Alias",
+      "key": "privateKeyAlias"
+    },
+    {
+      "label": "Authentication",
+      "key": "providerAuth",
+      "when": "apiArtifactType in ['API Provider']"
+    },
+    {
+      "label": "URL",
+      "key": "providerUrl",
+      "when": "apiArtifactType in ['API Provider']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "60000",
+      "dataType": "xsd:integer",
+      "label": "Timeout (in ms)",
+      "key": "httpRequestTimeout"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Streaming",
+      "key": "streaming"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Throw Exception On Failure",
+      "key": "throwExceptionOnFailure"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Attach Error Details on Failure",
+      "key": "enableMPLAttachments",
+      "when": "throwExceptionOnFailure in ['true']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Retry Failed Requests",
+      "key": "retryOnConnectionFailure"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "HTTP Error Response Codes",
+      "key": "httpErrorResponseCodes",
+      "when": "retryOnConnectionFailure in ['true']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "5",
+      "label": "Retry Interval (in seconds)",
+      "key": "retryInterval",
+      "when": "retryOnConnectionFailure in ['true']",
+      "values": [
+        {
+          "key": "5",
+          "label": "5"
+        },
+        {
+          "key": "10",
+          "label": "10"
+        },
+        {
+          "key": "15",
+          "label": "15"
+        },
+        {
+          "key": "30",
+          "label": "30"
+        },
+        {
+          "key": "45",
+          "label": "45"
+        },
+        {
+          "key": "60",
+          "label": "60"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "label": "Retry Iterations",
+      "key": "retryIteration",
+      "when": "retryOnConnectionFailure in ['true']",
+      "values": [
+        {
+          "key": "1",
+          "label": "1"
+        },
+        {
+          "key": "2",
+          "label": "2"
+        },
+        {
+          "key": "3",
+          "label": "3"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Request Headers",
+      "key": "allowedRequestHeaders"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "*",
+      "label": "Response Headers",
+      "key": "allowedResponseHeaders"
+    }
+  ]
+}

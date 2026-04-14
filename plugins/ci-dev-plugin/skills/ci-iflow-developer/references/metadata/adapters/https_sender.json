@@ -1,0 +1,83 @@
+{
+  "name": "HTTPS",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:HTTPS/tp::HTTPS/mp::None/direction::Sender/version::1.5.2",
+  "componentVersion": "1.5.2",
+  "messageProtocol": "None",
+  "transportProtocol": "HTTPS",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.5.2",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "urlPath"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "RoleBased",
+      "label": "Authorization",
+      "key": "senderAuthType",
+      "values": [
+        {
+          "key": "RoleBased",
+          "label": "User Role"
+        },
+        {
+          "key": "ClientCertificate",
+          "label": "Client Certificate"
+        },
+        {
+          "key": "NoAuthorization",
+          "label": "No Authorization"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "ESBMessaging.send",
+      "label": "User Role",
+      "key": "userRole",
+      "when": "senderAuthType in ['RoleBased']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Client Certificate Authorization",
+      "key": "clientCertificates",
+      "when": "senderAuthType in ['ClientCertificate']",
+      "columns": [
+        {
+          "key": "clientCertificate.subjectDN",
+          "label": "Subject DN",
+          "mandatory": true
+        },
+        {
+          "key": "clientCertificate.issuerDN",
+          "label": "Issuer DN",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "CSRF Protected",
+      "key": "xsrfProtection"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "40",
+      "dataType": "xsd:integer",
+      "label": "Body Size (in MB)",
+      "key": "maximumBodySize"
+    }
+  ]
+}

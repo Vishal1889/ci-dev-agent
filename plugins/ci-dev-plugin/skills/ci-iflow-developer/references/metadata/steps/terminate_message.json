@@ -1,0 +1,9 @@
+{
+  "name": "Terminate End Event",
+  "flavor": "TerminateEndEvent",
+  "seedId": "EndEvent_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::TerminateEndEvent",
+  "bpmnElement": "endEvent",
+  "note": "Stops all processing immediately. Use for critical failures only.",
+  "properties": []
+}

@@ -1,0 +1,172 @@
+{
+  "name": "Integration Flow",
+  "flavor": "IFlowConfiguration",
+  "seedId": "Collaboration_",
+  "cmdVariantUri": "ctype::IFlowVariant/cname::IFlowConfiguration/version::1.2.4",
+  "componentVersion": "1.2",
+  "bpmnElement": "collaboration",
+  "properties": [
+    {
+      "externalizable": true,
+      "label": "Name",
+      "key": "name"
+    },
+    {
+      "externalizable": true,
+      "label": "ID",
+      "key": "bundleId"
+    },
+    {
+      "label": "Description",
+      "key": "Description"
+    },
+    {
+      "mandatory": true,
+      "defaultValue": "iflmap",
+      "label": "Runtime Profile",
+      "key": "productProfiles",
+      "values": [
+        {
+          "key": "iflmap",
+          "label": "Cloud Integration"
+        }
+      ]
+    },
+    {
+      "label": "Namespace Mapping",
+      "key": "namespaceMapping"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "All events",
+      "label": "Message Processing Log",
+      "key": "log",
+      "when": "$profile.isCapabilitySupported(com.sap.it.capability.igwpro.mpl-log-level-configuration:Mpl Log Level Configuration) in ['true']",
+      "values": [
+        {
+          "key": "All events",
+          "label": "All Events"
+        },
+        {
+          "key": "Error events",
+          "label": "Error Events"
+        },
+        {
+          "key": "No logging",
+          "label": "None"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Allowed Header(s)",
+      "key": "allowedHeaderList"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "None",
+      "label": "HTTP Session Reuse",
+      "key": "httpSessionHandling",
+      "values": [
+        {
+          "key": "None",
+          "label": "None"
+        },
+        {
+          "key": "onExchange",
+          "label": "On Exchange"
+        },
+        {
+          "key": "onIntegrationFlow",
+          "label": "On Integration Flow"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Enable Debug Trace",
+      "key": "ServerTrace",
+      "when": "$profile.isCapabilitySupported(com.sap.it.capability.igwpro.debug-trace-configuration:Debug Trace Configuration) in ['true']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Return Exception to Sender",
+      "key": "returnExceptionToSender"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Enabled",
+      "key": "corsEnabled"
+    },
+    {
+      "mandatory": true,
+      "label": "Allowed Origins",
+      "key": "allowedOrigins",
+      "when": "corsEnabled in ['true']"
+    },
+    {
+      "label": "Allowed Headers",
+      "key": "allowedHeaders",
+      "when": "corsEnabled in ['true']"
+    },
+    {
+      "label": "Expose Headers",
+      "key": "exposedHeaders",
+      "when": "corsEnabled in ['true']"
+    },
+    {
+      "mandatory": true,
+      "label": "Allowed Methods",
+      "key": "allowedMethods",
+      "when": "corsEnabled in ['true']",
+      "values": [
+        {
+          "key": "GET",
+          "label": "GET"
+        },
+        {
+          "key": "POST",
+          "label": "POST"
+        },
+        {
+          "key": "PUT",
+          "label": "PUT"
+        },
+        {
+          "key": "DELETE",
+          "label": "DELETE"
+        },
+        {
+          "key": "HEAD",
+          "label": "HEAD"
+        },
+        {
+          "key": "OPTIONS",
+          "label": "OPTIONS"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:integer",
+      "label": "Access Control Max Age(in sec)",
+      "key": "accessControlMaxAge",
+      "when": "corsEnabled in ['true']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Access Control Allow Credentials",
+      "key": "accessControlAllowCredentials",
+      "when": "corsEnabled in ['true']"
+    }
+  ]
+}

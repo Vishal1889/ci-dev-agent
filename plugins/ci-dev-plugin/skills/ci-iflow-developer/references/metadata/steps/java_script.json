@@ -1,0 +1,22 @@
+{
+  "name": "JavaScript",
+  "flavor": "JavaScript",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::JavaScript/version::1.1.2",
+  "componentVersion": "1.1.2",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "label": "Script",
+      "key": "script"
+    },
+    {
+      "label": "Script Function",
+      "key": "scriptFunction"
+    },
+    {
+      "label": "Script Bundle ID",
+      "key": "scriptBundleId"
+    }
+  ]
+}

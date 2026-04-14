@@ -1,0 +1,629 @@
+{
+  "name": "XML Signer",
+  "flavor": "XMLDigitalSignMessage",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::XMLDigitalSignMessage/version::1.3.3",
+  "componentVersion": "1.3.3",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Private Key Alias",
+      "key": "privateKeyAlias"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "SHA512/RSA",
+      "label": "Signature Algorithm",
+      "key": "signatureAlgorithm",
+      "values": [
+        {
+          "key": "SHA1/DSA",
+          "label": "SHA1/DSA"
+        },
+        {
+          "key": "SHA1/RSA",
+          "label": "SHA1/RSA"
+        },
+        {
+          "key": "SHA256/RSA",
+          "label": "SHA256/RSA"
+        },
+        {
+          "key": "SHA384/RSA",
+          "label": "SHA384/RSA"
+        },
+        {
+          "key": "SHA512/RSA",
+          "label": "SHA512/RSA"
+        },
+        {
+          "key": "ecdsa-sha224",
+          "label": "SHA224/ECDSA"
+        },
+        {
+          "key": "ecdsa-sha256",
+          "label": "SHA256/ECDSA"
+        },
+        {
+          "key": "ecdsa-sha384",
+          "label": "SHA384/ECDSA"
+        },
+        {
+          "key": "ecdsa-sha512",
+          "label": "SHA512/ECDSA"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Digest Algorithm",
+      "key": "digestAlgorithm",
+      "values": [
+        {
+          "key": "SHA1",
+          "label": "SHA1"
+        },
+        {
+          "key": "SHA256",
+          "label": "SHA256"
+        },
+        {
+          "key": "SHA384",
+          "label": "SHA384"
+        },
+        {
+          "key": "SHA512",
+          "label": "SHA512"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "Enveloping XML signature",
+      "label": "Signature Type",
+      "key": "signatureType",
+      "values": [
+        {
+          "key": "Enveloping XML signature",
+          "label": "Enveloping XML signature"
+        },
+        {
+          "key": "Enveloped XML signature",
+          "label": "Enveloped XML signature"
+        },
+        {
+          "key": "Detached XML signatures",
+          "label": "Detached XML signatures"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Specified by Name and Namespace",
+      "label": "Parent Node",
+      "key": "parentNodeSpecification",
+      "when": "signatureType in ['Enveloped XML signature']",
+      "values": [
+        {
+          "key": "Specified by Name and Namespace",
+          "label": "Specified by Name and Namespace"
+        },
+        {
+          "key": "Specified by XPath expression",
+          "label": "Specified by XPath expression"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Name",
+      "key": "parentLocalName"
+    },
+    {
+      "externalizable": true,
+      "label": "Namespace",
+      "key": "parentNamespace"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "XPath Expression",
+      "key": "xpathExpression"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "XML Schema File Path",
+      "key": "schemaResourceUri",
+      "when": "signatureType in ['Detached XML signatures']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Signatures for Elements",
+      "key": "xpathToIdAttribute",
+      "when": "signatureType in ['Detached XML signatures']",
+      "columns": [
+        {
+          "key": "xpathToIdField",
+          "label": "Xpath to ID Attribute",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Sign Key Info",
+      "key": "addKeyInfoReference"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "Inclusive XML Canonicalization",
+      "label": "Canonicalization Method for SignedInfo",
+      "key": "canonicalizationMethod",
+      "values": [
+        {
+          "key": "Inclusive XML Canonicalization",
+          "label": "XML Canonicalization Version 1.0"
+        },
+        {
+          "key": "Inclusive XML Canonicalization with Comments",
+          "label": "XML Canonicalization with Comments Version 1.0"
+        },
+        {
+          "key": "Exclusive XML Canonicalization",
+          "label": "Exclusive XML Canonicalization Version 1.0"
+        },
+        {
+          "key": "Exclusive XML Canonicalization with Comments",
+          "label": "Exclusive XML Canonicalization with Comments Version 1.0"
+        },
+        {
+          "key": "xml-c14n11",
+          "label": "XML Canonicalization Version 1.1"
+        },
+        {
+          "key": "xml-c14n11#WithComments",
+          "label": "XML Canonicalization with Comments Version 1.1"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "Inclusive XML Canonicalization",
+      "label": "Transform Method for Payload",
+      "key": "transformMethod",
+      "values": [
+        {
+          "key": "Inclusive XML Canonicalization",
+          "label": "XML Canonicalization Version 1.0"
+        },
+        {
+          "key": "Inclusive XML Canonicalization with Comments",
+          "label": "XML Canonicalization with Comments Version 1.0"
+        },
+        {
+          "key": "Exclusive XML Canonicalization",
+          "label": "Exclusive XML Canonicalization Version 1.0"
+        },
+        {
+          "key": "Exclusive XML Canonicalization with Comments",
+          "label": "Exclusive XML Canonicalization with Comments Version 1.0"
+        },
+        {
+          "key": "xml-c14n11",
+          "label": "XML Canonicalization Version 1.1"
+        },
+        {
+          "key": "xml-c14n11#WithComments",
+          "label": "XML Canonicalization with Comments Version 1.1"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Reference Type",
+      "key": "contentReferenceType"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "ds",
+      "label": "Namespace Prefix",
+      "key": "prefixForXmlSignatureNamespace"
+    },
+    {
+      "externalizable": true,
+      "label": "Signature ID",
+      "key": "signatureId"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "UTF-8",
+      "label": "Output Encoding",
+      "key": "outputEncoding"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Exclude XML Declaration",
+      "key": "omitXmlDeclaration"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Disallow DOCTYPE Declaration",
+      "key": "disallowDoctypeDecl"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Time",
+      "key": "xadesAddSigningTime"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "None",
+      "label": "Certificate",
+      "key": "xadesAddSigningCertificate",
+      "values": [
+        {
+          "key": "None",
+          "label": "None"
+        },
+        {
+          "key": "CertificateOnly",
+          "label": "Certificate Only"
+        },
+        {
+          "key": "CertificateChain",
+          "label": "Certificate Chain"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "SHA-512",
+      "label": "Digest Algorithm",
+      "key": "xadesSigningCertificateDigestAlgorithm",
+      "when": "xadesAddSigningCertificate in ['CertificateOnly'] OR xadesAddSigningCertificate in ['CertificateChain']",
+      "values": [
+        {
+          "key": "SHA-1",
+          "label": "SHA1"
+        },
+        {
+          "key": "SHA-256",
+          "label": "SHA256"
+        },
+        {
+          "key": "SHA-384",
+          "label": "SHA384"
+        },
+        {
+          "key": "SHA-512",
+          "label": "SHA512"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "key": "xadesCertificateUri",
+      "when": "xadesAddSigningCertificate in ['CertificateOnly'] OR xadesAddSigningCertificate in ['CertificateChain']",
+      "columns": [
+        {
+          "key": "xadesCertUriField",
+          "label": "Certificate URI"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "key": "xadesSignerRoleClaimedRoles",
+      "columns": [
+        {
+          "key": "xadesSignerRoleClaimedRoleField",
+          "label": "Claimed Role"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "Certified Roles",
+      "key": "xadesSignerRoleCertifiedRoles",
+      "columns": [
+        {
+          "key": "xadesSignerRoleAttr",
+          "label": "Attribute Certificate (Base64 Encoded)"
+        },
+        {
+          "key": "xadesSignerRoleEncoding",
+          "label": "Encoding"
+        },
+        {
+          "key": "xadesSignerRoleID",
+          "label": "ID"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Description",
+      "key": "xadesDataObjectFormatDescription"
+    },
+    {
+      "externalizable": true,
+      "label": "MIME Type",
+      "key": "xadesDataObjectFormatMimeType"
+    },
+    {
+      "externalizable": true,
+      "label": "City",
+      "key": "signatureProductionPlaceCity"
+    },
+    {
+      "externalizable": true,
+      "label": "State/Province",
+      "key": "signatureProductionPlaceState"
+    },
+    {
+      "externalizable": true,
+      "label": "Postal Code",
+      "key": "signatureProductionPlacePostalCode"
+    },
+    {
+      "externalizable": true,
+      "label": "Country",
+      "key": "signatureProductionPlaceCountry"
+    },
+    {
+      "externalizable": true,
+      "label": "Commitment",
+      "key": "signatureCommitment",
+      "values": [
+        {
+          "key": "http://uri.etsi.org/01903/v1.2.2#ProofOfOrigin",
+          "label": "Proof of Origin"
+        },
+        {
+          "key": "http://uri.etsi.org/01903/v1.2.2#ProofOfReceipt",
+          "label": "Proof of Receipt"
+        },
+        {
+          "key": "http://uri.etsi.org/01903/v1.2.2#ProofOfDelivery",
+          "label": "Proof of Delivery"
+        },
+        {
+          "key": "http://uri.etsi.org/01903/v1.2.2#ProofOfSender",
+          "label": "Proof of Sender"
+        },
+        {
+          "key": "http://uri.etsi.org/01903/v1.2.2#ProofOfApproval",
+          "label": "Proof of Approval"
+        },
+        {
+          "key": "http://uri.etsi.org/01903/v1.2.2#ProofOfCreation",
+          "label": "Proof of Creation"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Description",
+      "key": "signatureCommitmentDescription",
+      "when": "NOT (signatureCommitment in [''])"
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "key": "commitmentDocumentationReferenceTable",
+      "when": "NOT (signatureCommitment in [''])",
+      "columns": [
+        {
+          "key": "commitmentDocumentationReferenceField",
+          "label": "Documentation Reference"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "key": "commitmentQualifierTable",
+      "when": "NOT (signatureCommitment in [''])",
+      "columns": [
+        {
+          "key": "commitmentQualifierField",
+          "label": "Commitment Qualifier"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Namespace",
+      "key": "signatureXMLNamespace",
+      "values": [
+        {
+          "key": "http://uri.etsi.org/01903/v1.1.1#",
+          "label": "http://uri.etsi.org/01903/v1.1.1#"
+        },
+        {
+          "key": "http://uri.etsi.org/01903/v1.2.2#",
+          "label": "http://uri.etsi.org/01903/v1.2.2#"
+        },
+        {
+          "key": "http://uri.etsi.org/01903/v1.3.2#",
+          "label": "http://uri.etsi.org/01903/v1.3.2#"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "etsi",
+      "label": "Namespace Prefix",
+      "key": "signatureXMLNamespacePrefix"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "None",
+      "label": "Signature Policy",
+      "key": "xadesEpesSignaturePolicy",
+      "values": [
+        {
+          "key": "None",
+          "label": "None"
+        },
+        {
+          "key": "Implied",
+          "label": "Implied"
+        },
+        {
+          "key": "ExplicitId",
+          "label": "Explicit ID"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Identifier",
+      "key": "xadesEpesIdentifier",
+      "when": "xadesEpesSignaturePolicy in ['ExplicitId']"
+    },
+    {
+      "externalizable": true,
+      "label": "Identifier Qualifier",
+      "key": "xadesEpesIdentifierQualifier",
+      "when": "xadesEpesSignaturePolicy in ['ExplicitId']",
+      "values": [
+        {
+          "key": "OIDAsURI",
+          "label": "OIDAsURI"
+        },
+        {
+          "key": "OIDAsURN",
+          "label": "OIDAsURN"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Description",
+      "key": "xadesEpesDescription",
+      "when": "xadesEpesSignaturePolicy in ['ExplicitId']"
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "key": "xadesDocumentationReferenceTab",
+      "when": "xadesEpesSignaturePolicy in ['ExplicitId']",
+      "columns": [
+        {
+          "key": "xadesDocumentationReferenceField",
+          "label": "Documentation Reference"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "SHA-512",
+      "label": "Digest Algorithm",
+      "key": "xadesEpesDigestAlgorithm",
+      "when": "xadesEpesSignaturePolicy in ['ExplicitId']",
+      "values": [
+        {
+          "key": "SHA-1",
+          "label": "SHA1"
+        },
+        {
+          "key": "SHA-256",
+          "label": "SHA256"
+        },
+        {
+          "key": "SHA-384",
+          "label": "SHA384"
+        },
+        {
+          "key": "SHA-512",
+          "label": "SHA512"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Digest Value",
+      "key": "xadesEpesDigestValue",
+      "when": "xadesEpesSignaturePolicy in ['ExplicitId']"
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "key": "xadesPolicyQualifierTab",
+      "when": "xadesEpesSignaturePolicy in ['ExplicitId']",
+      "columns": [
+        {
+          "key": "xadesPolicyQualifierField",
+          "label": "Policy Qualifier"
+        }
+      ]
+    },
+    {
+      "key": "keyInfoHasKeyValue",
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Key Info Has Key Value"
+    },
+    {
+      "key": "keyInfoHasX509CertChain",
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Key Info Has X509 Cert Chain"
+    },
+    {
+      "key": "keyInfoHasX509Certificate",
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Key Info Has X509 Certificate"
+    },
+    {
+      "key": "keyInfoHasIssuerName",
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Key Info Has Issuer Name"
+    },
+    {
+      "key": "xadesIdentifierName",
+      "label": "XADES Identifier Name"
+    },
+    {
+      "key": "xadesIdentifierDescription",
+      "label": "XADES Identifier Description"
+    },
+    {
+      "key": "xadesIdentifierDocumentationReference",
+      "label": "XADES Identifier Documentation Reference"
+    },
+    {
+      "key": "xadesIdentifierQualifier",
+      "label": "XADES Identifier Qualifier"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "Poll Enrich",
+  "flavor": "PollEnrich",
+  "seedId": "ServiceTask_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::PollEnrich/version::1.1.0",
+  "componentVersion": "1.1.0",
+  "bpmnElement": "serviceTask",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "UseLatest",
+      "label": "Aggregation Algorithm",
+      "key": "aggregationAlgorithm",
+      "values": [
+        {
+          "key": "sap-pi-multi-mapping",
+          "label": "Combine XML"
+        },
+        {
+          "key": "concatenate-strategy",
+          "label": "Concatenate"
+        },
+        {
+          "key": "UseLatest",
+          "label": "Replace"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Throw Exception if no Message Found",
+      "key": "stopOnNoMsgFound"
+    }
+  ]
+}

@@ -1,0 +1,228 @@
+{
+  "name": "LDAP",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:LDAP/tp::TCP/mp::LDAP/direction::Receiver/version::1.4.1",
+  "componentVersion": "1.4.1",
+  "messageProtocol": "LDAP",
+  "transportProtocol": "TCP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.4.1",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "ldapAddress"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "ldapProxyTypeOnPremise",
+      "label": "Proxy Type",
+      "key": "ldapProxyType",
+      "values": [
+        {
+          "key": "ldapProxyTypeOnPremise",
+          "label": "On Premise"
+        },
+        {
+          "key": "ldapProxyTypeInternet",
+          "label": "Internet"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "ldapLocationID",
+      "when": "ldapProxyType in ['ldapProxyTypeOnPremise']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "ldapAuthenticationSimple",
+      "label": "Authentication",
+      "key": "ldapAuthentication",
+      "values": [
+        {
+          "key": "ldapAuthenticationSimple",
+          "label": "Simple"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "ldapCredentialName"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "ldapOperationInsert",
+      "label": "Operation",
+      "key": "ldapOperation",
+      "values": [
+        {
+          "key": "ldapOperationInsert",
+          "label": "Insert"
+        },
+        {
+          "key": "ldapOperationDelete",
+          "label": "Delete"
+        },
+        {
+          "key": "ldapOperationModify",
+          "label": "Modify"
+        },
+        {
+          "key": "ldapOperationSearch",
+          "label": "Search"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Base DN",
+      "key": "ldapBaseDN",
+      "when": "ldapOperation in ['ldapOperationSearch']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "subtree",
+      "label": "Scope",
+      "key": "scope",
+      "when": "ldapOperation in ['ldapOperationSearch']",
+      "values": [
+        {
+          "key": "object",
+          "label": "Object"
+        },
+        {
+          "key": "onelevel",
+          "label": "One Level"
+        },
+        {
+          "key": "subtree",
+          "label": "Subtree"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Distinguished Name",
+      "key": "ldapDN",
+      "when": "ldapOperation in ['ldapOperationDelete']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "ldapInputTypeXML",
+      "label": "Input Type",
+      "key": "ldapInputType",
+      "when": "ldapOperation in ['ldapOperationInsert'] OR ldapOperation in ['ldapOperationModify']",
+      "values": [
+        {
+          "key": "ldapInputTypeXML",
+          "label": "XML"
+        },
+        {
+          "key": "ldapInputTypeLDAPAttributes",
+          "label": "Java (JNDI) Attributes"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:boolean",
+      "label": "Consider attributes from class ModificationItem",
+      "key": "ldapIsJNDIPayloadModificationItems"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "replace",
+      "label": "Modification Type",
+      "key": "ldapModificationType",
+      "values": [
+        {
+          "key": "add",
+          "label": "Add"
+        },
+        {
+          "key": "replace",
+          "label": "Replace"
+        },
+        {
+          "key": "remove",
+          "label": "Remove"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:boolean",
+      "label": "Consider additional attributes for modification",
+      "key": "ldapPayloadAttributeProcessing"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Search Filter",
+      "key": "ldapSearchFilter",
+      "when": "ldapOperation in ['ldapOperationSearch']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "ldapOutputTypeXML",
+      "label": "Output Type",
+      "key": "ldapOutputType",
+      "when": "ldapOperation in ['ldapOperationSearch']",
+      "values": [
+        {
+          "key": "ldapOutputTypeXML",
+          "label": "XML"
+        },
+        {
+          "key": "ldapOutputTypeLDAPAttributes",
+          "label": "Java (JNDI) Attributes"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "ldapOutputSemicolonSeparator",
+      "label": "Multivalued Response",
+      "key": "ldapSearchResponseSeparator",
+      "values": [
+        {
+          "key": "ldapOutputSemicolonSeparator",
+          "label": "Semicolon separated"
+        },
+        {
+          "key": "ldapOutputNewXMLTagSeparator",
+          "label": "As XML tags"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Attributes",
+      "key": "ldapAttributes",
+      "when": "ldapOperation in ['ldapOperationSearch']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "10",
+      "label": "Size Limit",
+      "key": "countLimit",
+      "when": "ldapOperation in ['ldapOperationSearch']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "label": "Timeout (in min)",
+      "key": "timeLimit",
+      "when": "ldapOperation in ['ldapOperationSearch']"
+    }
+  ]
+}

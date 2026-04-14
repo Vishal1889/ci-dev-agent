@@ -1,0 +1,52 @@
+{
+  "name": "ID Mapping",
+  "flavor": "IDMapper",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::IDMapper/version::1.0.0",
+  "componentVersion": "1.0.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Source Message ID",
+      "key": "sourceMessageID"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Target Header Name",
+      "key": "targetHeader"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Context",
+      "key": "context"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "local",
+      "label": "Visibility",
+      "key": "visibility",
+      "values": [
+        {
+          "key": "local",
+          "label": "Integration Flow"
+        },
+        {
+          "key": "global",
+          "label": "Global"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "30",
+      "dataType": "xsd:integer",
+      "label": "Expiration Period (in d)",
+      "key": "expire"
+    }
+  ]
+}

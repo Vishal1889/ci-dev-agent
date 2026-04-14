@@ -1,0 +1,51 @@
+{
+  "name": "Data Store Select",
+  "flavor": "select",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::select/version::1.7.1",
+  "componentVersion": "1.7.1",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Data Store Name",
+      "key": "storageName"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "local",
+      "label": "Visibility",
+      "key": "visibility",
+      "values": [
+        {
+          "key": "local",
+          "label": "Integration Flow"
+        },
+        {
+          "key": "global",
+          "label": "Global"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "label": "Number of Polled Messages",
+      "key": "maxresults"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Delete On Completion",
+      "key": "delete"
+    },
+    {
+      "key": "operation",
+      "defaultValue": "select",
+      "label": "Operation"
+    }
+  ]
+}

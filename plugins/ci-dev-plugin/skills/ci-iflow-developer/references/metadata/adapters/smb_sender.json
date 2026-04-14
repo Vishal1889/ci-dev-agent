@@ -1,0 +1,280 @@
+{
+  "name": "SMB",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::SMB/vendor::rojoconsultancy.com/tp::TCP/mp::SMB/direction::Sender/version::1.1.0",
+  "componentVersion": "1.1.0",
+  "messageProtocol": "SMB",
+  "transportProtocol": "TCP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.1.0",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "hostname"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "internet",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "internet",
+          "label": "Internet"
+        },
+        {
+          "key": "onPremise",
+          "label": "On-Premise"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "locationId",
+      "when": "proxyType in ['onPremise']"
+    },
+    {
+      "externalizable": true,
+      "label": "Domain",
+      "key": "domain"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "auto",
+      "label": "SMB Dialect",
+      "key": "smbDialect",
+      "values": [
+        {
+          "key": "auto",
+          "label": "Auto"
+        },
+        {
+          "key": "smb202",
+          "label": "SMB 2.0.2"
+        },
+        {
+          "key": "smb21",
+          "label": "SMB 2.1"
+        },
+        {
+          "key": "smb30",
+          "label": "SMB 3.0"
+        },
+        {
+          "key": "smb302",
+          "label": "SMB 3.0.2"
+        },
+        {
+          "key": "smb311",
+          "label": "SMB 3.1.1"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Share",
+      "key": "share"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "basic",
+      "label": "Authentication",
+      "key": "authentication",
+      "values": [
+        {
+          "key": "basic",
+          "label": "Basic Authentication"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "credentials"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "180",
+      "label": "Timeout (in secs).",
+      "key": "timeout"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Enable Encryption",
+      "key": "useEncryption",
+      "when": "smbDialect in ['auto'] OR smbDialect in ['smb30'] OR smbDialect in ['smb302'] OR smbDialect in ['smb311']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Enable DFS",
+      "key": "enableDfs"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Enable Signing",
+      "key": "enableSigning"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "3",
+      "label": "Maximum Reconnect Attempts.",
+      "key": "maximumReconnect"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "readfile",
+      "label": "Operation",
+      "key": "operationSender",
+      "values": [
+        {
+          "key": "readfile",
+          "label": "Read File"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "\\",
+      "label": "Directory",
+      "key": "directory"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "*",
+      "label": "File Name",
+      "key": "fileName",
+      "when": "operationSender in ['readfile']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "proceed",
+      "label": "Empty File Handling",
+      "key": "emptyFileHandling",
+      "values": [
+        {
+          "key": "ignore",
+          "label": "Ignore"
+        },
+        {
+          "key": "proceed",
+          "label": "Proceed With Empty File"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "Read Lock Strategy",
+      "key": "readLockStrategySender",
+      "values": [
+        {
+          "key": "none",
+          "label": "None"
+        },
+        {
+          "key": "contentChange",
+          "label": "Content Change"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "120",
+      "dataType": "xsd:long",
+      "label": "Content Change Duration (in secs)",
+      "key": "contentChangeTime",
+      "when": "readLockStrategySender in ['contentChange']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "deletefile",
+      "label": "Post-Processing",
+      "key": "postProcessing",
+      "when": "operationSender in ['readfile']",
+      "values": [
+        {
+          "key": "deletefile",
+          "label": "Delete File"
+        },
+        {
+          "key": "keepfile",
+          "label": "Keep File and Process Again"
+        },
+        {
+          "key": "copyarchive",
+          "label": "Move File"
+        }
+      ]
+    },
+    {
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Execute Post-Processing when Message Successfully Processed",
+      "key": "postProcessOnlyAfterSuccess",
+      "when": "NOT (postProcessing in ['keepfile'])"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Archive Append Timestamp",
+      "key": "archiveAppendTimestamp",
+      "when": "postProcessing in ['copyarchive']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Archive Folder",
+      "key": "archiveFolder",
+      "when": "postProcessing in ['copyarchive']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Duplicate Check",
+      "key": "duplicateCheck"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "300",
+      "dataType": "xsd:integer",
+      "label": "Duplicate Check Expiration Period (in secs)",
+      "key": "duplicateCheckExpiration",
+      "when": "duplicateCheck in ['true']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "10",
+      "dataType": "xsd:integer",
+      "label": "Max. Messages per Poll",
+      "key": "maxpoolMessage",
+      "when": "operationSender in ['readfile']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "40",
+      "label": "Maximum File Size (in MB)",
+      "key": "maximumFileSize"
+    }
+  ]
+}

@@ -1,0 +1,198 @@
+{
+  "name": "Kafka",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:Kafka/tp::TCP/mp::Kafka/direction::Sender/version::1.1.0",
+  "componentVersion": "1.1.0",
+  "messageProtocol": "Kafka",
+  "transportProtocol": "TCP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.1.0",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "key": "hosts",
+      "columns": [
+        {
+          "key": "host",
+          "label": "Host",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "SASL",
+      "label": "Authentication",
+      "key": "authentication",
+      "values": [
+        {
+          "key": "ClientCertificate",
+          "label": "Client Certificate"
+        },
+        {
+          "key": "SASL",
+          "label": "SASL"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Connect with TLS",
+      "key": "connectWithTLS",
+      "when": "authentication in ['SASL']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "PLAIN",
+      "label": "SASL Mechanism",
+      "key": "saslMechanism",
+      "when": "authentication in ['SASL']",
+      "values": [
+        {
+          "key": "PLAIN",
+          "label": "PLAIN"
+        },
+        {
+          "key": "SCRAM-SHA-256",
+          "label": "SCRAM-SHA-256"
+        },
+        {
+          "key": "SCRAM-SHA-512",
+          "label": "SCRAM-SHA-512"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "credentialName",
+      "when": "authentication in ['SASL']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Private Key Alias",
+      "key": "alias",
+      "when": "authentication in ['ClientCertificate']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Topic",
+      "key": "topic"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Parallel Consumers",
+      "key": "parallelConsumers"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "retry",
+      "label": "Error Handling",
+      "key": "errorHandling",
+      "values": [
+        {
+          "key": "retry",
+          "label": "Retry Failed Message"
+        },
+        {
+          "key": "skip",
+          "label": "Skip Failed Message"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Min. Fetch Size (in bytes)",
+      "key": "minFetchSize"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "52428800",
+      "dataType": "xsd:integer",
+      "label": "Max. Fetch Size (in bytes)",
+      "key": "maxFetchSize"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1048576",
+      "dataType": "xsd:integer",
+      "label": "Max. Partition Fetch Size (in bytes)",
+      "key": "maxPartitionFetchSize"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "500",
+      "dataType": "xsd:integer",
+      "label": "Max. Fetch Wait Time (in ms)",
+      "key": "maxWaitFetch"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "500",
+      "dataType": "xsd:integer",
+      "label": "Max. Number of Polled Records",
+      "key": "maxPollRecords"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "30",
+      "dataType": "xsd:integer",
+      "label": "Request Timeout (in s)",
+      "key": "requestTimeout"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1000",
+      "dataType": "xsd:integer",
+      "label": "Max. Retry Backoff (in ms)",
+      "key": "retryBackoff"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Reconnect Delay (in s)",
+      "key": "reconnectBackoff"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "3",
+      "dataType": "xsd:integer",
+      "label": "Heartbeat Interval (in s)",
+      "key": "heartbeatInterval"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "10",
+      "dataType": "xsd:integer",
+      "label": "Session Timeout (in s)",
+      "key": "sessionTimeout"
+    }
+  ]
+}

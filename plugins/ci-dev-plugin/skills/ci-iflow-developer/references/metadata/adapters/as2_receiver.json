@@ -1,0 +1,453 @@
+{
+  "name": "AS2",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::AS2/tp::HTTP/mp::AS2/direction::Receiver/version::1.11.0",
+  "componentVersion": "1.11.0",
+  "messageProtocol": "AS2",
+  "transportProtocol": "HTTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "SAP BASIS 7.31",
+  "ComponentSWCVId": "1.0",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Receipient URL",
+      "key": "receipientURL"
+    },
+    {
+      "externalizable": true,
+      "label": "URL Parameters Pattern",
+      "key": "urlParametersPattern"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "default",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "sapcc",
+          "label": "On-Premise"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "locationID"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "proxyHost"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Port",
+      "key": "proxyPort"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "None",
+      "label": "Authentication Type",
+      "key": "authenticationType",
+      "values": [
+        {
+          "key": "None",
+          "label": "None"
+        },
+        {
+          "key": "BasicAuthentication",
+          "label": "Basic Authentication"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        },
+        {
+          "key": "ClientCertificate",
+          "label": "Client Certificate"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "userCredentialAlias",
+      "when": "authenticationType in ['BasicAuthentication'] OR authenticationType in ['Dynamic']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Private Key Alias",
+      "key": "privateKeyAlias",
+      "when": "authenticationType in ['ClientCertificate'] OR authenticationType in ['Dynamic']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "300000",
+      "dataType": "xsd:integer",
+      "label": "Timeout (in ms)",
+      "key": "timeout"
+    },
+    {
+      "externalizable": true,
+      "label": "File Name",
+      "key": "fileName"
+    },
+    {
+      "externalizable": true,
+      "label": "Message ID Left Part",
+      "key": "messageIDLeft"
+    },
+    {
+      "externalizable": true,
+      "label": "Message ID Right Part",
+      "key": "messageIDRight"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Own AS2 ID",
+      "key": "ownAS2Name"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Partner AS2 ID",
+      "key": "partnerAS2Name"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Message Subject",
+      "key": "messageSubject"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Own E-mail address",
+      "key": "ownEmailAddress"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Content-Type",
+      "key": "contentType"
+    },
+    {
+      "externalizable": true,
+      "label": "Custom Headers Pattern",
+      "key": "customHeadersPattern"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "binary",
+      "label": "Content Transfer Encoding",
+      "key": "messageEncoding",
+      "values": [
+        {
+          "key": "binary",
+          "label": "binary"
+        },
+        {
+          "key": "base64",
+          "label": "base64"
+        },
+        {
+          "key": "dynamic",
+          "label": "dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Compress Message",
+      "key": "doCompression"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Sign Message",
+      "key": "doSigning"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "SHA1",
+      "label": "Algorithm",
+      "key": "signingAlgorithm",
+      "when": "doSigning in ['1']",
+      "values": [
+        {
+          "key": "SHA1",
+          "label": "SHA1"
+        },
+        {
+          "key": "SHA224",
+          "label": "SHA224"
+        },
+        {
+          "key": "SHA256",
+          "label": "SHA256"
+        },
+        {
+          "key": "SHA384",
+          "label": "SHA384"
+        },
+        {
+          "key": "SHA512",
+          "label": "SHA512"
+        },
+        {
+          "key": "MD5",
+          "label": "MD5"
+        },
+        {
+          "key": "SHA1_RSASSA_PSS",
+          "label": "SHA1 (RSASSA-PSS)"
+        },
+        {
+          "key": "SHA224_RSASSA_PSS",
+          "label": "SHA224 (RSASSA-PSS)"
+        },
+        {
+          "key": "SHA256_RSASSA_PSS",
+          "label": "SHA256 (RSASSA-PSS)"
+        },
+        {
+          "key": "SHA384_RSASSA_PSS",
+          "label": "SHA384 (RSASSA-PSS)"
+        },
+        {
+          "key": "SHA512_RSASSA_PSS",
+          "label": "SHA512 (RSASSA-PSS)"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Private Key Alias",
+      "key": "privateKeyAliasForSigning",
+      "when": "doSigning in ['1']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Encrypt Message",
+      "key": "doEncryption"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "DES3",
+      "label": "Algorithm",
+      "key": "encryptionAlgorithm",
+      "when": "doEncryption in ['1']",
+      "values": [
+        {
+          "key": "AES128",
+          "label": "AES128"
+        },
+        {
+          "key": "AES192",
+          "label": "AES192"
+        },
+        {
+          "key": "AES256",
+          "label": "AES256"
+        },
+        {
+          "key": "DES3",
+          "label": "3DES"
+        },
+        {
+          "key": "RC2",
+          "label": "RC2"
+        },
+        {
+          "key": "AES128_RSAES_OAEP",
+          "label": "AES128 (RSAES-OAEP)"
+        },
+        {
+          "key": "AES192_RSAES_OAEP",
+          "label": "AES192 (RSAES-OAEP)"
+        },
+        {
+          "key": "AES256_RSAES_OAEP",
+          "label": "AES256 (RSAES-OAEP)"
+        },
+        {
+          "key": "AES128_GCM_RSAES_OAEP",
+          "label": "AES128 (GCM/RSAES-OAEP)"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Public Key Alias",
+      "key": "publicKeyAliasForEncryption",
+      "when": "doEncryption in ['1']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "128",
+      "dataType": "xsd:integer",
+      "label": "Key Length",
+      "key": "keyLength"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "None",
+      "label": "Type",
+      "key": "mdnType",
+      "values": [
+        {
+          "key": "None",
+          "label": "None"
+        },
+        {
+          "key": "Asynchronous",
+          "label": "Asynchronous"
+        },
+        {
+          "key": "Synchronous",
+          "label": "Synchronous"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Target URL",
+      "key": "mdnTargetURL",
+      "when": "mdnType in ['Asynchronous'] OR mdnType in ['Dynamic']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Request Signing",
+      "key": "requestMDNSigning",
+      "when": "mdnType in ['Asynchronous'] OR mdnType in ['Synchronous'] OR mdnType in ['Dynamic']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "SHA1",
+      "label": "Algorithm",
+      "key": "requestMDNSigningAlgorithm",
+      "values": [
+        {
+          "key": "SHA1",
+          "label": "SHA1"
+        },
+        {
+          "key": "SHA224",
+          "label": "SHA224"
+        },
+        {
+          "key": "SHA256",
+          "label": "SHA256"
+        },
+        {
+          "key": "SHA384",
+          "label": "SHA384"
+        },
+        {
+          "key": "SHA512",
+          "label": "SHA512"
+        },
+        {
+          "key": "MD5",
+          "label": "MD5"
+        },
+        {
+          "key": "SHA1_RSASSA_PSS",
+          "label": "SHA1 (RSASSA-PSS)"
+        },
+        {
+          "key": "SHA224_RSASSA_PSS",
+          "label": "SHA224 (RSASSA-PSS)"
+        },
+        {
+          "key": "SHA256_RSASSA_PSS",
+          "label": "SHA256 (RSASSA-PSS)"
+        },
+        {
+          "key": "SHA384_RSASSA_PSS",
+          "label": "SHA384 (RSASSA-PSS)"
+        },
+        {
+          "key": "SHA512_RSASSA_PSS",
+          "label": "SHA512 (RSASSA-PSS)"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Verify Signature",
+      "key": "verifyMDNSignature"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Public Key Alias",
+      "key": "publicKeyAliasForMDNVerification"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Request MIC",
+      "key": "requestMIC"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Verify MIC",
+      "key": "verifyMIC"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Message Failure on Negative MDN",
+      "key": "failMessageOnNegativeMDN",
+      "when": "mdnType in ['Synchronous'] OR mdnType in ['Dynamic']"
+    }
+  ]
+}

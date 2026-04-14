@@ -1,0 +1,11 @@
+#Sun Apr 12 10:27:45 UTC 2026
+sftp.filename=abc.xml
+sftp.Credential=I749671_SFTP
+http.Address=http\://demo3532371.mockable.io/httpmock
+http.AuthMethod=None
+sftp.directory=/Source
+sender.Address=/inputsoap
+sender.MessageExchangePattern=OneWay
+sftp.AuthMethod=user_password
+sftp.Address=testsftp
+sftp.proxyType=sapcc

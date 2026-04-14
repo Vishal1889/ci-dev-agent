@@ -1,0 +1,167 @@
+{
+  "name": "Simple Signer",
+  "flavor": "SimpleSignMessage",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::SimpleSignMessage/version::1.3.0",
+  "componentVersion": "1.3.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Private Key Alias",
+      "key": "privateKeyAlias"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "SHA512/RSA",
+      "label": "Signature Algorithm",
+      "key": "signatureAlgorithm",
+      "values": [
+        {
+          "key": "SHA512/RSA",
+          "label": "SHA512/RSA"
+        },
+        {
+          "key": "SHA384/RSA",
+          "label": "SHA384/RSA"
+        },
+        {
+          "key": "SHA256/RSA",
+          "label": "SHA256/RSA"
+        },
+        {
+          "key": "SHA224/RSA",
+          "label": "SHA224/RSA"
+        },
+        {
+          "key": "SHA/RSA",
+          "label": "SHA/RSA"
+        },
+        {
+          "key": "RIPEMD128/RSA",
+          "label": "RIPEMD128/RSA"
+        },
+        {
+          "key": "RIPEMD160/RSA",
+          "label": "RIPEMD160/RSA"
+        },
+        {
+          "key": "RIPEMD256/RSA",
+          "label": "RIPEMD256/RSA"
+        },
+        {
+          "key": "MD5/RSA",
+          "label": "MD5/RSA"
+        },
+        {
+          "key": "MD2/RSA",
+          "label": "MD2/RSA"
+        },
+        {
+          "key": "RIPEMD160andMGF1/RSA-ISO9796-2-2-3",
+          "label": "RIPEMD160andMGF1/RSA-ISO9796-2-2-3"
+        },
+        {
+          "key": "SHAandMGF1/RSA-ISO9796-2-2-3",
+          "label": "SHAandMGF1/RSA-ISO9796-2-2-3"
+        },
+        {
+          "key": "SHA256withDSA",
+          "label": "SHA256withDSA"
+        },
+        {
+          "key": "SHA224withDSA",
+          "label": "SHA224withDSA"
+        },
+        {
+          "key": "SHA/DSA",
+          "label": "SHA/DSA"
+        },
+        {
+          "key": "SHA3-224/RSA",
+          "label": "SHA3-224/RSA"
+        },
+        {
+          "key": "SHA3-256/RSA",
+          "label": "SHA3-256/RSA"
+        },
+        {
+          "key": "SHA3-384/RSA",
+          "label": "SHA3-384/RSA"
+        },
+        {
+          "key": "SHA3-512/RSA",
+          "label": "SHA3-512/RSA"
+        },
+        {
+          "key": "SHA3-512/DSA",
+          "label": "SHA3-512/DSA"
+        },
+        {
+          "key": "SHA3-384/DSA",
+          "label": "SHA3-384/DSA"
+        },
+        {
+          "key": "SHA3-256/DSA",
+          "label": "SHA3-256/DSA"
+        },
+        {
+          "key": "SHA3-224/DSA",
+          "label": "SHA3-224/DSA"
+        },
+        {
+          "key": "SHA512/DSA",
+          "label": "SHA512/DSA"
+        },
+        {
+          "key": "SHA384/DSA",
+          "label": "SHA384/DSA"
+        },
+        {
+          "key": "SHA3-224/ECDSA",
+          "label": "SHA3-224/ECDSA"
+        },
+        {
+          "key": "SHA3-256/ECDSA",
+          "label": "SHA3-256/ECDSA"
+        },
+        {
+          "key": "SHA3-384/ECDSA",
+          "label": "SHA3-384/ECDSA"
+        },
+        {
+          "key": "SHA3-512/ECDSA",
+          "label": "SHA3-512/ECDSA"
+        },
+        {
+          "key": "SHA512/ECDSA",
+          "label": "SHA512/ECDSA"
+        },
+        {
+          "key": "SHA384/ECDSA",
+          "label": "SHA384/ECDSA"
+        },
+        {
+          "key": "SHA256/ECDSA",
+          "label": "SHA256/ECDSA"
+        },
+        {
+          "key": "SHA224/ECDSA",
+          "label": "SHA224/ECDSA"
+        },
+        {
+          "key": "SHA1/ECDSA",
+          "label": "SHA1/ECDSA"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "SAPSimpleSignatureValue",
+      "label": "Signature Header Name",
+      "key": "signatureTargetHeader"
+    }
+  ]
+}

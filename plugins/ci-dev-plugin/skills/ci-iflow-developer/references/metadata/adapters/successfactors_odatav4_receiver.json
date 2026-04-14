@@ -1,0 +1,143 @@
+{
+  "name": "SuccessFactors",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::OData V4/direction::Receiver/version::1.11.0",
+  "componentVersion": "1.11.0",
+  "messageProtocol": "OData V4",
+  "transportProtocol": "HTTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.21.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::REST/direction::Receiver/version::1.1.4",
+      "messageProtocol": "REST",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.1.4"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::OData V4/direction::Receiver/version::1.11.0",
+      "messageProtocol": "OData V4",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.11.0"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::OData V2/direction::Receiver/version::1.21.1",
+      "messageProtocol": "OData V2",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.21.1"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::SOAP/direction::Receiver/version::1.7.1",
+      "messageProtocol": "SOAP",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.7.1"
+    }
+  ],
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "address"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "OAuth2ClientCredentials",
+      "label": "Authentication",
+      "key": "authenticationMethod",
+      "values": [
+        {
+          "key": "OAuth2ClientCredentials",
+          "label": "OAuth2 Client Credentials"
+        },
+        {
+          "key": "OAuth2SAMLBearer",
+          "label": "OAuth2 SAML Bearer Assertion"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "alias"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "default",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "proxyHost",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "xsd:integer",
+      "label": "Proxy Port",
+      "key": "proxyPort",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Reuse Connection",
+      "key": "connectionReuse"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "get",
+      "label": "Operation",
+      "key": "operation",
+      "values": [
+        {
+          "key": "get",
+          "label": "Query(GET)"
+        },
+        {
+          "key": "create",
+          "label": "Create(POST)"
+        },
+        {
+          "key": "update",
+          "label": "Update(PUT)"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Resource Path",
+      "key": "resourcePathForOdatav4"
+    },
+    {
+      "externalizable": true,
+      "label": "Query Options",
+      "key": "queryOptions",
+      "when": "operation in ['get']"
+    }
+  ]
+}

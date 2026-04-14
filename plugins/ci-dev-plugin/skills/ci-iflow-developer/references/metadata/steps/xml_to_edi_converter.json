@@ -1,0 +1,666 @@
+{
+  "name": "XML to EDI Converter",
+  "flavor": "XMLtoEDIConverter",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::XMLtoEDIConverter/version::2.8.0",
+  "componentVersion": "2.8.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "ISO-8859-1",
+      "label": "Source Encoding",
+      "key": "edifactSourceEncoding",
+      "values": [
+        {
+          "key": "ISO-8859-1",
+          "label": "ISO-8859-1"
+        },
+        {
+          "key": "UTF-8",
+          "label": "UTF-8"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "ISO-8859-1",
+      "label": "Target Encoding",
+      "key": "edifactTargetEncoding",
+      "values": [
+        {
+          "key": "ISO-8859-1",
+          "label": "ISO-8859-1"
+        },
+        {
+          "key": "ISO-8859-2",
+          "label": "ISO-8859-2"
+        },
+        {
+          "key": "ISO-8859-3",
+          "label": "ISO-8859-3"
+        },
+        {
+          "key": "ISO-8859-4",
+          "label": "ISO-8859-4"
+        },
+        {
+          "key": "ISO-8859-5",
+          "label": "ISO-8859-5"
+        },
+        {
+          "key": "ISO-8859-6",
+          "label": "ISO-8859-6"
+        },
+        {
+          "key": "ISO-8859-7",
+          "label": "ISO-8859-7"
+        },
+        {
+          "key": "ISO-8859-8",
+          "label": "ISO-8859-8"
+        },
+        {
+          "key": "ISO-8859-9",
+          "label": "ISO-8859-9"
+        },
+        {
+          "key": "UTF-8",
+          "label": "UTF-8"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        },
+        {
+          "key": "FromIncomingPayload",
+          "label": "From incoming payload"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "IntegrationProject",
+      "label": "EDI Schema Definition",
+      "key": "edifactEdiSchemaSource",
+      "values": [
+        {
+          "key": "IntegrationProject",
+          "label": "Integration Flow"
+        },
+        {
+          "key": "Header",
+          "label": "Header"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "Schemas",
+      "key": "edifactSchemaTable",
+      "when": "edifactEdiSchemaSource in ['IntegrationProject']",
+      "columns": [
+        {
+          "key": "edifactSchemaName",
+          "label": "Schema Name",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Header Name",
+      "key": "edifactHeaderName",
+      "when": "edifactEdiSchemaSource in ['Header']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Exclude",
+      "label": "Empty Segment",
+      "key": "edifactEmptySegment",
+      "values": [
+        {
+          "key": "Exclude",
+          "label": "Exclude"
+        },
+        {
+          "key": "Include",
+          "label": "Include"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Use Custom Separators",
+      "key": "edifactUseCustomSeparator"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "#x27",
+      "label": "Segment Terminator",
+      "key": "edifactSegmentTerminator",
+      "when": "edifactUseCustomSeparator in ['true']",
+      "values": [
+        {
+          "key": "#x27",
+          "label": "Apostrophe(')"
+        },
+        {
+          "key": "#x7",
+          "label": "Bell"
+        },
+        {
+          "key": "#x8",
+          "label": "Backspace"
+        },
+        {
+          "key": "#x9",
+          "label": "Tab"
+        },
+        {
+          "key": "#xA",
+          "label": "Line Feed"
+        },
+        {
+          "key": "#xB",
+          "label": "Vertical Tab"
+        },
+        {
+          "key": "#xC",
+          "label": "Form Feed"
+        },
+        {
+          "key": "#xD",
+          "label": "Carriage Return"
+        },
+        {
+          "key": "#x1B",
+          "label": "Escape"
+        },
+        {
+          "key": "#x20",
+          "label": "Whitespace"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "#x3a",
+      "label": "Composite Separator",
+      "key": "edifactCompositeSeparator",
+      "when": "edifactUseCustomSeparator in ['true']",
+      "values": [
+        {
+          "key": "#x3a",
+          "label": "Colon(:)"
+        },
+        {
+          "key": "#x2b",
+          "label": "Plus(+)"
+        },
+        {
+          "key": "#x3b",
+          "label": "Semicolon(;)"
+        },
+        {
+          "key": "#x2c",
+          "label": "Comma(,)"
+        },
+        {
+          "key": "#x7c",
+          "label": "Pipe(|)"
+        },
+        {
+          "key": "#x2e",
+          "label": "Dot(.)"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "#x2b",
+      "label": "Data Element Separator",
+      "key": "edifactDataElementSeparator",
+      "when": "edifactUseCustomSeparator in ['true']",
+      "values": [
+        {
+          "key": "#x3a",
+          "label": "Colon(:)"
+        },
+        {
+          "key": "#x2b",
+          "label": "Plus(+)"
+        },
+        {
+          "key": "#x3b",
+          "label": "Semicolon(;)"
+        },
+        {
+          "key": "#x2c",
+          "label": "Comma(,)"
+        },
+        {
+          "key": "#x7c",
+          "label": "Pipe(|)"
+        },
+        {
+          "key": "#x2e",
+          "label": "Dot(.)"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "#x3f",
+      "label": "Escape Character",
+      "key": "edifactEscapeCharacter",
+      "when": "edifactUseCustomSeparator in ['true']",
+      "values": [
+        {
+          "key": "#x3f",
+          "label": "Question Mark(?)"
+        },
+        {
+          "key": "#x3a",
+          "label": "Colon(:)"
+        },
+        {
+          "key": "#x2b",
+          "label": "Plus(+)"
+        },
+        {
+          "key": "#x3b",
+          "label": "Semicolon(;)"
+        },
+        {
+          "key": "#x2c",
+          "label": "Comma(,)"
+        },
+        {
+          "key": "#x7c",
+          "label": "Pipe(|)"
+        },
+        {
+          "key": "#x2e",
+          "label": "Dot(.)"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "#x2e",
+      "label": "Decimal Character",
+      "key": "edifactDecimalCharacter",
+      "when": "edifactUseCustomSeparator in ['true']",
+      "values": [
+        {
+          "key": "#x2c",
+          "label": "Comma(,)"
+        },
+        {
+          "key": "#x2e",
+          "label": "Dot(.)"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "ISO-8859-1",
+      "label": "Source Encoding",
+      "key": "x12SourceEncoding",
+      "values": [
+        {
+          "key": "ISO-8859-1",
+          "label": "ISO-8859-1"
+        },
+        {
+          "key": "UTF-8",
+          "label": "UTF-8"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "IntegrationProject",
+      "label": "EDI Schema Definition",
+      "key": "x12EdiSchemaSource",
+      "values": [
+        {
+          "key": "IntegrationProject",
+          "label": "Integration Flow"
+        },
+        {
+          "key": "Header",
+          "label": "Header"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "Schemas",
+      "key": "x12SchemaTable",
+      "when": "x12EdiSchemaSource in ['IntegrationProject']",
+      "columns": [
+        {
+          "key": "x12SchemaName",
+          "label": "Schema Name",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Header Name",
+      "key": "x12HeaderName",
+      "when": "x12EdiSchemaSource in ['Header']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Exclude",
+      "label": "Empty Segment",
+      "key": "x12EmptySegment",
+      "values": [
+        {
+          "key": "Exclude",
+          "label": "Exclude"
+        },
+        {
+          "key": "Include",
+          "label": "Include"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Use Custom Separators",
+      "key": "x12UseCustomSeparator"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "#x7e",
+      "label": "Segment Terminator",
+      "key": "x12SegmentTerminator",
+      "when": "x12UseCustomSeparator in ['true']",
+      "values": [
+        {
+          "key": "#x7e",
+          "label": "Tilde(~)"
+        },
+        {
+          "key": "#x7",
+          "label": "Bell"
+        },
+        {
+          "key": "#x8",
+          "label": "Backspace"
+        },
+        {
+          "key": "#x9",
+          "label": "Tab"
+        },
+        {
+          "key": "#xA",
+          "label": "Line Feed"
+        },
+        {
+          "key": "#xB",
+          "label": "Vertical Tab"
+        },
+        {
+          "key": "#xC",
+          "label": "Form Feed"
+        },
+        {
+          "key": "#xD",
+          "label": "Carriage Return"
+        },
+        {
+          "key": "#x1B",
+          "label": "Escape"
+        },
+        {
+          "key": "#x20",
+          "label": "Whitespace"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "#x3a",
+      "label": "Composite Separator",
+      "key": "x12CompositeSeparator",
+      "when": "x12UseCustomSeparator in ['true']",
+      "values": [
+        {
+          "key": "#x5c",
+          "label": "Backslash(\\)"
+        },
+        {
+          "key": "#x3a",
+          "label": "Colon(:)"
+        },
+        {
+          "key": "#x2b",
+          "label": "Plus(+)"
+        },
+        {
+          "key": "#x3b",
+          "label": "Semicolon(;)"
+        },
+        {
+          "key": "#x2c",
+          "label": "Comma(,)"
+        },
+        {
+          "key": "#x7c",
+          "label": "Pipe(|)"
+        },
+        {
+          "key": "#x2e",
+          "label": "Dot(.)"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "#x2a",
+      "label": "Data Element Separator",
+      "key": "x12DataElementSeparator",
+      "when": "x12UseCustomSeparator in ['true']",
+      "values": [
+        {
+          "key": "#x2a",
+          "label": "Star(*)"
+        },
+        {
+          "key": "#x3a",
+          "label": "Colon(:)"
+        },
+        {
+          "key": "#x2b",
+          "label": "Plus(+)"
+        },
+        {
+          "key": "#x3b",
+          "label": "Semicolon(;)"
+        },
+        {
+          "key": "#x2c",
+          "label": "Comma(,)"
+        },
+        {
+          "key": "#x7c",
+          "label": "Pipe(|)"
+        },
+        {
+          "key": "#x2e",
+          "label": "Dot(.)"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "#x5e",
+      "label": "Repetition Separator",
+      "key": "x12RepetitionSeparator",
+      "when": "x12UseCustomSeparator in ['true']",
+      "values": [
+        {
+          "key": "#x5e",
+          "label": "Caret(^)"
+        },
+        {
+          "key": "#x3a",
+          "label": "Colon(:)"
+        },
+        {
+          "key": "#x2b",
+          "label": "Plus(+)"
+        },
+        {
+          "key": "#x3b",
+          "label": "Semicolon(;)"
+        },
+        {
+          "key": "#x2c",
+          "label": "Comma(,)"
+        },
+        {
+          "key": "#x7c",
+          "label": "Pipe(|)"
+        },
+        {
+          "key": "#x2e",
+          "label": "Dot(.)"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "ISO-8859-1",
+      "label": "Source Encoding",
+      "key": "tradacomsSourceEncoding",
+      "values": [
+        {
+          "key": "ISO-8859-1",
+          "label": "ISO-8859-1"
+        },
+        {
+          "key": "UTF-8",
+          "label": "UTF-8"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "No",
+      "label": "Conversion Preference",
+      "key": "tradacomsConversionPreference",
+      "values": [
+        {
+          "key": "No",
+          "label": "No"
+        },
+        {
+          "key": "Yes",
+          "label": "Yes"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "IntegrationProject",
+      "label": "EDI Schema Definition",
+      "key": "tradacomsEdiSchemaSource",
+      "when": "NOT (tradacomsConversionPreference in ['No'])",
+      "values": [
+        {
+          "key": "IntegrationProject",
+          "label": "Integration Flow"
+        },
+        {
+          "key": "Header",
+          "label": "Header"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Header Name",
+      "key": "tradacomsHeaderName",
+      "when": "NOT (tradacomsEdiSchemaSource in ['IntegrationProject'])"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Schemas",
+      "key": "tradacomsSchemaTable",
+      "columns": [
+        {
+          "key": "tradacomsSchemaName",
+          "label": "Schema Name",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Exclude",
+      "label": "Empty Segment",
+      "key": "tradacomsEmptySegment",
+      "when": "NOT (tradacomsConversionPreference in ['No'])",
+      "values": [
+        {
+          "key": "Exclude",
+          "label": "Exclude"
+        },
+        {
+          "key": "Include",
+          "label": "Include"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    }
+  ]
+}

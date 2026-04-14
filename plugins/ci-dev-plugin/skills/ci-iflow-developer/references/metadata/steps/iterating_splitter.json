@@ -1,0 +1,92 @@
+{
+  "name": "Iterating Splitter",
+  "flavor": "Splitter_IteratingSplitter",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::Camel/version::1.6.0",
+  "componentVersion": "1.6.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "Token",
+      "label": "Expression Type",
+      "key": "exprType",
+      "values": [
+        {
+          "key": "XPath",
+          "label": "XPath"
+        },
+        {
+          "key": "Token",
+          "label": "Token"
+        },
+        {
+          "key": "Line Break",
+          "label": "Line Break"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "XPath Expression",
+      "key": "splitExprValue",
+      "when": "exprType in ['XPath']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Token",
+      "key": "tokenValue",
+      "when": "exprType in ['Token']"
+    },
+    {
+      "externalizable": true,
+      "label": "Grouping",
+      "key": "grouping"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Streaming",
+      "key": "Streaming"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Parallel Processing",
+      "key": "ParallelProcessing"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "10",
+      "dataType": "xsd:integer",
+      "label": "Number of Concurrent Processes",
+      "key": "SplitterThreads",
+      "when": "ParallelProcessing in ['true']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "300",
+      "dataType": "xsd:integer",
+      "label": "Timeout(in s)",
+      "key": "timeOut",
+      "when": "ParallelProcessing in ['true']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Stop on Exception",
+      "key": "StopOnExecution"
+    },
+    {
+      "key": "splitType",
+      "defaultValue": "Camel"
+    }
+  ]
+}

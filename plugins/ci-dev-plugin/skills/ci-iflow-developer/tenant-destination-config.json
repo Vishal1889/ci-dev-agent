@@ -1,0 +1,10 @@
+{
+  "Trial": {
+    "designTime": "CI_API_B",
+    "runtime": "CI_Iflow_B"
+  },
+  "PROD": {
+    "designTime": "CPI_PROD_API",
+    "runtime": "CPI_PROD_RUNTIME"
+  }
+}

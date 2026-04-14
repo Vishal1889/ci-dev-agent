@@ -1,0 +1,74 @@
+{
+  "name": "Aggregator",
+  "flavor": "Aggregator",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::Aggregator/version::1.0.5",
+  "componentVersion": "1.0.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Correlation Expression (XPath)",
+      "key": "correlationExpression"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "XML_SAME_FORMAT",
+      "label": "Incoming Format",
+      "key": "incomingFormat",
+      "values": [
+        {
+          "key": "XML_SAME_FORMAT",
+          "label": "XML (Same Format)"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "sap-sequenced-id-list",
+      "label": "Aggregation Algorithm",
+      "key": "aggregationAlgorithm",
+      "values": [
+        {
+          "key": "sap-id-list",
+          "label": "Combine"
+        },
+        {
+          "key": "sap-sequenced-id-list",
+          "label": "Combine in Sequence"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Message Sequence Expression (XPath)",
+      "key": "messageSequenceExpression",
+      "when": "aggregationAlgorithm in ['sap-sequenced-id-list']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Last Message Condition (XPath)",
+      "key": "lastMessageCondition"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "60",
+      "dataType": "xsd:integer",
+      "label": "Completion Timeout (in min)",
+      "key": "timeout"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "Aggregator-1",
+      "label": "Data Store Name",
+      "key": "datastoreName"
+    }
+  ]
+}

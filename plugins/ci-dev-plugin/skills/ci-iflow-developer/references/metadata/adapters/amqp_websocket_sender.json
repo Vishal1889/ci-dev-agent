@@ -1,0 +1,183 @@
+{
+  "name": "AMQP",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:AMQP/tp::WS/mp::AMQP1.0/direction::Sender/version::1.7.0",
+  "componentVersion": "1.7.0",
+  "messageProtocol": "AMQP1.0",
+  "transportProtocol": "WS",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.8.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:AMQP/tp::WS/mp::AMQP1.0/direction::Sender/version::1.7.0",
+      "messageProtocol": "AMQP1.0",
+      "transportProtocol": "WS",
+      "componentVersion": "1.7.0"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:AMQP/tp::TCP/mp::AMQP1.0/direction::Sender/version::1.8.0",
+      "messageProtocol": "AMQP1.0",
+      "transportProtocol": "TCP",
+      "componentVersion": "1.8.0"
+    }
+  ],
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Host",
+      "key": "host"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "xsd:integer",
+      "label": "Port",
+      "key": "port"
+    },
+    {
+      "externalizable": true,
+      "label": "Path",
+      "key": "path"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "none",
+          "label": "Internet"
+        },
+        {
+          "key": "sapcc",
+          "label": "On-Premise"
+        },
+        {
+          "key": "none",
+          "label": "Internet"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "proxyHost",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "xsd:integer",
+      "label": "Proxy Port",
+      "key": "proxyPort",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "location_id",
+      "when": "proxyType in ['sapcc']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Connect with TLS",
+      "key": "connectWithTLS"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Disable Reply-To",
+      "key": "disableReplyTo"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "SASL",
+      "label": "Authentication",
+      "key": "authentication",
+      "values": [
+        {
+          "key": "SASL",
+          "label": "SASL"
+        },
+        {
+          "key": "Transport_OAuth2",
+          "label": "OAuth2 Client Credentials"
+        },
+        {
+          "key": "None",
+          "label": "None"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "credentialName",
+      "when": "NOT (authentication in ['None'])"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Queue Name",
+      "key": "destinationName"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Number of Concurrent Processes",
+      "key": "NumberConcurrentProcesses"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "5",
+      "dataType": "xsd:integer",
+      "label": "Max. Number of Prefetched Messages",
+      "key": "queuePrefetch"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Consume Expired Messages",
+      "key": "consumeExpiredMessages"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "5",
+      "dataType": "xsd:integer",
+      "label": "Max. Number of Retries",
+      "key": "maxRetries"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "REJECTED",
+      "label": "Delivery Status After Max. Retries",
+      "key": "deliveryState",
+      "values": [
+        {
+          "key": "REJECTED",
+          "label": "REJECTED"
+        },
+        {
+          "key": "MODIFIED_FAILED_UNDELIVERABLE",
+          "label": "MODIFIED_FAILED_UNDELIVERABLE"
+        }
+      ]
+    }
+  ]
+}

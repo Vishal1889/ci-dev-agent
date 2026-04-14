@@ -1,0 +1,47 @@
+{
+  "name": "XML Validator",
+  "flavor": "XmlValidator",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::XmlValidator/version::2.2.3",
+  "componentVersion": "2.2.3",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "iflowOption",
+      "label": "Source",
+      "key": "xmlSchemaSource",
+      "values": [
+        {
+          "key": "headerOption",
+          "label": "Header"
+        },
+        {
+          "key": "iflowOption",
+          "label": "Integration Flow"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Header Name",
+      "key": "headerSource",
+      "when": "xmlSchemaSource in ['headerOption']"
+    },
+    {
+      "mandatory": true,
+      "dataType": "xsd:idref",
+      "label": "XML Schema",
+      "key": "xsd",
+      "when": "xmlSchemaSource in ['iflowOption']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Prevent Exception on Failure",
+      "key": "preventException"
+    }
+  ]
+}

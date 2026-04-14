@@ -1,0 +1,180 @@
+{
+  "name": "EDI Splitter",
+  "flavor": "Splitter_EDISplitter",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::EDISplitter/version::2.11.0",
+  "componentVersion": "2.11.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "key": "splitType",
+      "defaultValue": "EDISplitter"
+    },
+    {
+      "key": "edifactSourceEncoding",
+      "defaultValue": "UTF-8",
+      "label": "EDIFACT Source Encoding"
+    },
+    {
+      "key": "edifactTransactionMode",
+      "defaultValue": "interchange",
+      "label": "EDIFACT Transaction Mode"
+    },
+    {
+      "key": "edifactValidateMessage",
+      "defaultValue": "false",
+      "label": "EDIFACT Validate Message"
+    },
+    {
+      "key": "edifactValidate",
+      "defaultValue": "envelopAndMessage",
+      "label": "EDIFACT Validate"
+    },
+    {
+      "key": "edifactCreateAck",
+      "defaultValue": "notRequired",
+      "label": "EDIFACT Create Ack"
+    },
+    {
+      "key": "edifactEdiSchemaSource",
+      "defaultValue": "IntegrationProject",
+      "label": "EDIFACT Schema Source"
+    },
+    {
+      "key": "edifactDecimalCharacter",
+      "defaultValue": "dot",
+      "label": "EDIFACT Decimal Character"
+    },
+    {
+      "key": "edifactContrlVersion",
+      "defaultValue": "defaultVersion",
+      "label": "EDIFACT CONTRL Version"
+    },
+    {
+      "key": "edifactUnaRequired",
+      "defaultValue": "false",
+      "label": "EDIFACT UNA Required"
+    },
+    {
+      "key": "edifactUniqueInterchangeNumber",
+      "defaultValue": "notRequired"
+    },
+    {
+      "key": "edifactSendInvalidMessages",
+      "defaultValue": "false"
+    },
+    {
+      "key": "edifactCustomizeEnvelope",
+      "defaultValue": "fromIncomingPayload"
+    },
+    {
+      "key": "edifactInterchangeNumberFrom",
+      "defaultValue": "useFromEDIMessage"
+    },
+    {
+      "key": "edifactSchemaTable"
+    },
+    {
+      "key": "edifactHeaderName"
+    },
+    {
+      "key": "edifactNumberRangeName"
+    },
+    {
+      "key": "x12SourceEncoding",
+      "defaultValue": "UTF-8"
+    },
+    {
+      "key": "x12TransactionMode",
+      "defaultValue": "interchange"
+    },
+    {
+      "key": "x12ValidateMessageOptions",
+      "defaultValue": "none"
+    },
+    {
+      "key": "x12CreateAck",
+      "defaultValue": "notRequired"
+    },
+    {
+      "key": "x12EdiSchemaSource",
+      "defaultValue": "IntegrationProject"
+    },
+    {
+      "key": "x12UniqueInterchangeNumber",
+      "defaultValue": "notRequired"
+    },
+    {
+      "key": "x12UniqueFGNumber",
+      "defaultValue": "notRequired"
+    },
+    {
+      "key": "x12UniqueTSNumber",
+      "defaultValue": "notRequired"
+    },
+    {
+      "key": "x12SendInvalidMessages",
+      "defaultValue": "false"
+    },
+    {
+      "key": "x12ExcludeAk3Ak4",
+      "defaultValue": "false"
+    },
+    {
+      "key": "x12CustomizeEnvelope",
+      "defaultValue": "fromIncomingPayload"
+    },
+    {
+      "key": "x12InterchangeNumberFrom",
+      "defaultValue": "useFromEDIMessage"
+    },
+    {
+      "key": "x12TSNumberFrom",
+      "defaultValue": "predefined"
+    },
+    {
+      "key": "x12FunctionalGroupNumberFrom",
+      "defaultValue": "predefined"
+    },
+    {
+      "key": "x12SchemaTable"
+    },
+    {
+      "key": "x12HeaderName"
+    },
+    {
+      "key": "x12NumberRangeName"
+    },
+    {
+      "key": "x12FGNumberRangeName"
+    },
+    {
+      "key": "x12TSNumberRangeName"
+    },
+    {
+      "key": "tradacomsSourceEncoding",
+      "defaultValue": "ISO-8859-1"
+    },
+    {
+      "key": "tradacomsSplitPreference",
+      "defaultValue": "NoSplit"
+    },
+    {
+      "key": "tradacomsEdiSchemaSource",
+      "defaultValue": "IntegrationProject"
+    },
+    {
+      "key": "tradacomsSchemaTable"
+    },
+    {
+      "key": "tradacomsHeaderName"
+    },
+    {
+      "key": "parallelProcessing",
+      "defaultValue": "false"
+    },
+    {
+      "key": "timeOut"
+    }
+  ]
+}

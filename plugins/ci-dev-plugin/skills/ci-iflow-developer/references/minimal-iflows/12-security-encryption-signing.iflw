@@ -1,0 +1,1509 @@
+<?xml version="1.0" encoding="UTF-8"?><bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ifl="http:///com.sap.ifl.model/Ifl.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1">
+    <bpmn2:collaboration id="Collaboration_1" name="Default Collaboration">
+        <bpmn2:extensionElements>
+            <ifl:property>
+                <key>namespaceMapping</key>
+                <value/>
+            </ifl:property>
+            <ifl:property>
+                <key>httpSessionHandling</key>
+                <value>None</value>
+            </ifl:property>
+            <ifl:property>
+                <key>accessControlMaxAge</key>
+                <value/>
+            </ifl:property>
+            <ifl:property>
+                <key>returnExceptionToSender</key>
+                <value>false</value>
+            </ifl:property>
+            <ifl:property>
+                <key>log</key>
+                <value>All events</value>
+            </ifl:property>
+            <ifl:property>
+                <key>corsEnabled</key>
+                <value>false</value>
+            </ifl:property>
+            <ifl:property>
+                <key>exposedHeaders</key>
+                <value/>
+            </ifl:property>
+            <ifl:property>
+                <key>componentVersion</key>
+                <value>1.2</value>
+            </ifl:property>
+            <ifl:property>
+                <key>allowedHeaderList</key>
+                <value/>
+            </ifl:property>
+            <ifl:property>
+                <key>ServerTrace</key>
+                <value>false</value>
+            </ifl:property>
+            <ifl:property>
+                <key>allowedOrigins</key>
+                <value/>
+            </ifl:property>
+            <ifl:property>
+                <key>accessControlAllowCredentials</key>
+                <value>false</value>
+            </ifl:property>
+            <ifl:property>
+                <key>allowedHeaders</key>
+                <value/>
+            </ifl:property>
+            <ifl:property>
+                <key>allowedMethods</key>
+                <value/>
+            </ifl:property>
+            <ifl:property>
+                <key>cmdVariantUri</key>
+                <value>ctype::IFlowVariant/cname::IFlowConfiguration/version::1.2.4</value>
+            </ifl:property>
+        </bpmn2:extensionElements>
+        <bpmn2:participant id="Participant_1" ifl:type="EndpointSender" name="Sender">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>enableBasicAuthentication</key>
+                    <value>false</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>ifl:type</key>
+                    <value>EndpointSender</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+        </bpmn2:participant>
+        <bpmn2:participant id="Participant_2" ifl:type="EndpointRecevier" name="Receiver">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>ifl:type</key>
+                    <value>EndpointRecevier</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+        </bpmn2:participant>
+        <bpmn2:participant id="Participant_Process_1" ifl:type="IntegrationProcess" name="Integration Process" processRef="Process_1">
+            <bpmn2:extensionElements/>
+        </bpmn2:participant>
+        <bpmn2:messageFlow id="MessageFlow_96019" name="AS2" sourceRef="ServiceTask_96015" targetRef="Participant_2">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>fileName</key>
+                    <value>Test.txt</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>receipientURL</key>
+                    <value>http://fqdn:port/as2</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>privateKeyAlias</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>encryptionAlgorithm</key>
+                    <value>AES256</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>requestMIC</key>
+                    <value>0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>Name</key>
+                    <value>AS2</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>TransportProtocolVersion</key>
+                    <value>1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>proxyPort</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>requestMDNSigningAlgorithm</key>
+                    <value>SHA1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>keyLength</key>
+                    <value>128</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>messageIDRight</key>
+                    <value>.*</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>partnerAS2Name</key>
+                    <value>.*</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>contentType</key>
+                    <value>text/plain</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>ComponentSWCVId</key>
+                    <value>1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>ownEmailAddress</key>
+                    <value>.*</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>doCompression</key>
+                    <value>1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>requestMDNSigning</key>
+                    <value>0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.11</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>proxyHost</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>urlParametersPattern</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>system</key>
+                    <value>Receiver</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>TransportProtocol</key>
+                    <value>HTTP</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::AdapterVariant/cname::AS2/tp::HTTP/mp::AS2/direction::Receiver/version::1.11.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>MessageProtocolVersion</key>
+                    <value>1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>privateKeyAliasForSigning</key>
+                    <value>mdntest</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>ownAS2Name</key>
+                    <value>.*</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>Description</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>ComponentNS</key>
+                    <value>sap</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>publicKeyAliasForEncryption</key>
+                    <value>mdntest</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>timeout</key>
+                    <value>300000</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>failMessageOnNegativeMDN</key>
+                    <value>0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>ComponentSWCVName</key>
+                    <value>SAP BASIS 7.31</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>messageEncoding</key>
+                    <value>base64</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>doEncryption</key>
+                    <value>1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>publicKeyAliasForMDNVerification</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>verifyMDNSignature</key>
+                    <value>0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>MessageProtocol</key>
+                    <value>AS2</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>direction</key>
+                    <value>Receiver</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>ComponentType</key>
+                    <value>AS2</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>messageIDLeft</key>
+                    <value>.*</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>verifyMIC</key>
+                    <value>0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>messageSubject</key>
+                    <value>.*</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>proxyType</key>
+                    <value>sapcc</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>mdnType</key>
+                    <value>Synchronous</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>userCredentialAlias</key>
+                    <value>MDNTest</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>doSigning</key>
+                    <value>1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>signingAlgorithm</key>
+                    <value>SHA1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>locationID</key>
+                    <value>DEV</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>mdnTargetURL</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>authenticationType</key>
+                    <value>BasicAuthentication</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>customHeadersPattern</key>
+                    <value/>
+                </ifl:property>
+            </bpmn2:extensionElements>
+        </bpmn2:messageFlow>
+        <bpmn2:messageFlow id="MessageFlow_4" name="AS2" sourceRef="Participant_1" targetRef="StartEvent_2">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>mdnProxyPort</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>mdnTimeout</key>
+                    <value>300000</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>mdnPrivateKeyAlias</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>maximumAttachmentSize</key>
+                    <value>100</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>privateKeyAliasForMDNSigning</key>
+                    <value>mdntest</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>mdnLocationID</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>Name</key>
+                    <value>AS2</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>TransportProtocolVersion</key>
+                    <value>1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>mdnAuthenticationType</key>
+                    <value>BasicAuthentication</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>as2MsgIdDupCheck</key>
+                    <value>1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>expectedMessageIDRight</key>
+                    <value>.*</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>partnerAS2Name</key>
+                    <value>.*</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>ComponentSWCVId</key>
+                    <value>1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>as2PidSource</key>
+                    <value>authorizedUser</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>maximumBodySize</key>
+                    <value>40</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>MaxRetryInterval</key>
+                    <value>60</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>mdnProxyHost</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.16</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>ExponentialBackoff</key>
+                    <value>1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>system</key>
+                    <value>Sender</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>verificationOption</key>
+                    <value>TrustedCertificate</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>TransportProtocol</key>
+                    <value>HTTP</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::AdapterVariant/cname::AS2/tp::HTTP/mp::AS2/direction::Sender/version::1.16.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>propagateMDNDetails</key>
+                    <value>required</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>mdnUserCredentialAlias</key>
+                    <value>MDNTest</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>MessageProtocolVersion</key>
+                    <value>1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>ownAS2Name</key>
+                    <value>.*</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>negativeMDNForFailures</key>
+                    <value>required</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>doDecryption</key>
+                    <value>1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>Description</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>signatureEncoding</key>
+                    <value>binary</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>ComponentNS</key>
+                    <value>sap</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>mdnProxyType</key>
+                    <value>default</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>useDeadLetterQueue</key>
+                    <value>1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>publicKeyRootAliasForVerification</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>ComponentSWCVName</key>
+                    <value>SAP BASIS 7.31</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>fileNamePersistDuration</key>
+                    <value>1440</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>publicKeyAliasForVerification</key>
+                    <value>mdntest</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>fileNameMandatoryCheck</key>
+                    <value>1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>encryptRMPersistence</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>MessageProtocol</key>
+                    <value>AS2</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>direction</key>
+                    <value>Sender</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>clientCertificates</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>ComponentType</key>
+                    <value>AS2</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>address</key>
+                    <value>/as2/address</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>as2MsgIdDupCheckResponse</key>
+                    <value>ErrorMDN</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>expectedMessageIDLeft</key>
+                    <value>.*</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>messageSubject</key>
+                    <value>.*</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>fileNameDupCheck</key>
+                    <value>1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>numberConcurrentProcesses</key>
+                    <value>1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>as2MsgIdPersistDuration</key>
+                    <value>1440</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>QualityOfService</key>
+                    <value>ExactlyOnce</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>RetryInterval</key>
+                    <value>1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>userRole</key>
+                    <value>ESBMessaging.send</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>senderAuthType</key>
+                    <value>RoleBased</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>fileNameDupCheckResponse</key>
+                    <value>ErrorMDN</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>privateKeyAliasForDecryption</key>
+                    <value>mdntest</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>decryptionConfigurationType</key>
+                    <value>channelConfiguration</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+        </bpmn2:messageFlow>
+    </bpmn2:collaboration>
+    <bpmn2:process id="Process_1" name="Integration Process">
+        <bpmn2:extensionElements>
+            <ifl:property>
+                <key>transactionTimeout</key>
+                <value>30</value>
+            </ifl:property>
+            <ifl:property>
+                <key>componentVersion</key>
+                <value>1.2</value>
+            </ifl:property>
+            <ifl:property>
+                <key>cmdVariantUri</key>
+                <value>ctype::FlowElementVariant/cname::IntegrationProcess/version::1.2.1</value>
+            </ifl:property>
+            <ifl:property>
+                <key>transactionalHandling</key>
+                <value>Not Required</value>
+            </ifl:property>
+        </bpmn2:extensionElements>
+        <bpmn2:callActivity id="CallActivity_95974" name="PKCS7 Signature Verifier 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>isBodyBase64Encoded</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>isHeaderBase64Encoded</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>publicKeyAliases</key>
+                    <value>&lt;row&gt;&lt;cell id='publicKeyAlias'&gt;mdntest&lt;/cell&gt;&lt;/row&gt;</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.2</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>VerifySign</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::VerifySign/version::1.2.0</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96040</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96045</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:serviceTask id="ServiceTask_96015" name="Request Reply 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>ExternalCall</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::ExternalCall/version::1.0.4</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96016</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96018</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+        <bpmn2:callActivity id="CallActivity_95990" name="PKCS7 Signer 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>headers</key>
+                    <value>&lt;row&gt;&lt;cell id='Include Certificates'&gt;true&lt;/cell&gt;&lt;cell id='Include Signing Time'&gt;true&lt;/cell&gt;&lt;cell id='Signature Algorithm'&gt;SHA512/RSA&lt;/cell&gt;&lt;cell id='Private Key Alias'&gt;MDNTest&lt;/cell&gt;&lt;/row&gt;</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>Block_Size</key>
+                    <value>2048</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>shouldEncodeSignedData</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.5</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>SignMessage</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::SignMessage/version::1.5.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>OIDContentType</key>
+                    <value>1.2.840.113549.1.7.1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>shouldIncludeContentInSign</key>
+                    <value>true</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96023</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96042</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:endEvent id="EndEvent_96017" name="End 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::MessageEndEvent/version::1.1.0</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96018</bpmn2:incoming>
+            <bpmn2:messageEventDefinition/>
+        </bpmn2:endEvent>
+        <bpmn2:callActivity id="CallActivity_96041" name="PGPEncryptor 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>PgpSignerUserIDs</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>Key_Length</key>
+                    <value>128</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>PgpArmored</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>PgpDigestAlgorithm</key>
+                    <value>SHA-512</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>PgpContentEncryptionAlgorithm</key>
+                    <value>AES</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.3</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>PgpEncrypt</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::PgpEncrypt/version::1.3.1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>PgpSignatureOption</key>
+                    <value>NoSignature</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>PgpCompressionAlgorithm</key>
+                    <value>ZLIB</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>PgpIntegrity</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>PgpEncryptionUserIDs</key>
+                    <value>&lt;row&gt;&lt;cell id='EncryptUserID'&gt;1234&lt;/cell&gt;&lt;/row&gt;</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96042</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96043</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:callActivity id="CallActivity_96001" name="XML Signer">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>keyInfoHasKeyValue</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>omitXmlDeclaration</key>
+                    <value>false</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>signatureId</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>privateKeyAlias</key>
+                    <value>mdntest</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesEpesSignaturePolicy</key>
+                    <value>None</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>xpathToIdAttribute</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>parentLocalName</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>signatureProductionPlacePostalCode</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>signatureProductionPlaceCity</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesIdentifierName</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>prefixForXmlSignatureNamespace</key>
+                    <value>ds</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>signatureProductionPlaceCountry</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>signatureXMLNamespace</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>transformMethod</key>
+                    <value>Inclusive XML Canonicalization</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesDataObjectFormatMimeType</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>signatureProductionPlaceState</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>addKeyInfoReference</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesEpesIdentifierQualifier</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesSignerRoleClaimedRoles</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>signatureCommitment</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesIdentifierDocumentationReference</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>signatureType</key>
+                    <value>Enveloping XML signature</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>xpathExpression</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.3</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesSigningCertificateDigestAlgorithm</key>
+                    <value>SHA-512</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>signatureXMLNamespacePrefix</key>
+                    <value>etsi</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>keyInfoHasX509CertChain</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesAddSigningCertificate</key>
+                    <value>None</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesPolicyQualifierTab</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::XMLDigitalSignMessage/version::1.3.3</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesIdentifierQualifier</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>canonicalizationMethod</key>
+                    <value>Inclusive XML Canonicalization</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>signatureCommitmentDescription</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesCertificateUri</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesDocumentationReferenceTab</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>parentNamespace</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesIdentifierDescription</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>keyInfoHasIssuerName</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesEpesDigestValue</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>undefined</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>contentReferenceType</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>commitmentDocumentationReferenceTable</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesSignerRoleCertifiedRoles</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesDataObjectFormatDescription</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesEpesDigestAlgorithm</key>
+                    <value>SHA-512</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>keyInfoHasX509Certificate</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesEpesDescription</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesEpesIdentifier</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>digestAlgorithm</key>
+                    <value>SHA512</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>signatureAlgorithm</key>
+                    <value>SHA512/RSA</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>schemaResourceUri</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>parentNodeSpecification</key>
+                    <value>Specified by Name and Namespace</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>outputEncoding</key>
+                    <value>UTF-8</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>disallowDoctypeDecl</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>commitmentQualifierTable</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>XMLDigitalSignMessage</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>xadesAddSigningTime</key>
+                    <value>false</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96030</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96031</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:callActivity id="CallActivity_96005" name="Message Digest">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>filter</key>
+                    <value>/Users/User</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>canonicalizationMethod</key>
+                    <value>xml-c14n</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>targetHeader</key>
+                    <value>SAPMessageDigest</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>digestAlgorithm</key>
+                    <value>SHA-512</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>MessageDigest</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::MessageDigest/version::1.1.1</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96046</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96030</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:callActivity id="CallActivity_96009" name="ZIP Compression 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>Encoder</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::ZIP Compress/version::1.0.1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>encoderType</key>
+                    <value>ZIP Compress</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96014</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96034</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:callActivity id="CallActivity_95980" name="XML Signature Verifier 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>omitXmlDeclaration</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>verifySignatureType</key>
+                    <value>Enveloping or Enveloped XML Signature</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>publicKeyAliases</key>
+                    <value>&lt;row&gt;&lt;cell id='publicKeyAlias'&gt;mdntest&lt;/cell&gt;&lt;/row&gt;</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>disallowDoctypeDecl</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>schemaFieldPath</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>XMLDigitalVerifySign</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::XMLDigitalVerifySign/version::1.1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>CheckForKeyInfo</key>
+                    <value>true</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96045</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96046</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:callActivity id="CallActivity_96007" name="Base64 Encoder 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>Encoder</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::Base64 Encode/version::1.0.1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>encoderType</key>
+                    <value>Base64 Encode</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96033</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96010</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:callActivity id="CallActivity_95986" name="ZIP Decompression 2">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>Decoder</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::ZIP Decompress/version::1.0.2</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>encoderType</key>
+                    <value>ZIP Decompress</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96036</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96037</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:callActivity id="CallActivity_96013" name="MIME Multipart Encoder 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>MultipartAddHeadersInline</key>
+                    <value>false</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>MultipartSubtype</key>
+                    <value>Mixed</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>IncludeHeaders</key>
+                    <value/>
+                </ifl:property>
+                <ifl:property>
+                    <key>FoldLongHeaders</key>
+                    <value>false</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.2</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>Encoder</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::MIME Multipart Message Encode/version::1.2.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>encoderType</key>
+                    <value>MIME Multipart Message Encode</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96034</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96016</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:startEvent id="StartEvent_2" name="Start">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::MessageStartEvent/version::1.0</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
+            <bpmn2:messageEventDefinition/>
+        </bpmn2:startEvent>
+        <bpmn2:callActivity id="CallActivity_96003" name="Simple Signer 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>privateKeyAlias</key>
+                    <value>mdntest</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.3</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>SimpleSignMessage</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::SimpleSignMessage/version::1.3.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>signatureAlgorithm</key>
+                    <value>SHA512/RSA</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>signatureTargetHeader</key>
+                    <value>SAPSimpleSignatureValue</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96031</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96023</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:callActivity id="CallActivity_95999" name="PKCS7Encryptor">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>headers</key>
+                    <value>&lt;row&gt;&lt;cell id='Public Key Alias'&gt;mdntest&lt;/cell&gt;&lt;/row&gt;</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>Block_Size</key>
+                    <value>2048</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>Key_Length</key>
+                    <value>256</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>PKCS7PrivateKeyAliases</key>
+                    <value>&lt;row&gt;&lt;cell id='includeCert'&gt;true&lt;/cell&gt;&lt;cell id='signAlgo'&gt;SHA512/RSA&lt;/cell&gt;&lt;cell id='privateKeyAlias'&gt;mdntest&lt;/cell&gt;&lt;/row&gt;</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>shouldEncodeBodyKey</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>Encryption_Algorithem</key>
+                    <value>AES/CBC/PKCS5Padding</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.3</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>Encrypt</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::Encrypt/version::1.3.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>PKCS7SignContentType</key>
+                    <value>signedAndEnveloped</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96043</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96033</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:callActivity id="CallActivity_5" name="PGPDecryptor 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>PgpDecryptionSignerUserIDs</key>
+                    <value>&lt;row&gt;&lt;cell id='userId'&gt;MCPTest&lt;/cell&gt;&lt;/row&gt;</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>PgpDecryptionSignatureOption</key>
+                    <value>required</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.2</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>PgpDecrypt</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::PgpDecrypt/version::1.2.0</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96037</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_95977</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:callActivity id="CallActivity_95984" name="GZIP Decompression 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>Decoder</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::GZIP Decompress/version::1.0.1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>encoderType</key>
+                    <value>GZIP Decompress</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96035</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96036</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:callActivity id="CallActivity_95971" name="PKCS7Decryptor 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>isBodyBase64Encoded</key>
+                    <value>true</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>publicKeyAliases</key>
+                    <value>&lt;row&gt;&lt;cell id='publicKey'&gt;mdntest&lt;/cell&gt;&lt;/row&gt;</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.2</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>Decrypt</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::Decrypt/version::1.2.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>PKCS7SignContentType</key>
+                    <value>EnvelopedDataOrSignedAndEnvelopedData</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_95977</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96040</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:callActivity id="CallActivity_96011" name="GZIP Compression 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>Encoder</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::GZIP Compress/version::1.0.1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>encoderType</key>
+                    <value>GZIP Compress</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_96010</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96014</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:callActivity id="CallActivity_95982" name="Base64 Decoder 1">
+            <bpmn2:extensionElements>
+                <ifl:property>
+                    <key>componentVersion</key>
+                    <value>1.0</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>activityType</key>
+                    <value>Decoder</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::Base64 Decode/version::1.0.1</value>
+                </ifl:property>
+                <ifl:property>
+                    <key>encoderType</key>
+                    <value>Base64 Decode</value>
+                </ifl:property>
+            </bpmn2:extensionElements>
+            <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_96035</bpmn2:outgoing>
+        </bpmn2:callActivity>
+        <bpmn2:sequenceFlow id="SequenceFlow_96045" sourceRef="CallActivity_95974" targetRef="CallActivity_95980"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96018" sourceRef="ServiceTask_96015" targetRef="EndEvent_96017"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96042" sourceRef="CallActivity_95990" targetRef="CallActivity_96041"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96043" sourceRef="CallActivity_96041" targetRef="CallActivity_95999"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96031" sourceRef="CallActivity_96001" targetRef="CallActivity_96003"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96030" sourceRef="CallActivity_96005" targetRef="CallActivity_96001"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96034" sourceRef="CallActivity_96009" targetRef="CallActivity_96013"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96046" sourceRef="CallActivity_95980" targetRef="CallActivity_96005"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96010" sourceRef="CallActivity_96007" targetRef="CallActivity_96011"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96037" sourceRef="CallActivity_95986" targetRef="CallActivity_5"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96016" sourceRef="CallActivity_96013" targetRef="ServiceTask_96015"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_3" sourceRef="StartEvent_2" targetRef="CallActivity_95982"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96023" sourceRef="CallActivity_96003" targetRef="CallActivity_95990"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96033" sourceRef="CallActivity_95999" targetRef="CallActivity_96007"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_95977" sourceRef="CallActivity_5" targetRef="CallActivity_95971"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96036" sourceRef="CallActivity_95984" targetRef="CallActivity_95986"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96040" sourceRef="CallActivity_95971" targetRef="CallActivity_95974"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96014" sourceRef="CallActivity_96011" targetRef="CallActivity_96009"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_96035" sourceRef="CallActivity_95982" targetRef="CallActivity_95984"/>
+    </bpmn2:process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Default Collaboration Diagram">
+        <bpmndi:BPMNPlane bpmnElement="Collaboration_1" id="BPMNPlane_1">
+            <bpmndi:BPMNShape bpmnElement="CallActivity_95990" id="BPMNShape_CallActivity_95990">
+                <dc:Bounds height="60.0" width="100.0" x="1877.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_96001" id="BPMNShape_CallActivity_96001">
+                <dc:Bounds height="60.0" width="100.0" x="1557.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_96011" id="BPMNShape_CallActivity_96011">
+                <dc:Bounds height="60.0" width="100.0" x="2557.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="Participant_2" id="BPMNShape_Participant_2">
+                <dc:Bounds height="140.0" width="100.0" x="3037.0" y="242.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="Participant_1" id="BPMNShape_Participant_1">
+                <dc:Bounds height="140.0" width="100.0" x="-85.0" y="15.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="ServiceTask_96015" id="BPMNShape_ServiceTask_96015">
+                <dc:Bounds height="60.0" width="100.0" x="3037.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="StartEvent_2" id="BPMNShape_StartEvent_2">
+                <dc:Bounds height="32.0" width="32.0" x="135.0" y="69.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_95999" id="BPMNShape_CallActivity_95999">
+                <dc:Bounds height="60.0" width="120.0" x="2217.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_5" id="BPMNShape_CallActivity_5">
+                <dc:Bounds height="60.0" width="120.0" x="707.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_95974" id="BPMNShape_CallActivity_95974">
+                <dc:Bounds height="60.0" width="100.0" x="1067.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_96007" id="BPMNShape_CallActivity_96007">
+                <dc:Bounds height="60.0" width="100.0" x="2397.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_95984" id="BPMNShape_CallActivity_95984">
+                <dc:Bounds height="60.0" width="100.0" x="387.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="EndEvent_96017" id="BPMNShape_EndEvent_96017">
+                <dc:Bounds height="32.0" width="32.0" x="3197.0" y="69.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_96009" id="BPMNShape_CallActivity_96009">
+                <dc:Bounds height="60.0" width="100.0" x="2717.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="Participant_Process_1" id="BPMNShape_Participant_Process_1">
+                <dc:Bounds height="137.0" width="3198.0" x="115.0" y="5.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_95986" id="BPMNShape_CallActivity_95986">
+                <dc:Bounds height="60.0" width="100.0" x="547.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_95980" id="BPMNShape_CallActivity_95980">
+                <dc:Bounds height="60.0" width="100.0" x="1227.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_96013" id="BPMNShape_CallActivity_96013">
+                <dc:Bounds height="60.0" width="100.0" x="2877.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_95982" id="BPMNShape_CallActivity_95982">
+                <dc:Bounds height="60.0" width="100.0" x="227.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_96003" id="BPMNShape_CallActivity_96003">
+                <dc:Bounds height="60.0" width="100.0" x="1717.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_96005" id="BPMNShape_CallActivity_96005">
+                <dc:Bounds height="60.0" width="110.0" x="1387.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_95971" id="BPMNShape_CallActivity_95971">
+                <dc:Bounds height="60.0" width="120.0" x="887.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="CallActivity_96041" id="BPMNShape_CallActivity_96041">
+                <dc:Bounds height="60.0" width="120.0" x="2037.0" y="55.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96023" id="BPMNEdge_SequenceFlow_96023" sourceElement="BPMNShape_CallActivity_96003" targetElement="BPMNShape_CallActivity_95990">
+                <di:waypoint x="1817.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="1877.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96010" id="BPMNEdge_SequenceFlow_96010" sourceElement="BPMNShape_CallActivity_96007" targetElement="BPMNShape_CallActivity_96011">
+                <di:waypoint x="2497.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="2557.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96018" id="BPMNEdge_SequenceFlow_96018" sourceElement="BPMNShape_ServiceTask_96015" targetElement="BPMNShape_EndEvent_96017">
+                <di:waypoint x="3137.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="3197.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96014" id="BPMNEdge_SequenceFlow_96014" sourceElement="BPMNShape_CallActivity_96011" targetElement="BPMNShape_CallActivity_96009">
+                <di:waypoint x="2657.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="2717.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96016" id="BPMNEdge_SequenceFlow_96016" sourceElement="BPMNShape_CallActivity_96013" targetElement="BPMNShape_ServiceTask_96015">
+                <di:waypoint x="2977.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="3037.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_95977" id="BPMNEdge_SequenceFlow_95977" sourceElement="BPMNShape_CallActivity_5" targetElement="BPMNShape_CallActivity_95971">
+                <di:waypoint x="827.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="887.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_3" id="BPMNEdge_SequenceFlow_3" sourceElement="BPMNShape_StartEvent_2" targetElement="BPMNShape_CallActivity_95982">
+                <di:waypoint x="167.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="227.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="MessageFlow_96019" id="BPMNEdge_MessageFlow_96019" sourceElement="BPMNShape_ServiceTask_96015" targetElement="BPMNShape_Participant_2">
+                <di:waypoint x="3087.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="3087.0" xsi:type="dc:Point" y="312.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="MessageFlow_4" id="BPMNEdge_MessageFlow_4" sourceElement="BPMNShape_Participant_1" targetElement="BPMNShape_StartEvent_2">
+                <di:waypoint x="-35.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="151.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96030" id="BPMNEdge_SequenceFlow_96030" sourceElement="BPMNShape_CallActivity_96005" targetElement="BPMNShape_CallActivity_96001">
+                <di:waypoint x="1497.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="1557.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96031" id="BPMNEdge_SequenceFlow_96031" sourceElement="BPMNShape_CallActivity_96001" targetElement="BPMNShape_CallActivity_96003">
+                <di:waypoint x="1657.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="1717.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96033" id="BPMNEdge_SequenceFlow_96033" sourceElement="BPMNShape_CallActivity_95999" targetElement="BPMNShape_CallActivity_96007">
+                <di:waypoint x="2337.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="2397.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96034" id="BPMNEdge_SequenceFlow_96034" sourceElement="BPMNShape_CallActivity_96009" targetElement="BPMNShape_CallActivity_96013">
+                <di:waypoint x="2817.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="2877.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96035" id="BPMNEdge_SequenceFlow_96035" sourceElement="BPMNShape_CallActivity_95982" targetElement="BPMNShape_CallActivity_95984">
+                <di:waypoint x="327.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="387.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96036" id="BPMNEdge_SequenceFlow_96036" sourceElement="BPMNShape_CallActivity_95984" targetElement="BPMNShape_CallActivity_95986">
+                <di:waypoint x="487.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="547.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96037" id="BPMNEdge_SequenceFlow_96037" sourceElement="BPMNShape_CallActivity_95986" targetElement="BPMNShape_CallActivity_5">
+                <di:waypoint x="647.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="707.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96040" id="BPMNEdge_SequenceFlow_96040" sourceElement="BPMNShape_CallActivity_95971" targetElement="BPMNShape_CallActivity_95974">
+                <di:waypoint x="1007.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="1067.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96042" id="BPMNEdge_SequenceFlow_96042" sourceElement="BPMNShape_CallActivity_95990" targetElement="BPMNShape_CallActivity_96041">
+                <di:waypoint x="1977.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="2037.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96043" id="BPMNEdge_SequenceFlow_96043" sourceElement="BPMNShape_CallActivity_96041" targetElement="BPMNShape_CallActivity_95999">
+                <di:waypoint x="2157.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="2217.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96045" id="BPMNEdge_SequenceFlow_96045" sourceElement="BPMNShape_CallActivity_95974" targetElement="BPMNShape_CallActivity_95980">
+                <di:waypoint x="1167.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="1227.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_96046" id="BPMNEdge_SequenceFlow_96046" sourceElement="BPMNShape_CallActivity_95980" targetElement="BPMNShape_CallActivity_96005">
+                <di:waypoint x="1327.0" xsi:type="dc:Point" y="85.0"/>
+                <di:waypoint x="1387.0" xsi:type="dc:Point" y="85.0"/>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

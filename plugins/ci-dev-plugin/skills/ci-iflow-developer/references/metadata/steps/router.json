@@ -1,0 +1,40 @@
+{
+  "name": "Router",
+  "flavor": "ExclusiveGateway",
+  "seedId": "ExclusiveGateway_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::ExclusiveGateway/version::1.1.2",
+  "componentVersion": "1.1.2",
+  "bpmnElement": "exclusiveGateway",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Throw Exception",
+      "key": "throwException"
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "key": "conditionTable",
+      "columns": [
+        {
+          "key": "order",
+          "label": "Order"
+        },
+        {
+          "key": "conditionName",
+          "label": "Route Name"
+        },
+        {
+          "key": "conditionValue",
+          "label": "Condition Expression"
+        },
+        {
+          "key": "defaultBranch",
+          "label": "Default Route"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="OrderOutput">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="OrderId" type="xs:string"/>
+        <!-- add: UnitPrice + ShippingCost -->
+        <xs:element name="TotalBeforeTax" type="xs:decimal"/>
+        <!-- subtract: TotalBeforeTax - DiscountAmount -->
+        <xs:element name="NetAmount" type="xs:decimal"/>
+        <!-- multiply: UnitPrice * Quantity -->
+        <xs:element name="LineTotal" type="xs:decimal"/>
+        <!-- divide: OriginalAmount / ExchangeRate -->
+        <xs:element name="ConvertedAmount" type="xs:decimal"/>
+        <!-- equals(number): Score1 == Score2 -->
+        <xs:element name="ScoresMatch" type="xs:string"/>
+        <!-- absolute: Temperature (can be negative) -->
+        <xs:element name="AbsTemperature" type="xs:decimal"/>
+        <!-- sqrt: sqrt(Length^2 + Width^2) — use with add+power -->
+        <xs:element name="Diagonal" type="xs:decimal"/>
+        <!-- square: Weight^2 -->
+        <xs:element name="WeightSquared" type="xs:decimal"/>
+        <!-- sign: sign of Temperature -->
+        <xs:element name="TempSign" type="xs:decimal"/>
+        <!-- neg: negate AdjustmentFactor -->
+        <xs:element name="NegatedAdjustment" type="xs:decimal"/>
+        <!-- inv: 1/ExchangeRate -->
+        <xs:element name="InverseRate" type="xs:decimal"/>
+        <!-- power: AdjustmentFactor ^ 2 -->
+        <xs:element name="AdjustmentPower" type="xs:decimal"/>
+        <!-- lesser: min(Latitude, Longitude) -->
+        <xs:element name="LesserCoord" type="xs:decimal"/>
+        <!-- greater: max(Latitude, Longitude) -->
+        <xs:element name="GreaterCoord" type="xs:decimal"/>
+        <!-- max: max(Score1, Score2) -->
+        <xs:element name="MaxScore" type="xs:decimal"/>
+        <!-- min: min(Score1, Score2) -->
+        <xs:element name="MinScore" type="xs:decimal"/>
+        <!-- ceil: ceil(RawMeasurement) -->
+        <xs:element name="CeilMeasurement" type="xs:decimal"/>
+        <!-- floor: floor(RawMeasurement) -->
+        <xs:element name="FloorMeasurement" type="xs:decimal"/>
+        <!-- round: round(RawMeasurement) -->
+        <xs:element name="RoundedMeasurement" type="xs:decimal"/>
+        <!-- counter: sequential line counter -->
+        <xs:element name="Items" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="LineNumber" type="xs:integer"/>
+              <xs:element name="ItemTotal" type="xs:decimal"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

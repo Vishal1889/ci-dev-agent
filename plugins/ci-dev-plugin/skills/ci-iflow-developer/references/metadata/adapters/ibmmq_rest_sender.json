@@ -1,0 +1,231 @@
+{
+  "name": "IBMMQ",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::IBMMQ/vendor::rojoconsultancy.com/tp::HTTPS/mp::REST/direction::Sender",
+  "componentVersion": "",
+  "messageProtocol": "REST",
+  "transportProtocol": "HTTPS",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.1.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::IBMMQ/vendor::rojoconsultancy.com/tp::JMS/mp::JMS Subscribe/direction::Sender/version::1.4.1",
+      "messageProtocol": "JMS Subscribe",
+      "transportProtocol": "JMS",
+      "componentVersion": "1.4.1"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::IBMMQ/vendor::rojoconsultancy.com/tp::JMS/mp::JMS Poll/direction::Sender/version::1.4.1",
+      "messageProtocol": "JMS Poll",
+      "transportProtocol": "JMS",
+      "componentVersion": "1.4.1"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::IBMMQ/vendor::rojoconsultancy.com/tp::HTTPS/mp::REST/direction::Sender",
+      "messageProtocol": "REST",
+      "transportProtocol": "HTTPS",
+      "componentVersion": ""
+    }
+  ],
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "address"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "basic",
+      "label": "Authentication",
+      "key": "authentication",
+      "values": [
+        {
+          "key": "basic",
+          "label": "Basic"
+        },
+        {
+          "key": "tokenBased",
+          "label": "Token-Based"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "credentialNameAlias"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "internet",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "internet",
+          "label": "Internet"
+        },
+        {
+          "key": "onPremise",
+          "label": "On-Premise"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "locationId",
+      "when": "proxyType in ['onPremise']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "60000",
+      "dataType": "xsd:long",
+      "label": "Polling Interval (in ms)",
+      "key": "delay"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "5000",
+      "dataType": "xsd:long",
+      "label": "Initial Delay",
+      "key": "initialDelay"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Reuse connection",
+      "key": "reuseConnection"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "60000",
+      "label": "Connection Timeout (in ms)",
+      "key": "connectionTimeOut"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "60000",
+      "label": "Response Timeout (in ms)",
+      "key": "responseTimeOut"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "v1",
+      "label": "API Version",
+      "key": "apiVersion",
+      "values": [
+        {
+          "key": "v1",
+          "label": "v1"
+        },
+        {
+          "key": "v2",
+          "label": "v2"
+        },
+        {
+          "key": "v3",
+          "label": "v3"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Queue Manager Name",
+      "key": "qmgrName"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Queue Name",
+      "key": "queueName"
+    },
+    {
+      "defaultValue": "readAndDelete",
+      "label": "Processing Mode",
+      "key": "restPostProcessing",
+      "values": [
+        {
+          "key": "readAndDelete",
+          "label": "Read and Delete Message"
+        },
+        {
+          "key": "keepAfterRead",
+          "label": "Keep Message and Process Again"
+        },
+        {
+          "key": "deleteAfterExecution",
+          "label": "Delete Message after iFlow Execution"
+        }
+      ]
+    },
+    {
+      "defaultValue": "doNotDelete",
+      "label": "Behavior on Failure",
+      "key": "failureBehavior",
+      "values": [
+        {
+          "key": "doNotDelete",
+          "label": "Do Not Delete"
+        },
+        {
+          "key": "moveToDlq",
+          "label": "Move to Dead Letter Queue"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Dead Letter Queue Name",
+      "key": "deadLetterQueueName"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "10",
+      "label": "Max Number of Messages Per Node",
+      "key": "maxNumberOfMessagesPerNode"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "10",
+      "label": "Max Number of Messages",
+      "key": "maxNumberOfMessages"
+    },
+    {
+      "externalizable": true,
+      "label": "MQ CSRF Token",
+      "key": "csrfToken"
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "Request Headers",
+      "key": "customizedRequestHeader",
+      "columns": [
+        {
+          "key": "requestHeaderName",
+          "label": "Name",
+          "mandatory": true
+        },
+        {
+          "key": "requestHeaderValue",
+          "label": "Value",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "*",
+      "label": "Response Headers",
+      "key": "responseHeaders"
+    }
+  ]
+}

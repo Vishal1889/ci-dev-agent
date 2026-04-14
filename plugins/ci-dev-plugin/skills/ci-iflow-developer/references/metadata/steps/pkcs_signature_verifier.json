@@ -1,0 +1,38 @@
+{
+  "name": "PKCS7 Signature Verifier",
+  "flavor": "VerifySign",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::VerifySign/version::1.2.0",
+  "componentVersion": "1.2.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Header is Base64 Encoded",
+      "key": "isHeaderBase64Encoded"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Body is Base64 Encoded",
+      "key": "isBodyBase64Encoded"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Public Key Aliases",
+      "key": "publicKeyAliases",
+      "columns": [
+        {
+          "key": "publicKeyAlias",
+          "label": "",
+          "mandatory": true
+        }
+      ]
+    }
+  ]
+}

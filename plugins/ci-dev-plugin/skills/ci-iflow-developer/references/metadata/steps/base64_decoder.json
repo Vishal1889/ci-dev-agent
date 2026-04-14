@@ -1,0 +1,15 @@
+{
+  "name": "Base64 Decoder",
+  "flavor": "Base64 Decode",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::Base64 Decode/version::1.0.1",
+  "componentVersion": "1.0.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "key": "encoderType",
+      "defaultValue": "Base64 Decode",
+      "label": "Encoder Type"
+    }
+  ]
+}

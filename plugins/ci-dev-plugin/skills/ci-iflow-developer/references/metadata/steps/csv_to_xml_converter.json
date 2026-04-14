@@ -1,0 +1,87 @@
+{
+  "name": "CSV to XML Converter",
+  "flavor": "CsvToXmlConverter",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::CsvToXmlConverter/version::1.4.0",
+  "componentVersion": "1.4.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "XML Schema",
+      "key": "XML_Schema_File_Path"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Path to Target Element in XSD",
+      "key": "XPath_Field_Location"
+    },
+    {
+      "externalizable": true,
+      "label": "Record Marker in CSV",
+      "key": "Record_Identifier_in_CSV"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": ",",
+      "label": "Field Separator in CSV",
+      "key": "Field_Separator_in_CSV",
+      "values": [
+        {
+          "key": "\\t",
+          "label": "Tab(\\t)"
+        },
+        {
+          "key": ";",
+          "label": "Semicolon(;)"
+        },
+        {
+          "key": ":",
+          "label": "Colon(:)"
+        },
+        {
+          "key": "|",
+          "label": "Pipe(|)"
+        },
+        {
+          "key": ".",
+          "label": "Dot(.)"
+        },
+        {
+          "key": ",",
+          "label": "Comma(,)"
+        },
+        {
+          "key": "Space",
+          "label": "Space"
+        }
+      ]
+    },
+    {
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Exclude First Line Header",
+      "key": "ignoreFirstLineAsHeader"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "mapHeadersToXSD",
+      "label": "Configure CSV Headers to match",
+      "key": "headerMapping",
+      "when": "ignoreFirstLineAsHeader in ['true']",
+      "values": [
+        {
+          "key": "ignoreHeaders",
+          "label": "CSV Fields Sequence"
+        },
+        {
+          "key": "mapHeadersToXSD",
+          "label": "XSD Elements"
+        }
+      ]
+    }
+  ]
+}

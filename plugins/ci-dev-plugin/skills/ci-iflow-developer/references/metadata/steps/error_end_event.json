@@ -1,0 +1,9 @@
+{
+  "name": "Error End Event",
+  "flavor": "ErrorEndEvent",
+  "seedId": "EndEvent_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::ErrorEndEvent",
+  "bpmnElement": "endEvent",
+  "note": "Exception Subprocess ONLY. Inside errorEventDefinition. activityType: EndErrorEvent. Some deployed iFlows use MessageEndEvent instead — both work. NEVER use EscalationEndEvent.",
+  "properties": []
+}

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="OrderInput">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="OrderId" type="xs:string"/>
+        <xs:element name="UnitPrice" type="xs:decimal"/>
+        <xs:element name="Quantity" type="xs:integer"/>
+        <xs:element name="DiscountPercent" type="xs:decimal"/>
+        <xs:element name="TaxRate" type="xs:decimal"/>
+        <xs:element name="ShippingCost" type="xs:decimal"/>
+        <xs:element name="Weight" type="xs:decimal"/>
+        <xs:element name="Length" type="xs:decimal"/>
+        <xs:element name="Width" type="xs:decimal"/>
+        <xs:element name="Height" type="xs:decimal"/>
+        <xs:element name="ExchangeRate" type="xs:decimal"/>
+        <xs:element name="OriginalAmount" type="xs:decimal"/>
+        <xs:element name="AdjustmentFactor" type="xs:decimal"/>
+        <xs:element name="Temperature" type="xs:decimal"/>
+        <xs:element name="Latitude" type="xs:decimal"/>
+        <xs:element name="Longitude" type="xs:decimal"/>
+        <xs:element name="Score1" type="xs:decimal"/>
+        <xs:element name="Score2" type="xs:decimal"/>
+        <xs:element name="RawMeasurement" type="xs:decimal"/>
+        <xs:element name="Threshold" type="xs:decimal"/>
+        <xs:element name="Items" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ItemPrice" type="xs:decimal"/>
+              <xs:element name="ItemQty" type="xs:integer"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

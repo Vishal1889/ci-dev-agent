@@ -1,0 +1,47 @@
+{
+  "name": "Looping Process Call",
+  "flavor": "LoopingProcess",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::LoopingProcess/version::1.3.0",
+  "componentVersion": "1.3.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "label": "Process ID",
+      "key": "processId"
+    },
+    {
+      "label": "Expression Type",
+      "key": "expressionType",
+      "defaultValue": "XML",
+      "values": [
+        {
+          "key": "XML",
+          "label": "XML"
+        },
+        {
+          "key": "NonXML",
+          "label": "Non-XML"
+        }
+      ]
+    },
+    {
+      "label": "Post Processing",
+      "key": "postProcessing",
+      "defaultValue": "throwException",
+      "values": [
+        {
+          "key": "throwException",
+          "label": "Throw Exception"
+        },
+        {
+          "key": "stopProcess",
+          "label": "Stop Process"
+        }
+      ]
+    },
+    {
+      "key": "loopId"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "EDI Extractor",
+  "flavor": "EDIExtractor",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::EDIExtractor/version::2.2.0",
+  "componentVersion": "2.2.0",
+  "bpmnElement": "callActivity",
+  "properties": []
+}

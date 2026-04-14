@@ -1,0 +1,62 @@
+{
+  "name": "JDBC",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::JDBC/vendor::SAP/tp::JDBC/mp::JDBC/direction::Receiver/version::1.5.3",
+  "componentVersion": "1.5.3",
+  "messageProtocol": "JDBC",
+  "transportProtocol": "JDBC",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.5.3",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "JDBC Data Source Alias",
+      "key": "alias"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "3",
+      "label": "Connection Timeout (in s)",
+      "key": "connectionTimeout"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "3",
+      "label": "Query/Response Timeout (in s)",
+      "key": "queryTimeout"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "100000",
+      "label": "Maximum Records",
+      "key": "pageSize"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Batch Mode",
+      "key": "batchMode"
+    },
+    {
+      "defaultValue": "atomic",
+      "label": "Batch Operation",
+      "key": "batchOperation",
+      "when": "batchMode in ['true']",
+      "values": [
+        {
+          "key": "atomic",
+          "label": "Atomic"
+        },
+        {
+          "key": "nonAtomic",
+          "label": "Non-Atomic"
+        }
+      ]
+    }
+  ]
+}

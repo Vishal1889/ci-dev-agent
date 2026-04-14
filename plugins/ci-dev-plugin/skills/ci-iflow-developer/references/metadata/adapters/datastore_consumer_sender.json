@@ -1,0 +1,76 @@
+{
+  "name": "DataStoreConsumer",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:DataStoreConsumer/tp::JDBC/mp::None/direction::Sender/version::1.0.0",
+  "componentVersion": "1.0.0",
+  "messageProtocol": "None",
+  "transportProtocol": "JDBC",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.0.0",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Data Store Name",
+      "key": "storageName"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "local",
+      "label": "Visibility",
+      "key": "visibility",
+      "values": [
+        {
+          "key": "local",
+          "label": "Integration Flow"
+        },
+        {
+          "key": "global",
+          "label": "Global"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "10",
+      "dataType": "xsd:integer",
+      "label": "Poll Interval (in s)",
+      "key": "PollDelay"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Retry Interval (in min)",
+      "key": "RetryInterval"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Exponential Backoff",
+      "key": "ExponentialBackoff"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "60",
+      "dataType": "xsd:integer",
+      "label": "Maximum Retry Interval (in min)",
+      "key": "MaxRetryInterval",
+      "when": "ExponentialBackoff in ['1']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "10",
+      "dataType": "xsd:integer",
+      "label": "Lock Timeout (in min)",
+      "key": "file_lock_timeout"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "ZIP Splitter",
+  "flavor": "Splitter_ZipSplitter",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::ZipSplitter/version::1.0.0",
+  "componentVersion": "1.0.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "key": "splitType",
+      "defaultValue": "ZipSplitter"
+    },
+    {
+      "key": "stopOnExecution",
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Stop on Exception"
+    },
+    {
+      "key": "zipSplitFileName",
+      "label": "File Name"
+    }
+  ]
+}

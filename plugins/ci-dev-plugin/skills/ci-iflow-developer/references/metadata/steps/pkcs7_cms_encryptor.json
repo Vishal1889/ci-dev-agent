@@ -1,0 +1,236 @@
+{
+  "name": "PKCS7Encryptor",
+  "flavor": "Encrypt",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::Encrypt/version::1.3.0",
+  "componentVersion": "1.3.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "2048",
+      "label": "Block Size(in bytes)",
+      "key": "Block_Size"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Encode Body with Base64",
+      "key": "shouldEncodeBodyKey"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "enveloped",
+      "label": "Signatures",
+      "key": "PKCS7SignContentType",
+      "values": [
+        {
+          "key": "enveloped",
+          "label": "Enveloped Data Only"
+        },
+        {
+          "key": "signedAndEnveloped",
+          "label": "Signed and Enveloped Data"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "AES/CBC/PKCS5Padding",
+      "label": "Content Encryption Algorithm",
+      "key": "Encryption_Algorithem",
+      "values": [
+        {
+          "key": "AES/CBC/PKCS5Padding",
+          "label": "AES/CBC/PKCS5Padding"
+        },
+        {
+          "key": "AES/CCM/NoPadding",
+          "label": "AES/CCM/NoPadding"
+        },
+        {
+          "key": "AES/GCM/NoPadding",
+          "label": "AES/GCM/NoPadding"
+        },
+        {
+          "key": "ARCFOUR/ECB/NoPadding",
+          "label": "ARCFOUR/ECB/NoPadding"
+        },
+        {
+          "key": "Camellia/CBC/PKCS5Padding",
+          "label": "Camellia/CBC/PKCS5Padding"
+        },
+        {
+          "key": "DES/CBC/PKCS5Padding",
+          "label": "DES/CBC/PKCS5Padding"
+        },
+        {
+          "key": "DESede/CBC/PKCS5Padding",
+          "label": "DESede/CBC/PKCS5Padding"
+        },
+        {
+          "key": "RC2/CBC/PKCS5Padding",
+          "label": "RC2/CBC/PKCS5Padding"
+        },
+        {
+          "key": "CAST5/CBC/PKCS5Padding",
+          "label": "CAST5/CBC/PKCS5Padding"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "128",
+      "label": "Secret Key Length",
+      "key": "Key_Length",
+      "values": [
+        {
+          "key": "40",
+          "label": "40"
+        },
+        {
+          "key": "48",
+          "label": "48"
+        },
+        {
+          "key": "56",
+          "label": "56"
+        },
+        {
+          "key": "64",
+          "label": "64"
+        },
+        {
+          "key": "72",
+          "label": "72"
+        },
+        {
+          "key": "80",
+          "label": "80"
+        },
+        {
+          "key": "88",
+          "label": "88"
+        },
+        {
+          "key": "96",
+          "label": "96"
+        },
+        {
+          "key": "104",
+          "label": "104"
+        },
+        {
+          "key": "112",
+          "label": "112"
+        },
+        {
+          "key": "120",
+          "label": "120"
+        },
+        {
+          "key": "128",
+          "label": "128"
+        },
+        {
+          "key": "192",
+          "label": "192"
+        },
+        {
+          "key": "256",
+          "label": "256"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Receiver Public Key Alias",
+      "key": "headers",
+      "columns": [
+        {
+          "key": "Public Key Alias",
+          "label": "Public Key Alias",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Signer Parameters",
+      "key": "PKCS7PrivateKeyAliases",
+      "when": "PKCS7SignContentType in ['signedAndEnveloped']",
+      "columns": [
+        {
+          "key": "privateKeyAlias",
+          "label": "Private Key Alias",
+          "mandatory": true
+        },
+        {
+          "key": "signAlgo",
+          "label": "Signature Algorithm",
+          "mandatory": true,
+          "default": "SHA512/RSA",
+          "values": [
+            {
+              "key": "SHA512/RSA",
+              "label": "SHA512/RSA"
+            },
+            {
+              "key": "SHA384/RSA",
+              "label": "SHA384/RSA"
+            },
+            {
+              "key": "SHA256/RSA",
+              "label": "SHA256/RSA"
+            },
+            {
+              "key": "SHA224/RSA",
+              "label": "SHA224/RSA"
+            },
+            {
+              "key": "SHA/RSA",
+              "label": "SHA/RSA"
+            },
+            {
+              "key": "RIPEMD128/RSA",
+              "label": "RIPEMD128/RSA"
+            },
+            {
+              "key": "RIPEMD160/RSA",
+              "label": "RIPEMD160/RSA"
+            },
+            {
+              "key": "RIPEMD256/RSA",
+              "label": "RIPEMD256/RSA"
+            },
+            {
+              "key": "MD5/RSA",
+              "label": "MD5/RSA"
+            }
+          ]
+        },
+        {
+          "key": "includeCert",
+          "label": "Include Certificates",
+          "mandatory": true,
+          "default": "true",
+          "values": [
+            {
+              "key": "true",
+              "label": "true"
+            },
+            {
+              "key": "false",
+              "label": "false"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

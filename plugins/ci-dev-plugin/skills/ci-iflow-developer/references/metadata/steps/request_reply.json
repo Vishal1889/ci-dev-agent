@@ -1,0 +1,9 @@
+{
+  "name": "Request Reply",
+  "flavor": "ExternalCall",
+  "seedId": "ServiceTask_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::ExternalCall/version::1.0.4",
+  "componentVersion": "1.0.0",
+  "bpmnElement": "serviceTask",
+  "properties": []
+}

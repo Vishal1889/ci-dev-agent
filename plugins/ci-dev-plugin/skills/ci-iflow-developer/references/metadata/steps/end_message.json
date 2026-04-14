@@ -1,0 +1,9 @@
+{
+  "name": "Message End Event",
+  "flavor": "MessageEndEvent",
+  "seedId": "EndEvent_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::MessageEndEvent/version::1.1.0",
+  "componentVersion": "1.1",
+  "bpmnElement": "endEvent",
+  "properties": []
+}

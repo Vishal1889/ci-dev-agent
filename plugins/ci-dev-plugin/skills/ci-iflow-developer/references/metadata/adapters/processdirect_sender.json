@@ -1,0 +1,19 @@
+{
+  "name": "ProcessDirect",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::ProcessDirect/vendor::SAP/tp::Not Applicable/mp::Not Applicable/direction::Sender/version::1.1.2",
+  "componentVersion": "1.1.2",
+  "messageProtocol": "Not Applicable",
+  "transportProtocol": "Not Applicable",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.1.2",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "address"
+    }
+  ]
+}

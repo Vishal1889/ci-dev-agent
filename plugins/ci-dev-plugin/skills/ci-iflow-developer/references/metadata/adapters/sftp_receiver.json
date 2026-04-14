@@ -1,0 +1,264 @@
+{
+  "name": "SFTP",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SFTP/tp::SFTP/mp::File/direction::Receiver/version::1.13.3",
+  "componentVersion": "1.13.3",
+  "messageProtocol": "File",
+  "transportProtocol": "SFTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.20.1",
+  "properties": [
+    {
+      "externalizable": true,
+      "label": "Directory",
+      "key": "path"
+    },
+    {
+      "externalizable": true,
+      "label": "File Name",
+      "key": "fileName"
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:boolean",
+      "label": "Append Timestamp",
+      "key": "fileAppendTimeStamp"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "host"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "none",
+          "label": "Internet"
+        },
+        {
+          "key": "sapcc",
+          "label": "On-Premise"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        },
+        {
+          "key": "none",
+          "label": "Internet"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "socks5",
+      "label": "Proxy Protocol",
+      "key": "proxyProtocol",
+      "when": "proxyType in ['manual']",
+      "values": [
+        {
+          "key": "http",
+          "label": "HTTP"
+        },
+        {
+          "key": "socks4",
+          "label": "SOCKS Version 4"
+        },
+        {
+          "key": "socks5",
+          "label": "SOCKS Version 5"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "proxyHost",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "8080",
+      "dataType": "xsd:integer",
+      "label": "Proxy Port",
+      "key": "proxyPort",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "label": "Proxy Credential Name",
+      "key": "proxyAlias"
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "location_id",
+      "when": "proxyType in ['sapcc'] OR proxyType in ['dynamic']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "public_key",
+      "label": "Authentication",
+      "key": "authentication",
+      "values": [
+        {
+          "key": "public_key",
+          "label": "Public Key"
+        },
+        {
+          "key": "user_password",
+          "label": "User Name/Password"
+        },
+        {
+          "key": "dual",
+          "label": "Dual"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "credential_name",
+      "when": "authentication in ['user_password'] OR authentication in ['dual'] OR authentication in ['dynamic']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "User Name",
+      "key": "username",
+      "when": "authentication in ['public_key'] OR authentication in ['dynamic']"
+    },
+    {
+      "externalizable": true,
+      "label": "Private Key Alias",
+      "key": "privateKeyAlias",
+      "when": "authentication in ['public_key'] OR authentication in ['dual'] OR authentication in ['dynamic']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "10000",
+      "dataType": "xsd:integer",
+      "label": "Timeout (in ms)",
+      "key": "connectTimeout"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "3",
+      "dataType": "xsd:integer",
+      "label": "Maximum Reconnect Attempts",
+      "key": "maximumReconnectAttempts"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1000",
+      "dataType": "xsd:integer",
+      "label": "Reconnect Delay (in ms)",
+      "key": "reconnectDelay"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Automatically Disconnect",
+      "key": "disconnect"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Enable Support for Deprecated Algorithms",
+      "key": "allowDeprecatedAlgorithms"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Change Directories Stepwise",
+      "key": "stepwise"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Create Directories",
+      "key": "autoCreate"
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:boolean",
+      "label": "Flatten File Names",
+      "key": "flatten"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Prevent Directory Traversal",
+      "key": "sftpSecEnabled"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Use Fast Exists Check",
+      "key": "fastExistsCheck"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Override",
+      "label": "Handling for Existing Files",
+      "key": "fileExist",
+      "values": [
+        {
+          "key": "Override",
+          "label": "Override"
+        },
+        {
+          "key": "Append",
+          "label": "Append"
+        },
+        {
+          "key": "Fail",
+          "label": "Fail"
+        },
+        {
+          "key": "Ignore",
+          "label": "Ignore"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Use Temporary File",
+      "key": "useTempFile",
+      "when": "NOT (fileExist in ['Append'])"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "${file:name}.tmp",
+      "label": "Temporary File Name",
+      "key": "tempFileName"
+    }
+  ]
+}

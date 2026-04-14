@@ -1,0 +1,35 @@
+{
+  "name": "RFC",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:RFC/tp::RFC/mp::Synchronous RFC/direction::Receiver/version::1.2.1",
+  "componentVersion": "1.2.1",
+  "messageProtocol": "Synchronous RFC",
+  "transportProtocol": "RFC",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.2.1",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Destination",
+      "key": "destination"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Send Confirm Transaction",
+      "key": "transactioncommit"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Create New Connection",
+      "key": "newConnection"
+    }
+  ]
+}

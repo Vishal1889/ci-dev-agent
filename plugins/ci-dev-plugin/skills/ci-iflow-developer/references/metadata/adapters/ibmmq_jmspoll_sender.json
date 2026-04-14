@@ -1,0 +1,293 @@
+{
+  "name": "IBMMQ",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::IBMMQ/vendor::rojoconsultancy.com/tp::JMS/mp::JMS Poll/direction::Sender/version::1.1.0",
+  "componentVersion": "1.1.0",
+  "messageProtocol": "JMS Poll",
+  "transportProtocol": "JMS",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.1.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::IBMMQ/vendor::rojoconsultancy.com/tp::JMS/mp::JMS Subscribe/direction::Sender/version::1.4.1",
+      "messageProtocol": "JMS Subscribe",
+      "transportProtocol": "JMS",
+      "componentVersion": "1.4.1"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::IBMMQ/vendor::rojoconsultancy.com/tp::JMS/mp::JMS Poll/direction::Sender/version::1.4.1",
+      "messageProtocol": "JMS Poll",
+      "transportProtocol": "JMS",
+      "componentVersion": "1.4.1"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::IBMMQ/vendor::rojoconsultancy.com/tp::HTTPS/mp::REST/direction::Sender",
+      "messageProtocol": "REST",
+      "transportProtocol": "HTTPS",
+      "componentVersion": ""
+    }
+  ],
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Hostname",
+      "key": "host"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Port",
+      "key": "port"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "basic",
+      "label": "Authentication",
+      "key": "authentication",
+      "values": [
+        {
+          "key": "basic",
+          "label": "Basic"
+        },
+        {
+          "key": "clientCertificate",
+          "label": "Client Certificate"
+        },
+        {
+          "key": "none",
+          "label": "None"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "credentialNameAlias"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Private Key Alias",
+      "key": "privateKeyAlias"
+    },
+    {
+      "externalizable": true,
+      "label": "Credential Name",
+      "key": "credentialNameAliasCert"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "internet",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "internet",
+          "label": "Internet"
+        },
+        {
+          "key": "onPremise",
+          "label": "On-Premise"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "locationId"
+    },
+    {
+      "externalizable": true,
+      "label": "SSL Cipher Suite",
+      "key": "cipherSuit"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "SSL Cipher Suite",
+      "key": "cipherSuitCloudConn"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Queue Manager Name",
+      "key": "qmgrName"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Channel Name",
+      "key": "channelName"
+    },
+    {
+      "externalizable": true,
+      "label": "Application Name",
+      "key": "applicationName"
+    },
+    {
+      "defaultValue": "tcpip",
+      "label": "Transport/Network Protocol",
+      "key": "connectionProtocol",
+      "values": [
+        {
+          "key": "tcpip",
+          "label": "TCP/IP"
+        },
+        {
+          "key": "webSpehereMq",
+          "label": "WebSphereMQ"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Character Set ID (CCSID) for Non-ASCII Names",
+      "key": "ccsid"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "60000",
+      "dataType": "xsd:long",
+      "label": "Polling Interval (in ms)",
+      "key": "delay"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "100",
+      "dataType": "xsd:long",
+      "label": "Message Receive Wait Time (in ms)",
+      "key": "receiveWaitTime"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Process Errors as an Event",
+      "key": "processErrorAsEvent"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "5000",
+      "dataType": "xsd:long",
+      "label": "Initial Delay",
+      "key": "initialDelay"
+    },
+    {
+      "defaultValue": "queue",
+      "label": "Message Destination Type",
+      "key": "entity",
+      "values": [
+        {
+          "key": "queue",
+          "label": "Queue"
+        },
+        {
+          "key": "topic",
+          "label": "Topic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Queue Name",
+      "key": "queueName"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Topic Name/String",
+      "key": "topicName"
+    },
+    {
+      "defaultValue": "1",
+      "label": "Target Client",
+      "key": "targetClient",
+      "values": [
+        {
+          "key": "1",
+          "label": "WebSphereMQ (Non-JMS)"
+        },
+        {
+          "key": "0",
+          "label": "JMS-Compliant"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Client ID",
+      "key": "clientId"
+    },
+    {
+      "externalizable": true,
+      "label": "Subscription ID",
+      "key": "subscriptionId"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Transactional JMS Session",
+      "key": "useTransactionalSession"
+    },
+    {
+      "defaultValue": "moveMessageToAnotherQueue",
+      "label": "Failed Transaction Handling",
+      "key": "transactionFailedHandling",
+      "values": [
+        {
+          "key": "moveMessageToAnotherQueue",
+          "label": "Move Message To Another Queue"
+        },
+        {
+          "key": "messageProcessAgain",
+          "label": "Keep Message And Process Again"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "xsd:integer",
+      "label": "Max Delivery Count",
+      "key": "jmsDeliveryThreshold"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Queue Name",
+      "key": "onFailureQueueName"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Poll On One Worker Only",
+      "key": "oneWorkerNode"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "10",
+      "label": "Max Messages Per Node",
+      "key": "maxNumberOfMessagesPerNode"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "10",
+      "label": "Max Number of Messages",
+      "key": "maxNumberOfMessages"
+    },
+    {
+      "label": "Message Selector",
+      "key": "messageSelector"
+    }
+  ]
+}

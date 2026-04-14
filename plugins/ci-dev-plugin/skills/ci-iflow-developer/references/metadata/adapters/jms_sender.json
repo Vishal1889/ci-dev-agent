@@ -1,0 +1,77 @@
+{
+  "name": "JMS",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:JMS/tp::Not Applicable/mp::Not Applicable/direction::Sender/version::1.4.3",
+  "componentVersion": "1.4.3",
+  "messageProtocol": "Not Applicable",
+  "transportProtocol": "Not Applicable",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.6.3",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Queue Name",
+      "key": "QueueName_inbound"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Non-Exclusive",
+      "label": "Access Type",
+      "key": "AccessType",
+      "values": [
+        {
+          "key": "Non-Exclusive",
+          "label": "Non-Exclusive"
+        },
+        {
+          "key": "Exclusive",
+          "label": "Exclusive"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Number of Concurrent Processes",
+      "key": "NumberConcurrentProcesses",
+      "when": "AccessType in ['Non-Exclusive']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Retry Interval (in min)",
+      "key": "RetryInterval"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Exponential Backoff",
+      "key": "ExponentialBackoff"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "60",
+      "dataType": "xsd:integer",
+      "label": "Maximum Retry Interval (in min)",
+      "key": "MaxRetryInterval",
+      "when": "ExponentialBackoff in ['1']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Dead-Letter Queue",
+      "key": "useDeadLetterQueue",
+      "when": "AccessType in ['Non-Exclusive']"
+    }
+  ]
+}

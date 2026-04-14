@@ -1,0 +1,9 @@
+{
+  "name": "Exception Subprocess",
+  "flavor": "ErrorEventSubProcessTemplate",
+  "seedId": "SubProcess_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::ErrorEventSubProcessTemplate/version::1.1.0",
+  "componentVersion": "1.1.0",
+  "bpmnElement": "subProcess",
+  "properties": []
+}

@@ -1,0 +1,54 @@
+{
+  "name": "Content Enricher",
+  "flavor": "contentEnricherWithLookup",
+  "seedId": "ServiceTask_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::contentEnricherWithLookup/version::1.2.0",
+  "componentVersion": "1.2.0",
+  "bpmnElement": "serviceTask",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "multiMappingAggregation",
+      "label": "Aggregation Algorithm",
+      "key": "enrichmentType",
+      "values": [
+        {
+          "key": "multiMappingAggregation",
+          "label": "Combine"
+        },
+        {
+          "key": "xmlLookupAggregation",
+          "label": "Enrich"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Path to Node",
+      "key": "originalMessageNodePath",
+      "when": "enrichmentType in ['xmlLookupAggregation']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Key Element",
+      "key": "originalMessageKeyElement",
+      "when": "enrichmentType in ['xmlLookupAggregation']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Path to Node",
+      "key": "resourceMessageNodePath",
+      "when": "enrichmentType in ['xmlLookupAggregation']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Key Element",
+      "key": "resourceMessageKeyElement",
+      "when": "enrichmentType in ['xmlLookupAggregation']"
+    }
+  ]
+}

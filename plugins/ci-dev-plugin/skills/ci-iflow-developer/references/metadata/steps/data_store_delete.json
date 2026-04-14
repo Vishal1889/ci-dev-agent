@@ -1,0 +1,42 @@
+{
+  "name": "Data Store Delete",
+  "flavor": "delete",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::delete/version::1.7.1",
+  "componentVersion": "1.7.1",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Data Store Name",
+      "key": "storageName"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "local",
+      "label": "Visibility",
+      "key": "visibility",
+      "values": [
+        {
+          "key": "local",
+          "label": "Integration Flow"
+        },
+        {
+          "key": "global",
+          "label": "Global"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Entry ID",
+      "key": "messageId"
+    },
+    {
+      "key": "operation",
+      "defaultValue": "delete",
+      "label": "Operation"
+    }
+  ]
+}

@@ -1,0 +1,297 @@
+{
+  "name": "PollingSFTP",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:PollingSFTP/tp::SFTP/mp::File/direction::Sender/version::1.9.0",
+  "componentVersion": "1.9.0",
+  "messageProtocol": "File",
+  "transportProtocol": "SFTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.9.0",
+  "properties": [
+    {
+      "externalizable": true,
+      "label": "Directory",
+      "key": "path"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Regex Filtering",
+      "key": "regex_filter"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "*",
+      "label": "File Name",
+      "key": "fileName"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "host"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "none",
+          "label": "Internet"
+        },
+        {
+          "key": "sapcc",
+          "label": "On-Premise"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        },
+        {
+          "key": "none",
+          "label": "Internet"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "socks5",
+      "label": "Proxy Protocol",
+      "key": "proxyProtocol",
+      "when": "proxyType in ['manual']",
+      "values": [
+        {
+          "key": "http",
+          "label": "HTTP"
+        },
+        {
+          "key": "socks4",
+          "label": "SOCKS Version 4"
+        },
+        {
+          "key": "socks5",
+          "label": "SOCKS Version 5"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "proxyHost",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "8080",
+      "dataType": "xsd:integer",
+      "label": "Proxy Port",
+      "key": "proxyPort",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "label": "Proxy Credential Name",
+      "key": "proxyAlias"
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "location_id",
+      "when": "proxyType in ['sapcc'] OR proxyType in ['dynamic']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "public_key",
+      "label": "Authentication",
+      "key": "authentication",
+      "values": [
+        {
+          "key": "public_key",
+          "label": "Public Key"
+        },
+        {
+          "key": "user_password",
+          "label": "User Name/Password"
+        },
+        {
+          "key": "dual",
+          "label": "Dual"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "credential_name",
+      "when": "authentication in ['user_password'] OR authentication in ['dual'] OR authentication in ['dynamic']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "User Name",
+      "key": "username",
+      "when": "authentication in ['public_key'] OR authentication in ['dynamic']"
+    },
+    {
+      "externalizable": true,
+      "label": "Private Key Alias",
+      "key": "privateKeyAlias",
+      "when": "authentication in ['public_key'] OR authentication in ['dual'] OR authentication in ['dynamic']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "10000",
+      "dataType": "xsd:integer",
+      "label": "Timeout (in ms)",
+      "key": "connectTimeout"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "3",
+      "dataType": "xsd:integer",
+      "label": "Maximum Reconnect Attempts",
+      "key": "maximumReconnectAttempts"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1000",
+      "dataType": "xsd:integer",
+      "label": "Reconnect Delay (in ms)",
+      "key": "reconnectDelay"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Automatically Disconnect",
+      "key": "disconnect"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Enable Support for Deprecated Algorithms",
+      "key": "allowDeprecatedAlgorithms"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "Processing Mode",
+      "key": "processingMode",
+      "values": [
+        {
+          "key": "none",
+          "label": "Process File"
+        },
+        {
+          "key": "listing",
+          "label": "List Files Only"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "Read Lock Strategy",
+      "key": "readLock",
+      "when": "processingMode in ['none']",
+      "values": [
+        {
+          "key": "none",
+          "label": "None"
+        },
+        {
+          "key": "rename",
+          "label": "Rename"
+        },
+        {
+          "key": "change",
+          "label": "Content Change"
+        },
+        {
+          "key": "doneFile",
+          "label": "Done File Expected"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "${file:name}.done",
+      "label": "Done File Name",
+      "key": "doneFileName",
+      "when": "readLock in ['doneFile']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Change Directories Stepwise",
+      "key": "stepwise"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Include Subdirectories",
+      "key": "recursive"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Use Fast Exists Check",
+      "key": "fastExistsCheck",
+      "when": "processingMode in ['none']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "delete",
+      "label": "Post-Processing",
+      "key": "noop",
+      "when": "processingMode in ['none']",
+      "values": [
+        {
+          "key": "delete",
+          "label": "Delete File"
+        },
+        {
+          "key": "mark",
+          "label": "Keep File and Mark as Processed in Idempotent Repository"
+        },
+        {
+          "key": "test",
+          "label": "Keep File and Process Again"
+        },
+        {
+          "key": "move",
+          "label": "Move File"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": ".archive",
+      "label": "Archive Directory",
+      "key": "file.move",
+      "when": "noop in ['move']"
+    }
+  ]
+}

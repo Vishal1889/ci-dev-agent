@@ -1,0 +1,27 @@
+{
+  "name": "Operation Mapping",
+  "flavor": "OperationMapping",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::OperationMapping/version::1.1.0",
+  "componentVersion": "1.1.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "label": "Mapping URI",
+      "key": "mappinguri"
+    },
+    {
+      "label": "Mapping Name",
+      "key": "mappingname"
+    },
+    {
+      "label": "Mapping Type",
+      "key": "mappingType",
+      "defaultValue": "OperationMapping"
+    },
+    {
+      "label": "Mapping Path",
+      "key": "mappingpath"
+    }
+  ]
+}

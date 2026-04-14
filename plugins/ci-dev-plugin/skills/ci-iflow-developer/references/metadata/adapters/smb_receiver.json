@@ -1,0 +1,333 @@
+{
+  "name": "SMB",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::SMB/vendor::rojoconsultancy.com/tp::TCP/mp::SMB/direction::Receiver/version::1.1.0",
+  "componentVersion": "1.1.0",
+  "messageProtocol": "SMB",
+  "transportProtocol": "TCP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.1.0",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "hostname"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "internet",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "internet",
+          "label": "Internet"
+        },
+        {
+          "key": "onPremise",
+          "label": "On-Premise"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "locationId",
+      "when": "proxyType in ['onPremise']"
+    },
+    {
+      "externalizable": true,
+      "label": "Domain",
+      "key": "domain"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "auto",
+      "label": "SMB Dialect",
+      "key": "smbDialect",
+      "values": [
+        {
+          "key": "auto",
+          "label": "Auto"
+        },
+        {
+          "key": "smb202",
+          "label": "SMB 2.0.2"
+        },
+        {
+          "key": "smb21",
+          "label": "SMB 2.1"
+        },
+        {
+          "key": "smb30",
+          "label": "SMB 3.0"
+        },
+        {
+          "key": "smb302",
+          "label": "SMB 3.0.2"
+        },
+        {
+          "key": "smb311",
+          "label": "SMB 3.1.1"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Share",
+      "key": "share"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "basic",
+      "label": "Authentication",
+      "key": "authentication",
+      "values": [
+        {
+          "key": "basic",
+          "label": "Basic Authentication"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "credentials"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "180",
+      "label": "Timeout (in secs).",
+      "key": "timeout"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Enable Encryption",
+      "key": "useEncryption",
+      "when": "smbDialect in ['auto'] OR smbDialect in ['smb30'] OR smbDialect in ['smb302'] OR smbDialect in ['smb311']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Enable DFS",
+      "key": "enableDfs"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Enable Signing",
+      "key": "enableSigning"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "3",
+      "label": "Maximum Reconnect Attempts.",
+      "key": "maximumReconnect"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "createfile",
+      "label": "Operation",
+      "key": "operation",
+      "values": [
+        {
+          "key": "createdirectory",
+          "label": "Create Directory"
+        },
+        {
+          "key": "createfile",
+          "label": "Create File"
+        },
+        {
+          "key": "deletefile",
+          "label": "Delete File"
+        },
+        {
+          "key": "readfile",
+          "label": "Read File"
+        },
+        {
+          "key": "listfile",
+          "label": "List Objects"
+        },
+        {
+          "key": "renamefile",
+          "label": "Rename File"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "\\",
+      "label": "Directory",
+      "key": "directory"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Create Directories",
+      "key": "createAbsentDir",
+      "when": "operation in ['createfile']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "*",
+      "label": "File Name",
+      "key": "fileName",
+      "when": "operation in ['listfile']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "File Name",
+      "key": "readFileName",
+      "when": "operation in ['readfile'] OR operation in ['createfile'] OR operation in ['deletefile']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "all",
+      "label": "Object Type",
+      "key": "objectType",
+      "when": "operation in ['listfile']",
+      "values": [
+        {
+          "key": "all",
+          "label": "All"
+        },
+        {
+          "key": "file",
+          "label": "File"
+        },
+        {
+          "key": "directory",
+          "label": "Directory"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Append Timestamp",
+      "key": "appendTimestamp",
+      "when": "operation in ['createfile']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Append MessageId",
+      "key": "appendMessageId",
+      "when": "operation in ['createfile']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "override",
+      "label": "Existing File Handling",
+      "key": "handlingExistingFiles",
+      "when": "operation in ['createfile']",
+      "values": [
+        {
+          "key": "fail",
+          "label": "Fail"
+        },
+        {
+          "key": "ignore",
+          "label": "Ignore"
+        },
+        {
+          "key": "append",
+          "label": "Append"
+        },
+        {
+          "key": "override",
+          "label": "Override"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "proceed",
+      "label": "Empty File Handling",
+      "key": "emptyFileHandling",
+      "when": "operation in ['createfile']",
+      "values": [
+        {
+          "key": "ignore",
+          "label": "Ignore"
+        },
+        {
+          "key": "proceed",
+          "label": "Proceed With Empty File"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Original Object Name",
+      "key": "sourceFileName",
+      "when": "operation in ['renamefile']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "New Object Name",
+      "key": "targetFileName",
+      "when": "operation in ['renamefile']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "40",
+      "label": "Maximum File Size (in MB)",
+      "key": "maximumFileSize",
+      "when": "operation in ['readfile']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "Read Lock Strategy",
+      "key": "readLockStrategy",
+      "values": [
+        {
+          "key": "none",
+          "label": "None"
+        },
+        {
+          "key": "rename",
+          "label": "Rename"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "${file:name}.temp",
+      "label": "Temporary File Name",
+      "key": "temporaryFileName",
+      "when": "readLockStrategy in ['rename']",
+      "values": [
+        {
+          "key": "${file:name}.temp",
+          "label": "${file:name}.temp"
+        },
+        {
+          "key": "target_${exchangeId}.temp",
+          "label": "target_${exchangeId}.temp"
+        }
+      ]
+    }
+  ]
+}

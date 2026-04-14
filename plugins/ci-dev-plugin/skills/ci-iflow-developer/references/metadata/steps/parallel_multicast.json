@@ -1,0 +1,9 @@
+{
+  "name": "Parallel Multicast",
+  "flavor": "Multicast_parallel",
+  "seedId": "ParallelGateway_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::Multicast/version::1.1.1",
+  "componentVersion": "1.1.1",
+  "bpmnElement": "parallelGateway",
+  "properties": []
+}

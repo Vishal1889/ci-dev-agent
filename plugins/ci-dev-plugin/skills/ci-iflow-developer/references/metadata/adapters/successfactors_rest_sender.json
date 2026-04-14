@@ -1,0 +1,127 @@
+{
+  "name": "SuccessFactors",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::REST/direction::Sender/version::1.1.4",
+  "componentVersion": "1.1.4",
+  "messageProtocol": "REST",
+  "transportProtocol": "HTTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "SAP BASIS 7.31",
+  "ComponentSWCVId": "1.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::SOAP/direction::Sender/version::1.5.1",
+      "messageProtocol": "SOAP",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.5.1"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::REST/direction::Sender/version::1.1.4",
+      "messageProtocol": "REST",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.1.4"
+    }
+  ],
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "address"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address Suffix",
+      "key": "resourcePath"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "alias"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "default",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "proxyHost",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "xsd:integer",
+      "label": "Proxy Port",
+      "key": "proxyPort",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "GET",
+      "label": "Operation",
+      "key": "senderOperation",
+      "values": [
+        {
+          "key": "GET",
+          "label": "GET"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Entity",
+      "key": "entity"
+    },
+    {
+      "externalizable": true,
+      "label": "Parameters",
+      "key": "query"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "200",
+      "dataType": "xsd:integer",
+      "label": "Page Size",
+      "key": "batchSize"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "custom:schedule",
+      "label": "Schedule",
+      "key": "scheduleKey",
+      "when": "dummy in ['213']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "isSender",
+      "label": "senderRef",
+      "key": "senderReference",
+      "when": "dummy in ['1234']"
+    }
+  ]
+}

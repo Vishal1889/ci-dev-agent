@@ -1,0 +1,241 @@
+{
+  "name": "OData",
+  "direction": "Receiver",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.27.0",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "address"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "default",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "sapcc",
+          "label": "On-Premise"
+        },
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "proxyHost",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "xsd:integer",
+      "label": "Proxy Port",
+      "key": "proxyPort",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "scc_location_id",
+      "when": "proxyType in ['sapcc']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "None",
+      "label": "Authentication",
+      "key": "authenticationMethod",
+      "values": [
+        {
+          "key": "None",
+          "label": "None"
+        },
+        {
+          "key": "Basic",
+          "label": "Basic"
+        },
+        {
+          "key": "Client Certificate",
+          "label": "Client Certificate"
+        },
+        {
+          "key": "OAuth2ClientCredentials",
+          "label": "OAuth2 Client Credentials"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "alias",
+      "when": "authenticationMethod in ['Basic'] OR authenticationMethod in ['OAuth2ClientCredentials']"
+    },
+    {
+      "externalizable": true,
+      "label": "Private Key Alias",
+      "key": "odataCertAuthPrivateKeyAlias",
+      "when": "authenticationMethod in ['Client Certificate']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Allow Chunking",
+      "key": "allowChunking"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "CSRF Protected",
+      "key": "csrfEnabled"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Timeout (in min)",
+      "key": "receiveTimeOut"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Reuse Connection",
+      "key": "connectionReuse"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "get",
+      "label": "Operation",
+      "key": "operation",
+      "values": [
+        {
+          "key": "get",
+          "label": "Query(GET)"
+        },
+        {
+          "key": "create",
+          "label": "Create(POST)"
+        },
+        {
+          "key": "update",
+          "label": "Update(PUT)"
+        },
+        {
+          "key": "updatePatch",
+          "label": "Patch(PATCH)"
+        },
+        {
+          "key": "delete",
+          "label": "Delete(DELETE)"
+        },
+        {
+          "key": "batch",
+          "label": "Batch Processing ($batch)"
+        },
+        {
+          "key": "DynamicOperation",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Expression",
+      "key": "odatav4OperationExpression",
+      "when": "operation in ['DynamicOperation']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Resource Path",
+      "key": "resourcePathForOdatav4",
+      "when": "NOT (operation in ['batch'])"
+    },
+    {
+      "externalizable": true,
+      "label": "$batch Entity",
+      "key": "batchEntities",
+      "when": "operation in ['batch']"
+    },
+    {
+      "label": "Query Options",
+      "key": "queryOptions"
+    },
+    {
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Process in Pages",
+      "key": "pagination",
+      "when": "operation in ['get']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Attach Error Details on Failure",
+      "key": "enableMPLAttachments"
+    },
+    {
+      "externalizable": true,
+      "key": "edmxFilePath",
+      "when": "edmxFilePath in ['false']"
+    },
+    {
+      "externalizable": true,
+      "key": "fields",
+      "when": "fields in ['false']"
+    },
+    {
+      "externalizable": true,
+      "key": "isXSDGenerationRequired",
+      "when": "isXSDGenerationRequired in ['false']"
+    },
+    {
+      "externalizable": true,
+      "label": "Request Headers",
+      "key": "whitelistRequestHeaders"
+    },
+    {
+      "externalizable": true,
+      "label": "Response Headers",
+      "key": "whitelistResponseHeaders"
+    },
+    {
+      "externalizable": true,
+      "label": "Request Headers",
+      "key": "metadataAllowedHeaders"
+    },
+    {
+      "externalizable": true,
+      "label": "Custom Query Parameters",
+      "key": "metadataAllowedURIParams"
+    }
+  ],
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:HCIOData/tp::HTTP/mp::OData V4/direction::Receiver/version::1.20.0",
+  "componentVersion": "1.20.0",
+  "messageProtocol": "OData V4",
+  "transportProtocol": "HTTP"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "Error Start Event",
+  "flavor": "ErrorStartEvent",
+  "seedId": "StartEvent_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::ErrorStartEvent",
+  "bpmnElement": "startEvent",
+  "note": "Exception Subprocess ONLY. Inside errorEventDefinition. activityType: StartErrorEvent",
+  "properties": []
+}

@@ -1,0 +1,9 @@
+{
+  "name": "Send",
+  "flavor": "Send",
+  "seedId": "ServiceTask_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::Send/version::1.0.4",
+  "componentVersion": "1.0.0",
+  "bpmnElement": "serviceTask",
+  "properties": []
+}

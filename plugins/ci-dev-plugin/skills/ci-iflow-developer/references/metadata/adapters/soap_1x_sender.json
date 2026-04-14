@@ -1,0 +1,351 @@
+{
+  "name": "SOAP",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SOAP/tp::HTTP/mp::SOAP 1.x/direction::Sender/version::1.9.3",
+  "componentVersion": "1.9.3",
+  "messageProtocol": "SOAP 1.x",
+  "transportProtocol": "HTTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.13.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SOAP/tp::HTTP/mp::SOAP 1.x/direction::Sender/version::1.9.3",
+      "messageProtocol": "SOAP 1.x",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.9.3"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SOAP/tp::HTTP/mp::Plain SOAP/direction::Sender/version::1.4.1",
+      "messageProtocol": "Plain SOAP",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.4.1"
+    }
+  ],
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "address"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Manual",
+      "label": "Service Definition",
+      "key": "serviceDefinition",
+      "values": [
+        {
+          "key": "Manual",
+          "label": "Manual"
+        },
+        {
+          "key": "WSDL",
+          "label": "WSDL"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Use WS-Addressing",
+      "key": "useWSAddressing"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "RequestReply",
+      "label": "Message Exchange Pattern",
+      "key": "messageExchangePattern",
+      "when": "serviceDefinition in ['Manual']",
+      "values": [
+        {
+          "key": "OneWay",
+          "label": "One-Way"
+        },
+        {
+          "key": "RequestReply",
+          "label": "Request-Reply"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "URL to WSDL",
+      "key": "soapWsdlURL",
+      "when": "serviceDefinition in ['WSDL']"
+    },
+    {
+      "externalizable": true,
+      "label": "Service",
+      "key": "soapServiceName",
+      "when": "serviceDefinition in ['WSDL']"
+    },
+    {
+      "externalizable": true,
+      "label": "Endpoint",
+      "key": "soapWsdlPortName",
+      "when": "serviceDefinition in ['WSDL']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "cxfRobust",
+      "label": "Processing Settings",
+      "key": "soapOptions",
+      "when": "serviceDefinition in ['WSDL'] OR messageExchangePattern in ['OneWay']",
+      "values": [
+        {
+          "key": "cxfRobust",
+          "label": "Robust"
+        },
+        {
+          "key": "None",
+          "label": "WS Standard"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "RoleBased",
+      "label": "Authorization",
+      "key": "senderAuthType",
+      "values": [
+        {
+          "key": "RoleBased",
+          "label": "User Role"
+        },
+        {
+          "key": "ClientCertificate",
+          "label": "Client Certificate"
+        },
+        {
+          "key": "NoAuthorization",
+          "label": "No Authorization"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Client Certificate Authorization",
+      "key": "clientCertificates",
+      "when": "senderAuthType in ['ClientCertificate']",
+      "columns": [
+        {
+          "key": "clientCertificate.subjectDN",
+          "label": "Subject DN",
+          "mandatory": true
+        },
+        {
+          "key": "clientCertificate.issuerDN",
+          "label": "Issuer DN",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "ESBMessaging.send",
+      "label": "User Role",
+      "key": "userRole",
+      "when": "senderAuthType in ['RoleBased']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "None",
+      "label": "WS-Security Configuration",
+      "key": "WSSecurity",
+      "values": [
+        {
+          "key": "ManualConfiguration",
+          "label": "Via Manual Configuration in Channel"
+        },
+        {
+          "key": "None",
+          "label": "None"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "VerifyMessage",
+      "label": "WS-Security Type",
+      "key": "WSSecurityType",
+      "when": "WSSecurity in ['ManualConfiguration']",
+      "values": [
+        {
+          "key": "VerifyMessage",
+          "label": "Verify Message and Sign Response"
+        },
+        {
+          "key": "VerifyDecryptMessage",
+          "label": "Verify and Decrypt Message and Sign and Encrypt Response"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Private Key Alias for Response Signing",
+      "key": "PrivateKeyAliasResponseSigning",
+      "when": "WSSecurity in ['ManualConfiguration']"
+    },
+    {
+      "externalizable": true,
+      "label": "Public Key Alias for Response Encryption",
+      "key": "PublicKeyAliasResponseEncryption"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "SHA1",
+      "label": "Signature Algorithm",
+      "key": "WSSecurity_SignatureAlgorithm_Inbound",
+      "when": "WSSecurity in ['ManualConfiguration']",
+      "values": [
+        {
+          "key": "SHA1",
+          "label": "SHA1/RSA"
+        },
+        {
+          "key": "SHA256",
+          "label": "SHA256/RSA"
+        },
+        {
+          "key": "SHA512",
+          "label": "SHA512/RSA"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "SignBeforeEncryption",
+      "label": "Signing Order",
+      "key": "SigningOrder",
+      "values": [
+        {
+          "key": "SignBeforeEncryption",
+          "label": "Sign Before Encryption"
+        },
+        {
+          "key": "EncryptBeforeSigning",
+          "label": "Encrypt Before Signing"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Basic128Rsa15",
+      "label": "Algorithm Suite Assertion",
+      "key": "AlgorithmSuiteAssertion",
+      "when": "WSSecurity in ['ManualConfiguration']",
+      "values": [
+        {
+          "key": "Basic128Rsa15",
+          "label": "Basic 128 Rsa 15"
+        },
+        {
+          "key": "Basic256Sha256Rsa15",
+          "label": "Basic 256 Sha 256 Rsa 15"
+        },
+        {
+          "key": "TripleDesRsa15",
+          "label": "Triple Des Rsa 15"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Save Incoming Signed Message",
+      "key": "SaveIncomingSignedMessage"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Check Time Stamp",
+      "key": "CheckTimeStamp",
+      "when": "WSSecurity in ['ManualConfiguration']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Sender is Basic Security Profile Compliant",
+      "key": "SenderBasicSecurityProfileCompliant",
+      "when": "WSSecurity in ['ManualConfiguration']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "AlwaysToRecipient",
+      "label": "Include Strategy",
+      "key": "InitiatorTokenIncludeStrategy",
+      "when": "WSSecurity in ['ManualConfiguration']",
+      "values": [
+        {
+          "key": "AlwaysToRecipient",
+          "label": "Always to Recipient"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "WssX509V3Token10",
+      "label": "X509 Token Assertion",
+      "key": "X509TokenAssertion",
+      "when": "WSSecurity in ['ManualConfiguration']",
+      "values": [
+        {
+          "key": "WssX509V3Token10",
+          "label": "Wss X509 V3 Token 10"
+        },
+        {
+          "key": "RequireKeyIdentifierReference",
+          "label": "Require Key Identifier Reference"
+        },
+        {
+          "key": "RequireIssuerSerialReference",
+          "label": "Require Issuer Serial Reference"
+        },
+        {
+          "key": "RequireThumbprintReference",
+          "label": "Require Thumbprint Reference"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Never",
+      "label": "Include Strategy",
+      "key": "RecipientTokenIncludeStrategy",
+      "when": "WSSecurity in ['ManualConfiguration']",
+      "values": [
+        {
+          "key": "Never",
+          "label": "Never"
+        },
+        {
+          "key": "AlwaysToInitiator",
+          "label": "Always to Initiator"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "40",
+      "dataType": "xsd:integer",
+      "label": "Body Size (in MB)",
+      "key": "maximumBodySize"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "100",
+      "dataType": "xsd:integer",
+      "label": "Attachments Size (in MB)",
+      "key": "maximumAttachmentSize"
+    }
+  ]
+}

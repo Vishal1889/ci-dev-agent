@@ -1,0 +1,24 @@
+{
+  "name": "Groovy Script",
+  "flavor": "GroovyScript",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::GroovyScript/version::1.1.2",
+  "componentVersion": "1.1.2",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "mandatory": true,
+      "dataType": "xsd:idref",
+      "label": "Script File",
+      "key": "script"
+    },
+    {
+      "label": "Script Function",
+      "key": "scriptFunction"
+    },
+    {
+      "label": "Script Bundle ID",
+      "key": "scriptBundleId"
+    }
+  ]
+}

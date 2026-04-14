@@ -1,0 +1,9 @@
+{
+  "name": "Start Timer",
+  "flavor": "intermediatetimer",
+  "seedId": "StartEvent_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::intermediatetimer/version::1.4.0",
+  "componentVersion": "1.4.0",
+  "bpmnElement": "startEvent",
+  "properties": []
+}

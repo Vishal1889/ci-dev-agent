@@ -1,0 +1,97 @@
+{
+  "name": "SOAP",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SOAP/tp::HTTP/mp::SOAP 1.x/direction::Sender/version::1.9.3",
+  "componentVersion": "1.9.3",
+  "messageProtocol": "SOAP 1.x",
+  "transportProtocol": "HTTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.13.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SOAP/tp::HTTP/mp::SOAP 1.x/direction::Sender/version::1.9.3",
+      "messageProtocol": "SOAP 1.x",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.9.3"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SOAP/tp::HTTP/mp::Plain SOAP/direction::Sender/version::1.4.1",
+      "messageProtocol": "Plain SOAP",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.4.1"
+    }
+  ],
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "address"
+    },
+    {
+      "externalizable": true,
+      "label": "URL to WSDL",
+      "key": "wsdlURL"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "RoleBased",
+      "label": "Authorization",
+      "key": "senderAuthType",
+      "values": [
+        {
+          "key": "RoleBased",
+          "label": "User Role"
+        },
+        {
+          "key": "ClientCertificate",
+          "label": "Client Certificate"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Client Certificate Authorization",
+      "key": "clientCertificates",
+      "when": "senderAuthType in ['ClientCertificate']",
+      "columns": [
+        {
+          "key": "clientCertificate.subjectDN",
+          "label": "Subject DN",
+          "mandatory": true
+        },
+        {
+          "key": "clientCertificate.issuerDN",
+          "label": "Issuer DN",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "ESBMessaging.send",
+      "label": "User Role",
+      "key": "userRole",
+      "when": "senderAuthType in ['RoleBased']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "40",
+      "dataType": "xsd:integer",
+      "label": "Body Size (in MB)",
+      "key": "maximumBodySize"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "100",
+      "dataType": "xsd:integer",
+      "label": "Attachments Size (in MB)",
+      "key": "maximumAttachmentSize"
+    }
+  ]
+}

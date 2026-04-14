@@ -1,0 +1,72 @@
+{
+  "name": "EDI Validator",
+  "flavor": "EDIValidator",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::EDIValidator/version::1.7.0",
+  "componentVersion": "1.7.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "ISO-8859-1",
+      "label": "Source Encoding",
+      "key": "sourceEncoding",
+      "values": [
+        {
+          "key": "ISO-8859-1",
+          "label": "ISO-8859-1"
+        },
+        {
+          "key": "UTF-8",
+          "label": "UTF-8"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "IntegrationProject",
+      "label": "EDI Schema Definition",
+      "key": "ediSchemaSource",
+      "values": [
+        {
+          "key": "IntegrationProject",
+          "label": "Integration Flow"
+        },
+        {
+          "key": "Header",
+          "label": "Header"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Schemas",
+      "key": "schemaTable",
+      "when": "ediSchemaSource in ['IntegrationProject']",
+      "columns": [
+        {
+          "key": "schemaName",
+          "label": "Schema Name",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Header Name",
+      "key": "headerName",
+      "when": "ediSchemaSource in ['Header']"
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:boolean",
+      "label": "Prevent Exception on Failure",
+      "key": "preventException"
+    }
+  ]
+}

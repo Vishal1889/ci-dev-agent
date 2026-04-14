@@ -1,0 +1,23 @@
+{
+  "name": "Sequential Multicast",
+  "flavor": "parallel",
+  "seedId": "ParallelGateway_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::SequentialMulticast/version::1.1.0",
+  "componentVersion": "1.1.0",
+  "bpmnElement": "parallelGateway",
+  "properties": [
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "Specify the sequence of execution of branches",
+      "key": "routingSequenceTable",
+      "columns": [
+        {
+          "key": "branchName",
+          "label": "Sequence Name",
+          "mandatory": true
+        }
+      ]
+    }
+  ]
+}

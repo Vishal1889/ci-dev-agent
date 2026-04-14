@@ -1,0 +1,52 @@
+{
+  "name": "PKCS7Decryptor",
+  "flavor": "Decrypt",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::Decrypt/version::1.2.0",
+  "componentVersion": "1.2.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Body is Base64 Encoded",
+      "key": "isBodyBase64Encoded"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "EnvelopedData",
+      "label": "Signatures",
+      "key": "PKCS7SignContentType",
+      "values": [
+        {
+          "key": "EnvelopedData",
+          "label": "Enveloped Data Only"
+        },
+        {
+          "key": "EnvelopedDataOrSignedAndEnvelopedData",
+          "label": "Enveloped or \"Signed and Enveloped\" Data"
+        },
+        {
+          "key": "SignedAndEnvelopedData",
+          "label": "Signed and Enveloped Data"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Public Key Alias",
+      "key": "publicKeyAliases",
+      "when": "PKCS7SignContentType in ['EnvelopedDataOrSignedAndEnvelopedData'] OR PKCS7SignContentType in ['SignedAndEnvelopedData']",
+      "columns": [
+        {
+          "key": "publicKey",
+          "label": "Public Key Alias",
+          "mandatory": true
+        }
+      ]
+    }
+  ]
+}

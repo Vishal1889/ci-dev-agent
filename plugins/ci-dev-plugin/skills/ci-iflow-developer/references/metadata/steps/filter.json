@@ -1,0 +1,44 @@
+{
+  "name": "Filter",
+  "flavor": "Filter",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::Filter/version::1.1.0",
+  "componentVersion": "1.1.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "XPath Expression",
+      "key": "wrapContent"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Nodelist",
+      "label": "Value Type",
+      "key": "xpathType",
+      "values": [
+        {
+          "key": "String",
+          "label": "String"
+        },
+        {
+          "key": "Integer",
+          "label": "Integer"
+        },
+        {
+          "key": "Boolean",
+          "label": "Boolean"
+        },
+        {
+          "key": "Node",
+          "label": "Node"
+        },
+        {
+          "key": "Nodelist",
+          "label": "Nodelist"
+        }
+      ]
+    }
+  ]
+}

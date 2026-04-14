@@ -1,0 +1,589 @@
+{
+  "name": "Mail",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:Mail/tp::SMTP/mp::None/direction::Receiver/version::1.12.0",
+  "componentVersion": "1.12.0",
+  "messageProtocol": "None",
+  "transportProtocol": "SMTP",
+  "ComponentNS": "com.sap.it.ide.mail.ui.namespace2",
+  "ComponentSWCVName": "com.sap.it.ide.mail.ui.archive2",
+  "ComponentSWCVId": "com.sap.it.ide.mail.ui.archive2",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "server"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "none",
+          "label": "Internet"
+        },
+        {
+          "key": "sapcc",
+          "label": "On-Premise"
+        },
+        {
+          "key": "none",
+          "label": "Internet"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "socks5",
+      "label": "Proxy Protocol",
+      "key": "proxyProtocol",
+      "when": "proxyType in ['manual']",
+      "values": [
+        {
+          "key": "http",
+          "label": "HTTP"
+        },
+        {
+          "key": "socks5",
+          "label": "SOCKS Version 5"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "proxyHost",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "8080",
+      "dataType": "xsd:integer",
+      "label": "Proxy Port",
+      "key": "proxyPort",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "label": "Proxy Credential Name",
+      "key": "proxyAlias"
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "locationId",
+      "when": "proxyType in ['sapcc']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "30000",
+      "dataType": "xsd:integer",
+      "label": "Timeout (in ms)",
+      "key": "timeout"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "starttls_mandatory",
+      "label": "Protection",
+      "key": "ssl",
+      "values": [
+        {
+          "key": "starttls_mandatory",
+          "label": "STARTTLS Mandatory"
+        },
+        {
+          "key": "starttls_optional",
+          "label": "STARTTLS Optional"
+        },
+        {
+          "key": "off",
+          "label": "Off"
+        },
+        {
+          "key": "smtps",
+          "label": "SMTPS"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "loginEncrypted",
+      "label": "Authentication",
+      "key": "auth",
+      "values": [
+        {
+          "key": "loginEncrypted",
+          "label": "Encrypted User/Password"
+        },
+        {
+          "key": "loginPlain",
+          "label": "Plain User/Password"
+        },
+        {
+          "key": "oauth",
+          "label": "OAuth2 Authorization Code"
+        },
+        {
+          "key": "none",
+          "label": "None"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "user",
+      "when": "auth in ['loginEncrypted'] OR auth in ['loginPlain']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "tokenCredential",
+      "when": "auth in ['oauth']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "From",
+      "key": "from"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "To",
+      "key": "to"
+    },
+    {
+      "externalizable": true,
+      "label": "Cc",
+      "key": "cc"
+    },
+    {
+      "externalizable": true,
+      "label": "Bcc",
+      "key": "bcc"
+    },
+    {
+      "externalizable": true,
+      "label": "Subject",
+      "key": "subject"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "${in.body}",
+      "label": "Mail Body",
+      "key": "body"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "text/plain",
+      "label": "Body Mime-Type",
+      "key": "content_type",
+      "values": [
+        {
+          "key": "text/plain",
+          "label": "Text/Plain"
+        },
+        {
+          "key": "text/csv",
+          "label": "Text/CSV"
+        },
+        {
+          "key": "text/html",
+          "label": "Text/HTML"
+        },
+        {
+          "key": "application/xml",
+          "label": "Application/XML"
+        },
+        {
+          "key": "application/json",
+          "label": "Application/JSON"
+        },
+        {
+          "key": "application/zip",
+          "label": "Application/ZIP"
+        },
+        {
+          "key": "application/x-gzip",
+          "label": "Application/X-Gzip"
+        },
+        {
+          "key": "application/octet-stream",
+          "label": "Application/Octet-Stream"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "UTF-8",
+      "label": "Body Encoding",
+      "key": "content_encoding",
+      "values": [
+        {
+          "key": "UTF-8",
+          "label": "UTF-8"
+        },
+        {
+          "key": "Windows-1252",
+          "label": "windows-1252"
+        },
+        {
+          "key": "ISO-8859-1",
+          "label": "ISO-8859-1"
+        },
+        {
+          "key": "US-ASCII",
+          "label": "US-ASCII"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "Attachments",
+      "key": "attachments",
+      "columns": [
+        {
+          "key": "attachment.name",
+          "label": "Name",
+          "mandatory": true
+        },
+        {
+          "key": "attachment.type",
+          "label": "Mime-Type",
+          "mandatory": true,
+          "default": "application/octet-stream",
+          "values": [
+            {
+              "key": "text/plain",
+              "label": "Text/Plain"
+            },
+            {
+              "key": "text/csv",
+              "label": "Text/CSV"
+            },
+            {
+              "key": "text/html",
+              "label": "Text/HTML"
+            },
+            {
+              "key": "application/xml",
+              "label": "Application/XML"
+            },
+            {
+              "key": "application/json",
+              "label": "Application/JSON"
+            },
+            {
+              "key": "application/zip",
+              "label": "Application/ZIP"
+            },
+            {
+              "key": "application/x-gzip",
+              "label": "Application/X-Gzip"
+            },
+            {
+              "key": "application/octet-stream",
+              "label": "Application/Octet-Stream"
+            }
+          ]
+        },
+        {
+          "key": "attachment.source",
+          "label": "Source",
+          "mandatory": true,
+          "values": [
+            {
+              "key": "Header",
+              "label": "Header"
+            },
+            {
+              "key": "Body",
+              "label": "Body"
+            }
+          ]
+        },
+        {
+          "key": "attachment.value",
+          "label": "Header Name"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Add Message Attachments",
+      "key": "keep_attachments"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "auto",
+      "label": "Content Transfer Encoding",
+      "key": "attachmentTransferEncoding",
+      "values": [
+        {
+          "key": "7bit",
+          "label": "7Bit"
+        },
+        {
+          "key": "8bit",
+          "label": "8Bit"
+        },
+        {
+          "key": "auto",
+          "label": "Automatic"
+        },
+        {
+          "key": "base64",
+          "label": "Base64"
+        },
+        {
+          "key": "binary",
+          "label": "Binary"
+        },
+        {
+          "key": "quoted_printable",
+          "label": "Quoted-Printable"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "Signature and Encryption Type",
+      "key": "encrypt.type",
+      "values": [
+        {
+          "key": "none",
+          "label": "None"
+        },
+        {
+          "key": "smime",
+          "label": "S/MIME Encryption"
+        },
+        {
+          "key": "smimeSignature",
+          "label": "S/MIME Signature"
+        },
+        {
+          "key": "smimeSignatureAndEncryption",
+          "label": "S/MIME Signature and Encryption"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Send Clear Text Signed Message",
+      "key": "signature.smime.clearText",
+      "when": "encrypt.type in ['smimeSignature'] OR encrypt.type in ['smimeSignatureAndEncryption']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Signer Parameters:",
+      "key": "signature.smime.table",
+      "when": "encrypt.type in ['smimeSignature'] OR encrypt.type in ['smimeSignatureAndEncryption']",
+      "columns": [
+        {
+          "key": "signature.smime.privateKeyAlias",
+          "label": "Private Key Alias",
+          "mandatory": true
+        },
+        {
+          "key": "signature.smime.algorithm",
+          "label": "Signature Algorithm",
+          "mandatory": true,
+          "default": "SHA512/RSA",
+          "values": [
+            {
+              "key": "SHA512/RSA",
+              "label": "SHA512/RSA"
+            },
+            {
+              "key": "SHA384/RSA",
+              "label": "SHA384/RSA"
+            },
+            {
+              "key": "SHA256/RSA",
+              "label": "SHA256/RSA"
+            },
+            {
+              "key": "SHA224/RSA",
+              "label": "SHA224/RSA"
+            },
+            {
+              "key": "SHA/RSA",
+              "label": "SHA/RSA"
+            },
+            {
+              "key": "SHA512withRSAandMGF1",
+              "label": "SHA512withRSAandMGF1/RSA-PSS"
+            },
+            {
+              "key": "SHA256withRSAandMGF1",
+              "label": "SHA256withRSAandMGF1/RSA-PSS"
+            },
+            {
+              "key": "SHA1withRSAandMGF1",
+              "label": "SHA1withRSAandMGF1/RSA-PSS"
+            }
+          ]
+        },
+        {
+          "key": "signature.smime.includeCertificates",
+          "label": "Include Certificates",
+          "mandatory": true,
+          "default": "true",
+          "values": [
+            {
+              "key": "true",
+              "label": "true"
+            },
+            {
+              "key": "false",
+              "label": "false"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "aes",
+      "label": "Content Encryption Algorithm",
+      "key": "encrypt.smime.algorithm",
+      "when": "encrypt.type in ['smime'] OR encrypt.type in ['smimeSignatureAndEncryption']",
+      "values": [
+        {
+          "key": "aes",
+          "label": "AES/CBC/PKCS5Padding"
+        },
+        {
+          "key": "aesgcm",
+          "label": "AES/GCM/NoPadding"
+        },
+        {
+          "key": "des",
+          "label": "DESede/CBC/PKCS5Padding"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "128",
+      "label": "Secret Key Length",
+      "key": "encrypt.smime.aes.keysize",
+      "when": "None in [] OR None in []",
+      "values": [
+        {
+          "key": "128",
+          "label": "128"
+        },
+        {
+          "key": "192",
+          "label": "192"
+        },
+        {
+          "key": "256",
+          "label": "256"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "128",
+      "label": "Secret Key Length",
+      "key": "encrypt.smime.aes.gcm.keysize",
+      "when": "None in [] OR None in []",
+      "values": [
+        {
+          "key": "128",
+          "label": "128"
+        },
+        {
+          "key": "192",
+          "label": "192"
+        },
+        {
+          "key": "256",
+          "label": "256"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "128",
+      "label": "Secret Key Lentgh",
+      "key": "encrypt.smime.des.keysize",
+      "when": "None in [] OR None in []",
+      "values": [
+        {
+          "key": "128",
+          "label": "128"
+        },
+        {
+          "key": "192",
+          "label": "192"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Receiver Public Key",
+      "key": "encrypt.smime.keys",
+      "when": "encrypt.type in ['smime'] OR encrypt.type in ['smimeSignatureAndEncryption']",
+      "columns": [
+        {
+          "key": "keyalias",
+          "label": "Public Key",
+          "mandatory": true
+        },
+        {
+          "key": "encrypt.smime.keys.algorithm",
+          "label": "Key Encryption Algorithm",
+          "mandatory": true,
+          "default": "RSA",
+          "values": [
+            {
+              "key": "RSA",
+              "label": "RSA"
+            },
+            {
+              "key": "SHA1/RSAES-OAEP",
+              "label": "RSA/ECB/OAEPWithSHA1AndMGF1Padding"
+            },
+            {
+              "key": "SHA256/RSAES-OAEP",
+              "label": "RSA/ECB/OAEPWithSHA256AndMGF1Padding"
+            },
+            {
+              "key": "SHA512/RSAES-OAEP",
+              "label": "RSA/ECB/OAEPWithSHA512AndMGF1Padding"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

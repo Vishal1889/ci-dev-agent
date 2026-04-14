@@ -1,0 +1,75 @@
+{
+  "name": "JMS",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:JMS/tp::Not Applicable/mp::Not Applicable/direction::Receiver/version::1.6.3",
+  "componentVersion": "1.6.3",
+  "messageProtocol": "Not Applicable",
+  "transportProtocol": "Not Applicable",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.6.3",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Queue Name",
+      "key": "QueueName_outbound"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Non-Exclusive",
+      "label": "Access Type",
+      "key": "AccessType",
+      "values": [
+        {
+          "key": "Non-Exclusive",
+          "label": "Non-Exclusive"
+        },
+        {
+          "key": "Exclusive",
+          "label": "Exclusive"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "2",
+      "dataType": "xsd:integer",
+      "label": "Retention Threshold for Alerting (in d)",
+      "key": "RetentionThresholdAlerting"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "30",
+      "dataType": "xsd:integer",
+      "label": "Expiration Period (in d)",
+      "key": "ExpirationPeriod"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Compress Stored Message",
+      "key": "UseMessageCompression"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Encrypt Stored Message",
+      "key": "EncryptMessage"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Transfer Exchange Properties",
+      "key": "TransferExchangeProperties"
+    }
+  ]
+}

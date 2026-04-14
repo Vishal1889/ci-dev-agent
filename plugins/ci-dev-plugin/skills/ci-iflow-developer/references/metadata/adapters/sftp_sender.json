@@ -1,0 +1,413 @@
+{
+  "name": "SFTP",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SFTP/tp::SFTP/mp::File/direction::Sender/version::1.20.1",
+  "componentVersion": "1.20.1",
+  "messageProtocol": "File",
+  "transportProtocol": "SFTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.20.1",
+  "properties": [
+    {
+      "externalizable": true,
+      "label": "Directory",
+      "key": "path"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Regex Filtering",
+      "key": "regex_filter"
+    },
+    {
+      "externalizable": true,
+      "label": "File Name",
+      "key": "fileName"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "host"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "none",
+          "label": "Internet"
+        },
+        {
+          "key": "sapcc",
+          "label": "On-Premise"
+        },
+        {
+          "key": "none",
+          "label": "Internet"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "socks5",
+      "label": "Proxy Protocol",
+      "key": "proxyProtocol",
+      "when": "proxyType in ['manual']",
+      "values": [
+        {
+          "key": "http",
+          "label": "HTTP"
+        },
+        {
+          "key": "socks4",
+          "label": "SOCKS Version 4"
+        },
+        {
+          "key": "socks5",
+          "label": "SOCKS Version 5"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "proxyHost",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "8080",
+      "dataType": "xsd:integer",
+      "label": "Proxy Port",
+      "key": "proxyPort",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "label": "Proxy Credential Name",
+      "key": "proxyAlias"
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "location_id",
+      "when": "proxyType in ['sapcc']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "public_key",
+      "label": "Authentication",
+      "key": "authentication",
+      "values": [
+        {
+          "key": "public_key",
+          "label": "Public Key"
+        },
+        {
+          "key": "user_password",
+          "label": "User Name/Password"
+        },
+        {
+          "key": "dual",
+          "label": "Dual"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "credential_name",
+      "when": "authentication in ['user_password'] OR authentication in ['dual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "User Name",
+      "key": "username",
+      "when": "authentication in ['public_key']"
+    },
+    {
+      "externalizable": true,
+      "label": "Private Key Alias",
+      "key": "privateKeyAlias",
+      "when": "authentication in ['public_key'] OR authentication in ['dual']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "10000",
+      "dataType": "xsd:integer",
+      "label": "Timeout (in ms)",
+      "key": "connectTimeout"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "3",
+      "dataType": "xsd:integer",
+      "label": "Maximum Reconnect Attempts",
+      "key": "maximumReconnectAttempts"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1000",
+      "dataType": "xsd:integer",
+      "label": "Reconnect Delay (in ms)",
+      "key": "reconnectDelay"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Automatically Disconnect",
+      "key": "disconnect"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Enable Support for Deprecated Algorithms",
+      "key": "allowDeprecatedAlgorithms"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "Read Lock Strategy",
+      "key": "readLock",
+      "values": [
+        {
+          "key": "none",
+          "label": "None"
+        },
+        {
+          "key": "rename",
+          "label": "Rename"
+        },
+        {
+          "key": "change",
+          "label": "Content Change"
+        },
+        {
+          "key": "doneFile",
+          "label": "Done File Expected"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "${file:name}.done",
+      "label": "Done File Name",
+      "key": "doneFileName",
+      "when": "readLock in ['doneFile']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "5000",
+      "dataType": "xsd:integer",
+      "label": "Read Lock Check Interval (in ms)",
+      "key": "readLockCheckInterval",
+      "when": "readLock in ['change']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "processFile",
+      "label": "Empty File Handling",
+      "key": "emptyFileHandling",
+      "when": "NOT (readLock in ['change'])",
+      "values": [
+        {
+          "key": "processFile",
+          "label": "Process Empty File"
+        },
+        {
+          "key": "skipFile",
+          "label": "Skip Empty File"
+        },
+        {
+          "key": "stopFile",
+          "label": "MPL With Post Processing Only"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Poll on One Worker Only",
+      "key": "useClusterLock"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Stop on Exception",
+      "key": "stopOnException",
+      "when": "useClusterLock in ['1']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "sort_by_none",
+      "label": "Sorting",
+      "key": "file_sorting_criteria",
+      "when": "useClusterLock in ['1']",
+      "values": [
+        {
+          "key": "sort_by_none",
+          "label": "None"
+        },
+        {
+          "key": "sort_by_filename",
+          "label": "File Name"
+        },
+        {
+          "key": "sort_by_filesize",
+          "label": "File Size"
+        },
+        {
+          "key": "sort_by_timestamp",
+          "label": "Time Stamp"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "sort_direction_asc",
+      "label": "Sorting Order",
+      "key": "file_sorting_direction",
+      "when": "NOT (file_sorting_criteria in ['sort_by_none'])",
+      "values": [
+        {
+          "key": "sort_direction_asc",
+          "label": "Ascending"
+        },
+        {
+          "key": "sort_direction_desc",
+          "label": "Descending"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "20",
+      "dataType": "xsd:integer",
+      "label": "Max. Messages per Poll",
+      "key": "maxMessagesPerPoll"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "15",
+      "dataType": "xsd:integer",
+      "label": "Lock Timeout (in min)",
+      "key": "file_lock_timeout"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Change Directories Stepwise",
+      "key": "stepwise"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Include Subdirectories",
+      "key": "recursive"
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:boolean",
+      "label": "Flatten File Names",
+      "key": "flatten",
+      "when": "recursive in ['1']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Use Fast Exists Check",
+      "key": "fastExistsCheck"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "delete",
+      "label": "Post-Processing",
+      "key": "noop",
+      "values": [
+        {
+          "key": "delete",
+          "label": "Delete File"
+        },
+        {
+          "key": "mark",
+          "label": "Keep File and Mark as Processed in Idempotent Repository"
+        },
+        {
+          "key": "test",
+          "label": "Keep File and Process Again"
+        },
+        {
+          "key": "move",
+          "label": "Move File"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": ".archive",
+      "label": "Archive Directory",
+      "key": "file.move",
+      "when": "noop in ['move']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "database",
+      "label": "Idempotent Repository",
+      "key": "idempotentRepository",
+      "when": "noop in ['mark'] OR noop in ['1']",
+      "values": [
+        {
+          "key": "inMemory",
+          "label": "In Memory"
+        },
+        {
+          "key": "database",
+          "label": "Database"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "0/10 * 0-24 ? * *",
+      "dataType": "custom:schedule",
+      "label": "Schedule",
+      "key": "scheduleKey",
+      "when": "dummy in ['213']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "40",
+      "dataType": "xsd:integer",
+      "label": "File Size (in MB)",
+      "key": "maximumFileSize"
+    }
+  ]
+}

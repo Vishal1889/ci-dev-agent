@@ -1,0 +1,383 @@
+{
+  "name": "AdvancedEventMesh",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::AdvancedEventMesh/vendor::SAP/tp::TCP/mp::SMF/direction::Receiver/version::1.3.5",
+  "componentVersion": "1.3.5",
+  "messageProtocol": "SMF",
+  "transportProtocol": "TCP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.3.5",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Host",
+      "key": "host"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Message VPN",
+      "key": "messageVpn"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "default",
+      "label": "Username",
+      "key": "username"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "BASIC",
+      "label": "Authentication Type",
+      "key": "authenticationType",
+      "values": [
+        {
+          "key": "BASIC",
+          "label": "Basic"
+        },
+        {
+          "key": "CLIENT_CERTIFICATE",
+          "label": "Client Certificate"
+        },
+        {
+          "key": "OAUTH2",
+          "label": "OAuth2"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Password Secure Alias",
+      "key": "password"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Keystore Alias",
+      "key": "keyStoreAlias"
+    },
+    {
+      "externalizable": true,
+      "label": "Truststore Alias",
+      "key": "trustStoreAlias"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "OAUTH2_CLIENT_CREDENTIALS",
+      "label": "OAuth2 Credential Type",
+      "key": "oauthCredentialType",
+      "values": [
+        {
+          "key": "OAUTH2_CLIENT_CREDENTIALS",
+          "label": "OAuth2 Client Credentials"
+        },
+        {
+          "key": "OAUTH2_AUTHORIZATION_CODE",
+          "label": "OAuth2 Authorization Code"
+        },
+        {
+          "key": "CUSTOM_OAUTH2",
+          "label": "OAuth2 - Custom"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "OAuth2 Client Credentials Credential Name",
+      "key": "oauth2ClientCredentialsCredentialName"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "OAuth2 Authorization Code Credential Name",
+      "key": "oauth2AuthorizationCodeCredentialName"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "OAUTH2 Access Token Secure Alias",
+      "key": "oauthAccessToken"
+    },
+    {
+      "externalizable": true,
+      "label": "OAUTH2 Refresh Token Secure Alias",
+      "key": "oauthRefreshToken"
+    },
+    {
+      "externalizable": true,
+      "label": "OAUTH2 Client ID Secure Alias",
+      "key": "oauthClientId"
+    },
+    {
+      "externalizable": true,
+      "label": "OAUTH2 Refresh Token URL Secure Alias",
+      "key": "oauthRefreshTokenUrl"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "300",
+      "dataType": "xsd:integer",
+      "label": "Access Token Fetch/Refresh Interval (In Secs)",
+      "key": "accessTokenFetchIntervalInSecs"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "INTERNET",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "INTERNET",
+          "label": "Internet"
+        },
+        {
+          "key": "CLOUD_CONNECTOR_ON_PREM",
+          "label": "On-Premise"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "locationId"
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "JCSMP Properties",
+      "key": "jcsmpProperties",
+      "columns": [
+        {
+          "key": "mapObjectKey",
+          "label": "Key"
+        },
+        {
+          "key": "mapObjectValue",
+          "label": "Value"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "DIRECT",
+      "label": "Delivery Mode",
+      "key": "deliveryMode",
+      "values": [
+        {
+          "key": "DIRECT",
+          "label": "Direct"
+        },
+        {
+          "key": "PERSISTENT",
+          "label": "Persistent (Guaranteed)"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "TOPIC",
+      "label": "Endpoint Type",
+      "key": "endpointType",
+      "values": [
+        {
+          "key": "TOPIC",
+          "label": "Topic"
+        },
+        {
+          "key": "QUEUE",
+          "label": "Queue"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Destination Name",
+      "key": "destinationName"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "AUTOMATIC",
+      "label": "Message Type",
+      "key": "messageType",
+      "values": [
+        {
+          "key": "AUTOMATIC",
+          "label": "Automatic"
+        },
+        {
+          "key": "BINARY",
+          "label": "Binary"
+        },
+        {
+          "key": "TEXT",
+          "label": "Text"
+        },
+        {
+          "key": "MAP",
+          "label": "Map"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Convert Publish Into Synchronous Requestor?",
+      "key": "requestReply"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1000",
+      "dataType": "xsd:long",
+      "label": "Reply Timeout (ms)",
+      "key": "replyTimeout"
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:long",
+      "label": "Time To Live (ms)",
+      "key": "ttl"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "label": "Is DMQ Eligible?",
+      "key": "dmqEligible",
+      "values": [
+        {
+          "key": "null",
+          "label": "None"
+        },
+        {
+          "key": "true",
+          "label": "True"
+        },
+        {
+          "key": "false",
+          "label": "False"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Is Eliding Eligible?",
+      "key": "elidingEligible",
+      "values": [
+        {
+          "key": "true",
+          "label": "True"
+        },
+        {
+          "key": "false",
+          "label": "False"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:integer",
+      "label": "Priority",
+      "key": "priority"
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:long",
+      "label": "Sender Timestamp (ms)",
+      "key": "senderTimestamp"
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:long",
+      "label": "Sequence Number",
+      "key": "sequenceNumber"
+    },
+    {
+      "externalizable": true,
+      "label": "Application Message ID",
+      "key": "applicationMessageId"
+    },
+    {
+      "externalizable": true,
+      "label": "Application Message Type",
+      "key": "applicationMessageType"
+    },
+    {
+      "externalizable": true,
+      "label": "Sender ID",
+      "key": "senderId"
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:integer",
+      "label": "Class Of Service",
+      "key": "cosValue"
+    },
+    {
+      "externalizable": true,
+      "label": "Is Reply?",
+      "key": "reply",
+      "values": [
+        {
+          "key": "true",
+          "label": "True"
+        },
+        {
+          "key": "false",
+          "label": "False"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "ReplyTo Destination Name",
+      "key": "replyToDestination"
+    },
+    {
+      "externalizable": true,
+      "label": "ReplyTo Endpoint Type",
+      "key": "replyToEndpointType",
+      "values": [
+        {
+          "key": "TOPIC",
+          "label": "Topic"
+        },
+        {
+          "key": "QUEUE",
+          "label": "Queue"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Correlation ID",
+      "key": "correlationId"
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "User Properties",
+      "key": "userProperties",
+      "columns": [
+        {
+          "key": "mapObjectKey",
+          "label": "Key"
+        },
+        {
+          "key": "mapObjectValue",
+          "label": "Value"
+        }
+      ]
+    }
+  ]
+}

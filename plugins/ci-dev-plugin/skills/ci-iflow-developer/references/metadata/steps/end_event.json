@@ -1,0 +1,8 @@
+{
+  "name": "End Event (LIP)",
+  "flavor": "EndEvent",
+  "seedId": "EndEvent_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::EndEvent",
+  "bpmnElement": "endEvent",
+  "properties": []
+}

@@ -1,0 +1,71 @@
+{
+  "name": "XSLT Mapping",
+  "flavor": "XSLTMapping",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::XSLTMapping/version::1.2.0",
+  "componentVersion": "1.2.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "label": "Output Format",
+      "key": "mappingoutformat",
+      "defaultValue": "Bytes",
+      "values": [
+        {
+          "key": "Bytes",
+          "label": "Bytes"
+        },
+        {
+          "key": "String",
+          "label": "String"
+        }
+      ]
+    },
+    {
+      "label": "Source",
+      "key": "mappingSource",
+      "defaultValue": "mappingSrcIflow",
+      "values": [
+        {
+          "key": "mappingSrcIflow",
+          "label": "Integration Flow"
+        },
+        {
+          "key": "mappingSrcBundle",
+          "label": "Reference Bundle"
+        }
+      ]
+    },
+    {
+      "label": "Mapping URI",
+      "key": "mappinguri"
+    },
+    {
+      "label": "Mapping Name",
+      "key": "mappingname"
+    },
+    {
+      "label": "Mapping Path",
+      "key": "mappingpath"
+    },
+    {
+      "label": "Header Name Key",
+      "key": "mappingHeaderNameKey"
+    },
+    {
+      "key": "mappingoutputformat",
+      "defaultValue": "Bytes",
+      "label": "Output Format",
+      "values": [
+        {
+          "key": "Bytes",
+          "label": "Bytes"
+        },
+        {
+          "key": "String",
+          "label": "String"
+        }
+      ]
+    }
+  ]
+}

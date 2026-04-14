@@ -1,0 +1,16 @@
+# IDE
+.vscode/
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Claude session data
+.claude/
+
+# Plugin temp/working directories
+plugins/**/skills/*/.tmp/
+
+# Playwright MCP
+.playwright-mcp/

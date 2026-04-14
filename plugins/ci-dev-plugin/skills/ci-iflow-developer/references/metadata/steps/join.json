@@ -1,0 +1,9 @@
+{
+  "name": "Join",
+  "flavor": "Join",
+  "seedId": "ParallelGateway_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::Join/version::1.0.0",
+  "componentVersion": "1.0.0",
+  "bpmnElement": "parallelGateway",
+  "properties": []
+}

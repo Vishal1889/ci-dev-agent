@@ -1,0 +1,77 @@
+{
+  "name": "Data Store Write",
+  "flavor": "put",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::put/version::1.7.1",
+  "componentVersion": "1.7.1",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Data Store Name",
+      "key": "storageName"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "local",
+      "label": "Visibility",
+      "key": "visibility",
+      "values": [
+        {
+          "key": "local",
+          "label": "Integration Flow"
+        },
+        {
+          "key": "global",
+          "label": "Global"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Entry ID",
+      "key": "messageId"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "2",
+      "label": "Retention Threshold for Alerting (in d)",
+      "key": "alert"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "30",
+      "label": "Expiration Period (in d)",
+      "key": "expire"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Encrypt Stored Message",
+      "key": "encrypt"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Overwrite Existing Message",
+      "key": "override"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Include Message Headers",
+      "key": "includeMessageHeaders"
+    },
+    {
+      "key": "operation",
+      "defaultValue": "put",
+      "label": "Operation"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "name": "XML Signature Verifier",
+  "flavor": "XMLDigitalVerifySign",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::XMLDigitalVerifySign/version::1.1.0",
+  "componentVersion": "1.1.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "Enveloping or Enveloped XML Signature",
+      "label": "Expected Signature Type",
+      "key": "verifySignatureType",
+      "values": [
+        {
+          "key": "Enveloping or Enveloped XML Signature",
+          "label": "Enveloping or Enveloped XML Signature"
+        },
+        {
+          "key": "Detached XML Signatures",
+          "label": "Detached XML Signatures"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "XML Schema File Path",
+      "key": "schemaFieldPath",
+      "when": "verifySignatureType in ['Detached XML Signatures']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Check for Key Info Element",
+      "key": "CheckForKeyInfo"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Exclude XML Declaration",
+      "key": "omitXmlDeclaration"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Disallow DOCTYPE Declaration",
+      "key": "disallowDoctypeDecl"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Public Key Aliases",
+      "key": "publicKeyAliases",
+      "columns": [
+        {
+          "key": "publicKeyAlias",
+          "label": "",
+          "mandatory": true
+        }
+      ]
+    }
+  ]
+}

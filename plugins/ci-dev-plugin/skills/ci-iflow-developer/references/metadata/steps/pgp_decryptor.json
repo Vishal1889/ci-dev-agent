@@ -1,0 +1,45 @@
+{
+  "name": "PGPDecryptor",
+  "flavor": "PgpDecrypt",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::PgpDecrypt/version::1.2.0",
+  "componentVersion": "1.2.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "no_signature_allowed",
+      "label": "Signatures",
+      "key": "PgpDecryptionSignatureOption",
+      "values": [
+        {
+          "key": "no_signature_allowed",
+          "label": "None Expected"
+        },
+        {
+          "key": "optional",
+          "label": "Optional"
+        },
+        {
+          "key": "required",
+          "label": "Required"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Signer Key User IDs",
+      "key": "PgpDecryptionSignerUserIDs",
+      "when": "PgpDecryptionSignatureOption in ['optional'] OR PgpDecryptionSignatureOption in ['required']",
+      "columns": [
+        {
+          "key": "userId",
+          "label": "Signer User ID of Key(s) from Public Keyring",
+          "mandatory": true
+        }
+      ]
+    }
+  ]
+}

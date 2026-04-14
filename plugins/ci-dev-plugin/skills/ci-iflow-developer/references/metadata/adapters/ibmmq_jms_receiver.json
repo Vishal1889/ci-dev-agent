@@ -1,0 +1,311 @@
+{
+  "name": "IBMMQ",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::IBMMQ/vendor::rojoconsultancy.com/tp::JMS/mp::JMS/direction::Receiver/version::1.1.0",
+  "componentVersion": "1.1.0",
+  "messageProtocol": "JMS",
+  "transportProtocol": "JMS",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.1.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::IBMMQ/vendor::rojoconsultancy.com/tp::JMS/mp::JMS/direction::Receiver/version::1.4.1",
+      "messageProtocol": "JMS",
+      "transportProtocol": "JMS",
+      "componentVersion": "1.4.1"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::IBMMQ/vendor::rojoconsultancy.com/tp::HTTPS/mp::REST/direction::Receiver",
+      "messageProtocol": "REST",
+      "transportProtocol": "HTTPS",
+      "componentVersion": ""
+    }
+  ],
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Hostname",
+      "key": "host"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Port",
+      "key": "port"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "basic",
+      "label": "Authentication",
+      "key": "authentication",
+      "values": [
+        {
+          "key": "basic",
+          "label": "Basic"
+        },
+        {
+          "key": "clientCertificate",
+          "label": "Client Certificate"
+        },
+        {
+          "key": "none",
+          "label": "None"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "credentialNameAlias"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Private Key Alias",
+      "key": "privateKeyAlias"
+    },
+    {
+      "externalizable": true,
+      "label": "Credential Name",
+      "key": "credentialNameAliasCert"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "internet",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "internet",
+          "label": "Internet"
+        },
+        {
+          "key": "onPremise",
+          "label": "On-Premise"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "locationId"
+    },
+    {
+      "externalizable": true,
+      "label": "SSL Cipher Suite",
+      "key": "cipherSuit"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "SSL Cipher Suite",
+      "key": "cipherSuitCloudConn"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Queue Manager Name",
+      "key": "qmgrName"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Channel Name",
+      "key": "channelName"
+    },
+    {
+      "externalizable": true,
+      "label": "Application Name",
+      "key": "applicationName"
+    },
+    {
+      "defaultValue": "tcpip",
+      "label": "Transport/Network Protocol",
+      "key": "connectionProtocol",
+      "values": [
+        {
+          "key": "tcpip",
+          "label": "TCP/IP"
+        },
+        {
+          "key": "webSpehereMq",
+          "label": "WebSphereMQ"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Character Set ID (CCSID) for Non-ASCII Names",
+      "key": "ccsid"
+    },
+    {
+      "defaultValue": "queue",
+      "label": "Message Destination Type",
+      "key": "entity",
+      "values": [
+        {
+          "key": "queue",
+          "label": "Queue"
+        },
+        {
+          "key": "topic",
+          "label": "Topic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Queue Name",
+      "key": "queueName"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Topic Name/String",
+      "key": "topicName"
+    },
+    {
+      "defaultValue": "1",
+      "label": "Target Client",
+      "key": "targetClient",
+      "values": [
+        {
+          "key": "1",
+          "label": "WebSphereMQ (Non-JMS)"
+        },
+        {
+          "key": "0",
+          "label": "JMS-Compliant"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Client ID",
+      "key": "clientId"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Transactional JMS Session",
+      "key": "useTransactionalSession"
+    },
+    {
+      "defaultValue": "textMessage",
+      "label": "Message Type",
+      "key": "messageType",
+      "values": [
+        {
+          "key": "textMessage",
+          "label": "Text"
+        },
+        {
+          "key": "byteMessage",
+          "label": "Byte"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Correlation ID",
+      "key": "correlationId"
+    },
+    {
+      "defaultValue": "persistent",
+      "label": "Delivery Mode",
+      "key": "messagePersistence",
+      "values": [
+        {
+          "key": "nonPersistent",
+          "label": "Non Persistent"
+        },
+        {
+          "key": "persistent",
+          "label": "Persistent"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "ReplyTo Destination",
+      "key": "replyToDestination"
+    },
+    {
+      "externalizable": true,
+      "label": "Expiry",
+      "key": "messageExpiry"
+    },
+    {
+      "externalizable": true,
+      "label": "Priority",
+      "key": "messagePriority"
+    },
+    {
+      "externalizable": true,
+      "label": "Time Stamp",
+      "key": "messageTimeStamp"
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "JMS Message Properties",
+      "key": "jmsMessageProperties",
+      "columns": [
+        {
+          "key": "jmsMessagePropertyName",
+          "label": "Name",
+          "mandatory": true
+        },
+        {
+          "key": "jmsMessagePropertyValue",
+          "label": "Value",
+          "mandatory": true
+        },
+        {
+          "key": "jmsMessagePropertyDataType",
+          "label": "Data Type",
+          "default": "string",
+          "values": [
+            {
+              "key": "string",
+              "label": "String"
+            },
+            {
+              "key": "boolean",
+              "label": "boolean"
+            },
+            {
+              "key": "byte",
+              "label": "byte"
+            },
+            {
+              "key": "short",
+              "label": "short"
+            },
+            {
+              "key": "integer",
+              "label": "int"
+            },
+            {
+              "key": "long",
+              "label": "long"
+            },
+            {
+              "key": "float",
+              "label": "float"
+            },
+            {
+              "key": "double",
+              "label": "double"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

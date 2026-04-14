@@ -1,0 +1,98 @@
+{
+  "name": "IDOC",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:IDOC/tp::HTTP/mp::IDoc SOAP/direction::Sender/version::1.4.4",
+  "componentVersion": "1.4.4",
+  "messageProtocol": "IDoc SOAP",
+  "transportProtocol": "HTTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.8.1",
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "address"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "RoleBased",
+      "label": "Authorization",
+      "key": "senderAuthType",
+      "values": [
+        {
+          "key": "RoleBased",
+          "label": "User Role"
+        },
+        {
+          "key": "ClientCertificate",
+          "label": "Client Certificate"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Client Certificate Authorization",
+      "key": "clientCertificates",
+      "when": "senderAuthType in ['ClientCertificate']",
+      "columns": [
+        {
+          "key": "clientCertificate.subjectDN",
+          "label": "Subject DN",
+          "mandatory": true
+        },
+        {
+          "key": "clientCertificate.issuerDN",
+          "label": "Issuer DN",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "ESBMessaging.send",
+      "label": "User Role",
+      "key": "userRole",
+      "when": "senderAuthType in ['RoleBased']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "throwException",
+      "label": "Invalid XML Character Handling",
+      "key": "xmlCharacterHandling",
+      "values": [
+        {
+          "key": "throwException",
+          "label": "Throw Exception"
+        },
+        {
+          "key": "remove",
+          "label": "Remove"
+        },
+        {
+          "key": "substitute",
+          "label": "Substitute"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "40",
+      "dataType": "xsd:integer",
+      "label": "Body Size (in MB)",
+      "key": "maximumBodySize"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "100",
+      "dataType": "xsd:integer",
+      "label": "Attachments Size (in MB)",
+      "key": "maximumAttachmentSize"
+    }
+  ]
+}

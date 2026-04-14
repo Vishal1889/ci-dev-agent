@@ -1,0 +1,294 @@
+{
+  "name": "SuccessFactors",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::OData V2/direction::Receiver/version::1.21.1",
+  "componentVersion": "1.21.1",
+  "messageProtocol": "OData V2",
+  "transportProtocol": "HTTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.21.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::REST/direction::Receiver/version::1.1.4",
+      "messageProtocol": "REST",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.1.4"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::OData V4/direction::Receiver/version::1.11.0",
+      "messageProtocol": "OData V4",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.11.0"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::OData V2/direction::Receiver/version::1.21.1",
+      "messageProtocol": "OData V2",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.21.1"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SuccessFactors/tp::HTTP/mp::SOAP/direction::Receiver/version::1.7.1",
+      "messageProtocol": "SOAP",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.7.1"
+    }
+  ],
+  "properties": [
+    {
+      "mandatory": true,
+      "defaultValue": "Other",
+      "label": "SFSF Data Center",
+      "key": "sfsfODataReceiverDataCenterUrl",
+      "when": "Other in ['ABC']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "address"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "/odata/v2",
+      "label": "Address Suffix",
+      "key": "urlSuffixSfOData"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "default",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "proxyHost",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "xsd:integer",
+      "label": "Proxy Port",
+      "key": "proxyPort",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Basic",
+      "label": "Authentication",
+      "key": "authenticationMethod",
+      "values": [
+        {
+          "key": "Basic",
+          "label": "Basic"
+        },
+        {
+          "key": "OAuth2SAMLBearer",
+          "label": "OAuth2 SAML Bearer Assertion"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "alias"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "gzip",
+      "label": "Accept-Encoding",
+      "key": "acceptEncoding",
+      "values": [
+        {
+          "key": "gzip",
+          "label": "gzip"
+        },
+        {
+          "key": "none",
+          "label": "None"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Reuse Connection",
+      "key": "enableTLSSessionReuse"
+    },
+    {
+      "defaultValue": "Query(GET)",
+      "label": "Operation Details",
+      "key": "operation",
+      "values": [
+        {
+          "key": "Create(POST)",
+          "label": "Create (POST)"
+        },
+        {
+          "key": "Update(PUT)",
+          "label": "Update (PUT)"
+        },
+        {
+          "key": "Query(GET)",
+          "label": "Query (GET)"
+        },
+        {
+          "key": "Read(GET)",
+          "label": "Read (GET)"
+        },
+        {
+          "key": "Upsert(UPSERT)",
+          "label": "Upsert (POST)"
+        },
+        {
+          "key": "Delete(DELETE)",
+          "label": "Delete (DELETE)"
+        }
+      ]
+    },
+    {
+      "mandatory": true,
+      "label": "Resource Path",
+      "key": "resourcePath"
+    },
+    {
+      "label": "Fields",
+      "key": "fields",
+      "when": "operation in ['Create(POST)'] OR operation in ['Upsert(UPSERT)'] OR operation in ['Update(PUT)']"
+    },
+    {
+      "label": "Query Options",
+      "key": "queryOptions",
+      "when": "operation in ['Query(GET)'] OR operation in ['Read(GET)']"
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:boolean",
+      "label": "Enable Batch Processing",
+      "key": "enableBatchProcessing",
+      "when": "operation in ['Upsert(UPSERT)']"
+    },
+    {
+      "externalizable": true,
+      "label": "Custom Query Options",
+      "key": "customQueryOptions"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "application/atom+xml",
+      "label": "Content Type",
+      "key": "contentType",
+      "when": "operation in ['Create(POST)'] OR operation in ['Update(PUT)'] OR operation in ['Upsert(UPSERT)']",
+      "values": [
+        {
+          "key": "application/atom+xml",
+          "label": "Atom"
+        },
+        {
+          "key": "application/json",
+          "label": "JSON"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "Content Type Encoding",
+      "key": "characterEncoding",
+      "when": "operation in ['Create(POST)'] OR operation in ['Update(PUT)'] OR operation in ['Upsert(UPSERT)']",
+      "values": [
+        {
+          "key": "none",
+          "label": "None"
+        },
+        {
+          "key": "utf8",
+          "label": "UTF-8"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "snapshot",
+      "label": "Pagination",
+      "key": "paging",
+      "when": "operation in ['Query(GET)']",
+      "values": [
+        {
+          "key": "none",
+          "label": "Client"
+        },
+        {
+          "key": "cursor",
+          "label": "Server Cursor-Based"
+        },
+        {
+          "key": "snapshot",
+          "label": "Server Snapshot-Based"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:integer",
+      "label": "Page Size",
+      "key": "odatapagesize",
+      "when": "operation in ['Query(GET)'] OR operation in ['Read(GET)']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Retry on Failure",
+      "key": "retryOnFailure"
+    },
+    {
+      "dataType": "xsd:boolean",
+      "label": "Process in Pages",
+      "key": "pagination",
+      "when": "operation in ['Query(GET)']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Timeout (in min)",
+      "key": "receiveTimeOut"
+    },
+    {
+      "externalizable": true,
+      "key": "edmxFilePath",
+      "when": "edmxFilePath in ['false']"
+    },
+    {
+      "label": "Request Headers",
+      "key": "whitelistRequestHeaders"
+    },
+    {
+      "label": "Response Headers",
+      "key": "whitelistResponseHeaders"
+    }
+  ]
+}

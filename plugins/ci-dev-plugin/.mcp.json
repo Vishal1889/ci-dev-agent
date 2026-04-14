@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["--yes", "@playwright/mcp@0.0.68", "--headless"]
+    },
+    "ci-mcp-server-custom": {
+      "type": "http",
+      "url": "https://bef53b60trial-dev-ci-mcp-server-custom.cfapps.us10-001.hana.ondemand.com/mcp",
+      "oauth": {
+        "clientId": "sb-ci-mcp-server-custom!t614651",
+        "authorizeUrl": "https://bef53b60trial.authentication.us10.hana.ondemand.com/oauth/authorize",
+        "tokenUrl": "https://bef53b60trial.authentication.us10.hana.ondemand.com/oauth/token",
+        "callbackPort": 8080
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+#
+#Sun Apr 12 10:32:39 UTC 2026
+Attached_payload=XYZ
+Scheduler=<row><cell>dateType</cell><cell>ADVANCED</cell></row><row><cell>hourValue</cell><cell>15</cell></row><row><cell>minutesValue</cell><cell>53</cell></row><row><cell>timeType</cell><cell>ON_TIME</cell></row><row><cell>timeZone</cell><cell>( UTC 0\:00 ) Greenwich Mean Time(Etc/GMT)</cell></row><row><cell>throwExceptionOnExpiry</cell><cell>true</cell></row><row><cell>second</cell><cell>0</cell></row><row><cell>minute</cell><cell>0/5</cell></row><row><cell>hour</cell><cell>*</cell></row><row><cell>day_of_month</cell><cell>?</cell></row><row><cell>month</cell><cell>*</cell></row><row><cell>dayOfWeek</cell><cell>*</cell></row><row><cell>year</cell><cell>*</cell></row><row><cell>startAt</cell><cell></cell></row><row><cell>endAt</cell><cell></cell></row><row><cell>attributeBehaviour</cell><cell>isThrowExceptionOnExpiryVisible,isScheduleAdvancedVisible,isScheduleAdvancedStartEndVisible,isScheduleSimpleVisible</cell></row><row><cell>triggerType</cell><cell>cron</cell></row><row><cell>noOfSchedules</cell><cell>1</cell></row><row><cell>schedule1</cell><cell>0+0/5+*+?+*+*+*&amp;trigger.timeZone\=Etc/GMT</cell></row>
+receiver.Address=http\://i10\:50000/sap/opu/odata/IWBEP/GWSAMPLE_BASIC
+receiver.AuthMethod=Basic
+receiver.Credential=I10_S4H
+receiver.ProxyType=sapcc

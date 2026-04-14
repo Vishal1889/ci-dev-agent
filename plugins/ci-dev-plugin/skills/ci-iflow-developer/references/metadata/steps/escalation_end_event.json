@@ -1,0 +1,49 @@
+{
+  "name": "Escalation End Event",
+  "flavor": "",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "ReceiverNotFound",
+      "label": "Category",
+      "key": "ErrorCode",
+      "values": [
+        {
+          "key": "RoutingConditionNotMet",
+          "label": "Routing condition not met"
+        },
+        {
+          "key": "ReceiverNotReachable",
+          "label": "Receiver not reachable"
+        },
+        {
+          "key": "ReceiverNotFound",
+          "label": "Receiver not found"
+        },
+        {
+          "key": "NotAuthenticated",
+          "label": "Not authenticated to invoke receiver"
+        },
+        {
+          "key": "NotAuthorized",
+          "label": "Not authorized to invoke receiver"
+        },
+        {
+          "key": "Redirect",
+          "label": "Receiver tries to redirect"
+        },
+        {
+          "key": "InternalServerErrorInReceiver",
+          "label": "Internal server error in receiver"
+        },
+        {
+          "key": "Others",
+          "label": "Others - not further qualified"
+        }
+      ]
+    }
+  ]
+}

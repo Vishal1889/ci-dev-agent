@@ -1,0 +1,87 @@
+{
+  "name": "Message Digest",
+  "flavor": "MessageDigest",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::MessageDigest/version::1.1.1",
+  "componentVersion": "1.1.1",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "label": "Filter (XPath)",
+      "key": "filter"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "xml-c14n",
+      "label": "Canonicalization Method",
+      "key": "canonicalizationMethod",
+      "values": [
+        {
+          "key": "xml-c14n",
+          "label": "XML Canonicalization Version 1.0"
+        },
+        {
+          "key": "xml-c14n-wc",
+          "label": "XML Canonicalization with Comments Version 1.0"
+        },
+        {
+          "key": "xml-exc-c14n",
+          "label": "Exclusive XML Canonicalization Version 1.0"
+        },
+        {
+          "key": "xml-exc-c14n-wc",
+          "label": "Exclusive XML Canonicalization with Comments Version 1.0"
+        },
+        {
+          "key": "xml-c14n11",
+          "label": "XML Canonicalization Version 1.1"
+        },
+        {
+          "key": "xml-c14n11-wc",
+          "label": "XML Canonicalization with Comments Version 1.1"
+        },
+        {
+          "key": "none",
+          "label": "None"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "SHA-512",
+      "label": "Digest Algorithm",
+      "key": "digestAlgorithm",
+      "values": [
+        {
+          "key": "SHA-1",
+          "label": "SHA1"
+        },
+        {
+          "key": "SHA-256",
+          "label": "SHA256"
+        },
+        {
+          "key": "SHA-384",
+          "label": "SHA384"
+        },
+        {
+          "key": "SHA-512",
+          "label": "SHA512"
+        },
+        {
+          "key": "MD5",
+          "label": "MD5"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "SAPMessageDigest",
+      "label": "Target Header",
+      "key": "targetHeader"
+    }
+  ]
+}

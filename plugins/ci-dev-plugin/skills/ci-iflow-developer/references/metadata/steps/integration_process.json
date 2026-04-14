@@ -1,0 +1,39 @@
+{
+  "name": "Integration Process",
+  "flavor": "Process",
+  "seedId": "Process_",
+  "cmdVariantUri": "ctype::FlowElementVariant/cname::IntegrationProcess/version::1.2.1",
+  "componentVersion": "1.2.1",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "Not Required",
+      "label": "Transaction Handling",
+      "key": "transactionalHandling",
+      "values": [
+        {
+          "key": "Required",
+          "label": "Required for JDBC"
+        },
+        {
+          "key": "Not Required",
+          "label": "Not Required"
+        },
+        {
+          "key": "Required JMS",
+          "label": "Required for JMS"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "30",
+      "dataType": "xsd:integer",
+      "label": "Timeout (in min)",
+      "key": "transactionTimeout",
+      "when": "transactionalHandling in ['Required'] OR transactionalHandling in ['Required JMS']"
+    }
+  ]
+}

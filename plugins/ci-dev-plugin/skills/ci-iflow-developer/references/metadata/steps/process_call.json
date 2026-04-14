@@ -1,0 +1,16 @@
+{
+  "name": "Process Call",
+  "flavor": "NonLoopingProcess",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::NonLoopingProcess/version::1.0.4",
+  "componentVersion": "1.0.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "mandatory": true,
+      "dataType": "xsd:idref",
+      "label": "Local Integration Process",
+      "key": "processId"
+    }
+  ]
+}

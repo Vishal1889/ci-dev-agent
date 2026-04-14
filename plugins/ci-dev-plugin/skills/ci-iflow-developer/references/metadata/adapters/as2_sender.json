@@ -1,0 +1,491 @@
+{
+  "name": "AS2",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::AS2/tp::HTTP/mp::AS2/direction::Sender/version::1.16.0",
+  "componentVersion": "1.16.0",
+  "messageProtocol": "AS2",
+  "transportProtocol": "HTTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "SAP BASIS 7.31",
+  "ComponentSWCVId": "1.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::AS2/tp::HTTP/mp::AS2/direction::Sender/version::1.16.0",
+      "messageProtocol": "AS2",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.16.0"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::AS2/tp::HTTP/mp::AS2 MDN/direction::Sender/version::1.10.1",
+      "messageProtocol": "AS2 MDN",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.10.1"
+    }
+  ],
+  "properties": [
+    {
+      "externalizable": true,
+      "label": "Address",
+      "key": "address"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "RoleBased",
+      "label": "Authorization",
+      "key": "senderAuthType",
+      "values": [
+        {
+          "key": "RoleBased",
+          "label": "User Role"
+        },
+        {
+          "key": "ClientCertificate",
+          "label": "Client Certificate"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "ESBMessaging.send",
+      "label": "User Role",
+      "key": "userRole",
+      "when": "senderAuthType in ['RoleBased']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Client Certificate Authorization",
+      "key": "clientCertificates",
+      "when": "senderAuthType in ['ClientCertificate']",
+      "columns": [
+        {
+          "key": "clientCertificate.subjectDN",
+          "label": "Subject DN",
+          "mandatory": true
+        },
+        {
+          "key": "clientCertificate.issuerDN",
+          "label": "Issuer DN",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "authorizedUser",
+      "label": "Source",
+      "key": "as2PidSource",
+      "values": [
+        {
+          "key": "authorizedUser",
+          "label": "Authorized User"
+        },
+        {
+          "key": "as2PartnerId",
+          "label": "AS2 Partner ID Header"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Message ID Left Part",
+      "key": "expectedMessageIDLeft"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Message ID Right Part",
+      "key": "expectedMessageIDRight"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Partner AS2 ID",
+      "key": "partnerAS2Name"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Own AS2 ID",
+      "key": "ownAS2Name"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Message Subject",
+      "key": "messageSubject"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Number of Concurrent Processes",
+      "key": "numberConcurrentProcesses"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Mandatory File Name",
+      "key": "fileNameMandatoryCheck"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Duplicate Message ID",
+      "key": "as2MsgIdDupCheck"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1440",
+      "dataType": "xsd:integer",
+      "label": "Persist Duration (in min)",
+      "key": "as2MsgIdPersistDuration",
+      "when": "as2MsgIdDupCheck in ['1']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "ErrorMDN",
+      "label": "MDN Response",
+      "key": "as2MsgIdDupCheckResponse",
+      "when": "as2MsgIdDupCheck in ['1']",
+      "values": [
+        {
+          "key": "WarningMDN",
+          "label": "Warning"
+        },
+        {
+          "key": "ErrorMDN",
+          "label": "Error"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Duplicate File Name",
+      "key": "fileNameDupCheck"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1440",
+      "dataType": "xsd:integer",
+      "label": "Persist Duration (in min)",
+      "key": "fileNamePersistDuration",
+      "when": "fileNameDupCheck in ['1']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "ErrorMDN",
+      "label": "MDN Response",
+      "key": "fileNameDupCheckResponse",
+      "when": "fileNameDupCheck in ['1']",
+      "values": [
+        {
+          "key": "WarningMDN",
+          "label": "Warning"
+        },
+        {
+          "key": "ErrorMDN",
+          "label": "Error"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "channelConfiguration",
+      "label": "Decryption Configuration Type",
+      "key": "decryptionConfigurationType",
+      "values": [
+        {
+          "key": "channelConfiguration",
+          "label": "Channel Configuration"
+        },
+        {
+          "key": "incomingAS2Headers",
+          "label": "Incoming AS2 Headers"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Decrypt Message",
+      "key": "doDecryption",
+      "when": "decryptionConfigurationType in ['channelConfiguration'] OR decryptionConfigurationType in ['dynamic']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Private Key Alias",
+      "key": "privateKeyAliasForDecryption",
+      "when": "None in [] OR doDecryption in ['1']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "NotRequired",
+      "label": "Verify Signature",
+      "key": "verificationOption",
+      "values": [
+        {
+          "key": "NotRequired",
+          "label": "Not Required"
+        },
+        {
+          "key": "TrustedCertificate",
+          "label": "Trusted Certificate"
+        },
+        {
+          "key": "TrustedRootCertificate",
+          "label": "Trusted Root Certificate"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Public Key Alias",
+      "key": "publicKeyAliasForVerification",
+      "when": "verificationOption in ['TrustedCertificate']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Public Key Aliases",
+      "key": "publicKeyRootAliasForVerification",
+      "when": "verificationOption in ['TrustedRootCertificate']"
+    },
+    {
+      "externalizable": true,
+      "label": "Private Key Alias for Signature",
+      "key": "privateKeyAliasForMDNSigning"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "binary",
+      "label": "Signature Encoding",
+      "key": "signatureEncoding",
+      "values": [
+        {
+          "key": "binary",
+          "label": "binary"
+        },
+        {
+          "key": "base64",
+          "label": "base64"
+        },
+        {
+          "key": "dynamic",
+          "label": "dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "notRequired",
+      "label": "Propagate MDN Details to Exchange",
+      "key": "propagateMDNDetails",
+      "values": [
+        {
+          "key": "required",
+          "label": "Required"
+        },
+        {
+          "key": "notRequired",
+          "label": "Not Required"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "notRequired",
+      "label": "Negative MDN on Processing Failures",
+      "key": "negativeMDNForFailures",
+      "values": [
+        {
+          "key": "required",
+          "label": "Required"
+        },
+        {
+          "key": "notRequired",
+          "label": "Not Required"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "default",
+      "label": "Proxy Type",
+      "key": "mdnProxyType",
+      "values": [
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "sapcc",
+          "label": "On-Premise"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "mdnLocationID"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "mdnProxyHost"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Port",
+      "key": "mdnProxyPort"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "None",
+      "label": "Authentication",
+      "key": "mdnAuthenticationType",
+      "values": [
+        {
+          "key": "None",
+          "label": "None"
+        },
+        {
+          "key": "BasicAuthentication",
+          "label": "Basic Authentication"
+        },
+        {
+          "key": "Dynamic",
+          "label": "Dynamic"
+        },
+        {
+          "key": "ClientCertificate",
+          "label": "Client Certificate"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "mdnUserCredentialAlias",
+      "when": "mdnAuthenticationType in ['BasicAuthentication'] OR mdnAuthenticationType in ['Dynamic']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Private Key Alias",
+      "key": "mdnPrivateKeyAlias",
+      "when": "mdnAuthenticationType in ['ClientCertificate'] OR mdnAuthenticationType in ['Dynamic']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "300000",
+      "dataType": "xsd:integer",
+      "label": "Timeout (in ms)",
+      "key": "mdnTimeout"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "ExactlyOnce",
+      "label": "Quality Of Service",
+      "key": "QualityOfService",
+      "values": [
+        {
+          "key": "ExactlyOnce",
+          "label": "Exactly Once"
+        },
+        {
+          "key": "BestEffort",
+          "label": "Best Effort"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Retry Interval (in min)",
+      "key": "RetryInterval",
+      "when": "QualityOfService in ['ExactlyOnce']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Exponential Backoff",
+      "key": "ExponentialBackoff",
+      "when": "QualityOfService in ['ExactlyOnce']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "60",
+      "dataType": "xsd:integer",
+      "label": "Maximum Retry Interval (in min)",
+      "key": "MaxRetryInterval"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Dead-Letter Queue",
+      "key": "useDeadLetterQueue"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Encrypt Message During Persistence",
+      "key": "encryptRMPersistence"
+    }
+  ]
+}

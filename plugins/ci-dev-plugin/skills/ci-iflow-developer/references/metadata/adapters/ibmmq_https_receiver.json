@@ -1,0 +1,240 @@
+{
+  "name": "IBMMQ",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::IBMMQ/vendor::rojoconsultancy.com/tp::HTTPS/mp::REST/direction::Receiver",
+  "componentVersion": "",
+  "messageProtocol": "REST",
+  "transportProtocol": "HTTPS",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.1.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::IBMMQ/vendor::rojoconsultancy.com/tp::JMS/mp::JMS/direction::Receiver/version::1.4.1",
+      "messageProtocol": "JMS",
+      "transportProtocol": "JMS",
+      "componentVersion": "1.4.1"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::IBMMQ/vendor::rojoconsultancy.com/tp::HTTPS/mp::REST/direction::Receiver",
+      "messageProtocol": "REST",
+      "transportProtocol": "HTTPS",
+      "componentVersion": ""
+    }
+  ],
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "address"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "basic",
+      "label": "Authentication",
+      "key": "authentication",
+      "values": [
+        {
+          "key": "basic",
+          "label": "Basic"
+        },
+        {
+          "key": "tokenBased",
+          "label": "Token-Based"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "credentialNameAlias"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "internet",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "internet",
+          "label": "Internet"
+        },
+        {
+          "key": "onPremise",
+          "label": "On-Premise"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "locationId",
+      "when": "proxyType in ['onPremise']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Reuse connection",
+      "key": "reuseConnection"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "60000",
+      "label": "Connection Timeout (in ms)",
+      "key": "connectionTimeOut"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "60000",
+      "label": "Response Timeout (in ms)",
+      "key": "responseTimeOut"
+    },
+    {
+      "defaultValue": "write",
+      "label": "Operation",
+      "key": "restReceiverOperationType",
+      "values": [
+        {
+          "key": "write",
+          "label": "Write"
+        },
+        {
+          "key": "read",
+          "label": "Read"
+        },
+        {
+          "key": "readAndDelete",
+          "label": "Read and Delete"
+        },
+        {
+          "key": "delete",
+          "label": "Delete"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "v1",
+      "label": "API Version",
+      "key": "apiVersion",
+      "values": [
+        {
+          "key": "v1",
+          "label": "v1"
+        },
+        {
+          "key": "v2",
+          "label": "v2"
+        },
+        {
+          "key": "v3",
+          "label": "v3"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Queue Manager Name",
+      "key": "qmgrName"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Queue Name",
+      "key": "queueName"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "application/json;charset=utf-8",
+      "label": "Content Type",
+      "key": "paramContentType",
+      "values": [
+        {
+          "key": "application/json;charset=utf-8",
+          "label": "Application/JSON"
+        },
+        {
+          "key": "text/plain;charset=utf-8",
+          "label": "Text/Plain"
+        },
+        {
+          "key": "text/html;charset=utf-8",
+          "label": "Text/HTML"
+        },
+        {
+          "key": "text/xml;charset=utf-8",
+          "label": "Text/XML"
+        },
+        {
+          "key": "application/xml;charset=utf-8",
+          "label": "Application/XML"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "MQ CSRF Token",
+      "key": "csrfToken"
+    },
+    {
+      "externalizable": true,
+      "label": "MQ Correlation ID",
+      "key": "correlationId"
+    },
+    {
+      "externalizable": true,
+      "label": "Message ID",
+      "key": "messageId"
+    },
+    {
+      "externalizable": true,
+      "label": "Message Expiry",
+      "key": "messageExpiry"
+    },
+    {
+      "defaultValue": "nonPersistent",
+      "label": "Message Persistence",
+      "key": "messagePersistence",
+      "values": [
+        {
+          "key": "nonPersistent",
+          "label": "Non Persistent"
+        },
+        {
+          "key": "persistent",
+          "label": "Persistent"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Reply Queue",
+      "key": "replyToDestination"
+    },
+    {
+      "externalizable": true,
+      "label": "Message Priority",
+      "key": "messagePriority"
+    },
+    {
+      "externalizable": true,
+      "label": "User Properties",
+      "key": "userProperties"
+    },
+    {
+      "externalizable": true,
+      "label": "Request Headers",
+      "key": "requestHeaders"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "*",
+      "label": "Response Headers",
+      "key": "responseHeaders"
+    }
+  ]
+}

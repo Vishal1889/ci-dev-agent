@@ -1,0 +1,145 @@
+{
+  "name": "AS2",
+  "direction": "Sender",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::AS2/tp::HTTP/mp::AS2/direction::Sender/version::1.16.0",
+  "componentVersion": "1.16.0",
+  "messageProtocol": "AS2",
+  "transportProtocol": "HTTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "SAP BASIS 7.31",
+  "ComponentSWCVId": "1.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::AS2/tp::HTTP/mp::AS2/direction::Sender/version::1.16.0",
+      "messageProtocol": "AS2",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.16.0"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::AS2/tp::HTTP/mp::AS2 MDN/direction::Sender/version::1.10.1",
+      "messageProtocol": "AS2 MDN",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.10.1"
+    }
+  ],
+  "properties": [
+    {
+      "externalizable": true,
+      "label": "Address",
+      "key": "address"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "RoleBased",
+      "label": "Authorization",
+      "key": "senderAuthType",
+      "values": [
+        {
+          "key": "RoleBased",
+          "label": "User Role"
+        },
+        {
+          "key": "ClientCertificate",
+          "label": "Client Certificate"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "ESBMessaging.send",
+      "label": "User Role",
+      "key": "userRole",
+      "when": "senderAuthType in ['RoleBased']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "isTable",
+      "label": "Client Certificate Authorization",
+      "key": "clientCertificates",
+      "when": "senderAuthType in ['ClientCertificate']",
+      "columns": [
+        {
+          "key": "clientCertificate.subjectDN",
+          "label": "Subject DN",
+          "mandatory": true
+        },
+        {
+          "key": "clientCertificate.issuerDN",
+          "label": "Issuer DN",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "authorizedUser",
+      "label": "Source",
+      "key": "pidSource",
+      "values": [
+        {
+          "key": "authorizedUser",
+          "label": "Authorized User"
+        },
+        {
+          "key": "as2PartnerId",
+          "label": "AS2 Partner ID Header"
+        },
+        {
+          "key": "dynamic",
+          "label": "Dynamic"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Partner AS2 ID",
+      "key": "partnerAS2Name"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Own AS2 ID",
+      "key": "ownAS2Name"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:integer",
+      "label": "Number of Concurrent Processes",
+      "key": "numberConcurrentProcesses"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Verify Signature",
+      "key": "verifyMDNSignature"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Public Key Alias",
+      "key": "publicKeyAliasForMDNVerification",
+      "when": "verifyMDNSignature in ['1']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Verify MIC",
+      "key": "verifyMIC"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Message Failure on Negative MDN",
+      "key": "failMessageOnNegativeMDN"
+    }
+  ]
+}

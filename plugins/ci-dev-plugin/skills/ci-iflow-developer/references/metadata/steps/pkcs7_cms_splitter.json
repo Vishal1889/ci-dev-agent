@@ -1,0 +1,40 @@
+{
+  "name": "PKCS7/CMS Splitter",
+  "flavor": "Splitter_PKCS7CMS",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::PKCS#7/CMS Signature-Content Splitter/version::1.1.1",
+  "componentVersion": "1.1.1",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "key": "splitType",
+      "defaultValue": "PKCS#7/CMS Signature-Content Splitter"
+    },
+    {
+      "key": "PK7_WrapContent",
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Wrap Content"
+    },
+    {
+      "key": "PK7_Payload",
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Include Payload"
+    },
+    {
+      "key": "PK7_Base64_Payload",
+      "label": "Base64 Payload"
+    },
+    {
+      "key": "PK7_Base64_SIG",
+      "label": "Base64 Signature"
+    },
+    {
+      "key": "tokenValue"
+    },
+    {
+      "key": "tokenValue2"
+    }
+  ]
+}

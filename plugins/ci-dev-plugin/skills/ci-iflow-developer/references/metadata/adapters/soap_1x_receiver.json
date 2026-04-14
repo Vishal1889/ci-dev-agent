@@ -1,0 +1,470 @@
+{
+  "name": "SOAP",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SOAP/tp::HTTP/mp::SOAP 1.x/direction::Receiver/version::1.13.0",
+  "componentVersion": "1.13.0",
+  "messageProtocol": "SOAP 1.x",
+  "transportProtocol": "HTTP",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.13.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SOAP/tp::HTTP/mp::SOAP 1.x/direction::Receiver/version::1.13.0",
+      "messageProtocol": "SOAP 1.x",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.13.0"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:SOAP/tp::HTTP/mp::Plain SOAP/direction::Receiver/version::1.10.3",
+      "messageProtocol": "Plain SOAP",
+      "transportProtocol": "HTTP",
+      "componentVersion": "1.10.3"
+    }
+  ],
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Address",
+      "key": "address"
+    },
+    {
+      "label": "Type",
+      "key": "apiArtifactType"
+    },
+    {
+      "externalizable": true,
+      "key": "providerRelativeUrl",
+      "when": "apiArtifactType in ['API Provider']"
+    },
+    {
+      "label": "Destination",
+      "key": "providerName",
+      "when": "apiArtifactType in ['API Provider']"
+    },
+    {
+      "label": "Proxy Type",
+      "key": "internetProxyType",
+      "when": "apiArtifactType in ['API Provider']"
+    },
+    {
+      "label": "Authentication",
+      "key": "providerAuth",
+      "when": "apiArtifactType in ['API Provider']"
+    },
+    {
+      "label": "URL",
+      "key": "providerUrl",
+      "when": "apiArtifactType in ['API Provider']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "default",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "when": "NOT (apiArtifactType in ['API Provider'])",
+      "values": [
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "sapcc",
+          "label": "On-Premise"
+        },
+        {
+          "key": "default",
+          "label": "Internet"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "proxyHost",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "xsd:integer",
+      "label": "Proxy Port",
+      "key": "proxyPort",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "location_id",
+      "when": "proxyType in ['sapcc']"
+    },
+    {
+      "externalizable": true,
+      "label": "URL to WSDL",
+      "key": "soapWsdlURL"
+    },
+    {
+      "externalizable": true,
+      "label": "Service",
+      "key": "soapServiceName"
+    },
+    {
+      "externalizable": true,
+      "label": "Endpoint",
+      "key": "soapWsdlPortName"
+    },
+    {
+      "externalizable": true,
+      "label": "Operation Name",
+      "key": "operationName"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Client Certificate",
+      "label": "Authentication",
+      "key": "authentication",
+      "when": "NOT (apiArtifactType in ['API Provider'])",
+      "values": [
+        {
+          "key": "Basic",
+          "label": "Basic"
+        },
+        {
+          "key": "None",
+          "label": "None"
+        },
+        {
+          "key": "Client Certificate",
+          "label": "Client Certificate"
+        },
+        {
+          "key": "OAuth2SAMLBearer",
+          "label": "OAuth2 SAML Bearer Assertion"
+        },
+        {
+          "key": "Principal Propagation",
+          "label": "Principal Propagation"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Private Key Alias",
+      "key": "privateKeyAlias",
+      "when": "authentication in ['Client Certificate']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "credentialName",
+      "when": "authentication in ['Basic'] OR authentication in ['OAuth2SAMLBearer']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "60000",
+      "dataType": "xsd:integer",
+      "label": "Timeout (in ms)",
+      "key": "requestTimeout"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Keep-Alive",
+      "key": "KeepConnectionAlive"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Compress Message",
+      "key": "CompressMessage"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Allow Chunking",
+      "key": "allowChunking"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Return HTTP Response Code as Header",
+      "key": "sendHttpResponseCode"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Clean-up Request Headers",
+      "key": "cleanupHeaders"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "None",
+      "label": "WS-Security Configuration",
+      "key": "WSSecurity_outbound",
+      "values": [
+        {
+          "key": "ManualConfiguration",
+          "label": "Via Manual Configuration in Channel"
+        },
+        {
+          "key": "PoliciesInWSDL",
+          "label": "Based on Policies in WSDL"
+        },
+        {
+          "key": "None",
+          "label": "None"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "None",
+      "label": "Options",
+      "key": "UserNameTokenOption",
+      "when": "WSSecurity_outbound in ['ManualConfiguration']",
+      "values": [
+        {
+          "key": "PlainText",
+          "label": "Plain Text Password"
+        },
+        {
+          "key": "PasswordDigest",
+          "label": "Hashed Password"
+        },
+        {
+          "key": "None",
+          "label": "None"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "UserNameTokenCredentialName"
+    },
+    {
+      "externalizable": true,
+      "label": "Credential Name",
+      "key": "WsdlUserNameTokenCredentialName",
+      "when": "WSSecurity_outbound in ['PoliciesInWSDL']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "SignMessage",
+      "label": "WS-Security Type",
+      "key": "WSSecurityType_outbound",
+      "when": "WSSecurity_outbound in ['ManualConfiguration']",
+      "values": [
+        {
+          "key": "SignMessage",
+          "label": "Sign Message"
+        },
+        {
+          "key": "SignEncryptMessage",
+          "label": "Sign and Encrypt Message"
+        },
+        {
+          "key": "None",
+          "label": "None"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Private Key Alias for Signing",
+      "key": "PrivateKeyAliasSigning"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Public Key Alias for Encryption",
+      "key": "PublicKeyAliasEncryption"
+    },
+    {
+      "externalizable": true,
+      "label": "Private Key Alias for Signing",
+      "key": "PrivateKeyAliasSigning_wsdl",
+      "when": "WSSecurity_outbound in ['PoliciesInWSDL']"
+    },
+    {
+      "externalizable": true,
+      "label": "Public Key Alias for Encryption",
+      "key": "PublicKeyAliasEncryption_wsdl",
+      "when": "WSSecurity_outbound in ['PoliciesInWSDL']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "SHA1",
+      "label": "Signature Algorithm",
+      "key": "WSSecurity_SignatureAlgorithm",
+      "values": [
+        {
+          "key": "SHA1",
+          "label": "SHA1/RSA"
+        },
+        {
+          "key": "SHA256",
+          "label": "SHA256/RSA"
+        },
+        {
+          "key": "SHA512",
+          "label": "SHA512/RSA"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "0",
+      "dataType": "xsd:boolean",
+      "label": "Set Time Stamp",
+      "key": "SetTimeStamp"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Receiver is Basic Security Profile Compliant",
+      "key": "SenderBasicSecurityProfileCompliant_wsdl",
+      "when": "WSSecurity_outbound in ['PoliciesInWSDL']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "1",
+      "dataType": "xsd:boolean",
+      "label": "Receiver is Basic Security Profile Compliant",
+      "key": "SenderBasicSecurityProfileCompliant"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Strict",
+      "label": "Layout",
+      "key": "Layout_outbound",
+      "values": [
+        {
+          "key": "Strict",
+          "label": "Strict"
+        },
+        {
+          "key": "Lax",
+          "label": "Lax"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Basic128Rsa15",
+      "label": "Algorithm Suite Assertion",
+      "key": "AlgorithmSuiteAssertion",
+      "values": [
+        {
+          "key": "Basic128Rsa15",
+          "label": "Basic 128 Rsa 15"
+        },
+        {
+          "key": "Basic256Sha256Rsa15",
+          "label": "Basic 256 Sha 256 Rsa 15"
+        },
+        {
+          "key": "TripleDesRsa15",
+          "label": "Triple Des Rsa 15"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "AlwaysToRecipient",
+      "label": "Include Strategy",
+      "key": "InitiatorTokenIncludeStrategy_outbound",
+      "values": [
+        {
+          "key": "AlwaysToRecipient",
+          "label": "Always to Recipient"
+        },
+        {
+          "key": "Never",
+          "label": "Never"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "WssX509V3Token10",
+      "label": "X509 Token Assertion",
+      "key": "X509TokenAssertion",
+      "values": [
+        {
+          "key": "WssX509V3Token10",
+          "label": "Wss X509 V3 Token 10"
+        },
+        {
+          "key": "RequireKeyIdentifierReference",
+          "label": "Require Key Identifier Reference"
+        },
+        {
+          "key": "RequireIssuerSerialReference",
+          "label": "Require Issuer Serial Reference"
+        },
+        {
+          "key": "RequireThumbprintReference",
+          "label": "Require Thumbprint Reference"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "Never",
+      "label": "Include Strategy",
+      "key": "RecipientTokenIncludeStrategy",
+      "values": [
+        {
+          "key": "Never",
+          "label": "Never"
+        },
+        {
+          "key": "AlwaysToInitiator",
+          "label": "Always to Initiator"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "WssX509V3Token10",
+      "label": "X509 Token Assertion",
+      "key": "recipientX509TokenAssertion",
+      "values": [
+        {
+          "key": "WssX509V3Token10",
+          "label": "Wss X509 V3 Token 10"
+        },
+        {
+          "key": "RequireKeyIdentifierReference",
+          "label": "Require Key Identifier Reference"
+        },
+        {
+          "key": "RequireIssuerSerialReference",
+          "label": "Require Issuer Serial Reference"
+        },
+        {
+          "key": "RequireThumbprintReference",
+          "label": "Require Thumbprint Reference"
+        }
+      ]
+    }
+  ]
+}

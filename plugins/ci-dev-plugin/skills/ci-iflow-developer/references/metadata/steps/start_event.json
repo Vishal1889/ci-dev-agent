@@ -1,0 +1,8 @@
+{
+  "name": "Start Event (LIP)",
+  "flavor": "StartEvent",
+  "seedId": "StartEvent_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::StartEvent",
+  "bpmnElement": "startEvent",
+  "properties": []
+}

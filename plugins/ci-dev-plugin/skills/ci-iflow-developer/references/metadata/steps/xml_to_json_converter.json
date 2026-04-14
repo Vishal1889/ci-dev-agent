@@ -1,0 +1,139 @@
+{
+  "name": "XML to JSON Converter",
+  "flavor": "XmlToJsonConverter",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::XmlToJsonConverter/version::1.0.8",
+  "componentVersion": "1.0.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Use Namespace Mapping",
+      "key": "useNamespaces"
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "Namespace Mapping",
+      "key": "jsonNamespaceMapping",
+      "when": "useNamespaces in ['true']",
+      "columns": [
+        {
+          "key": "xmlNamespace",
+          "label": "XML Namespace"
+        },
+        {
+          "key": "jsonPrefix",
+          "label": "JSON Prefix"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": ":",
+      "label": "JSON Prefix Separator",
+      "key": "jsonNamespaceSeparator",
+      "values": [
+        {
+          "key": ":",
+          "label": "Colon(:)"
+        },
+        {
+          "key": ",",
+          "label": "Comma(,)"
+        },
+        {
+          "key": ".",
+          "label": "Dot(.)"
+        },
+        {
+          "key": "|",
+          "label": "Pipe(|)"
+        },
+        {
+          "key": ";",
+          "label": "Semicolon(;)"
+        },
+        {
+          "key": "space",
+          "label": "Space"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "JSON Output Encoding",
+      "key": "jsonOutputEncoding",
+      "values": [
+        {
+          "key": "UTF-8",
+          "label": "UTF-8"
+        },
+        {
+          "key": "UTF-16BE",
+          "label": "UTF-16BE"
+        },
+        {
+          "key": "UTF-16LE",
+          "label": "UTF-16LE"
+        },
+        {
+          "key": "UTF-32BE",
+          "label": "UTF-32BE"
+        },
+        {
+          "key": "UTF-32LE",
+          "label": "UTF-32LE"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Suppress JSON Root Element",
+      "key": "xmlJsonSuppressRootElement"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "false",
+      "dataType": "xsd:boolean",
+      "label": "Streaming",
+      "key": "xmlJsonUseStreaming"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "specific",
+      "label": "Convert XML Elements to JSON Array",
+      "key": "xmlJsonConvertAllElements",
+      "when": "xmlJsonUseStreaming in ['true']",
+      "values": [
+        {
+          "key": "all",
+          "label": "All"
+        },
+        {
+          "key": "specific",
+          "label": "Specified Ones"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "key": "xmlJsonPathTable",
+      "columns": [
+        {
+          "key": "xmlElement",
+          "label": "XML Element"
+        },
+        {
+          "key": "fromXsd",
+          "label": ""
+        }
+      ]
+    }
+  ]
+}

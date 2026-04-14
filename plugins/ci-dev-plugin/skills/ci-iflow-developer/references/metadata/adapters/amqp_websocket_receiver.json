@@ -1,0 +1,204 @@
+{
+  "name": "AMQP",
+  "direction": "Receiver",
+  "adapterVariantURI": "ctype::AdapterVariant/cname::sap:AMQP/tp::WS/mp::AMQP1.0/direction::Receiver/version::1.4.0",
+  "componentVersion": "1.4.0",
+  "messageProtocol": "AMQP1.0",
+  "transportProtocol": "WS",
+  "ComponentNS": "sap",
+  "ComponentSWCVName": "external",
+  "ComponentSWCVId": "1.8.0",
+  "allVariants": [
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:AMQP/tp::WS/mp::AMQP1.0/direction::Receiver/version::1.4.0",
+      "messageProtocol": "AMQP1.0",
+      "transportProtocol": "WS",
+      "componentVersion": "1.4.0"
+    },
+    {
+      "adapterVariantURI": "ctype::AdapterVariant/cname::sap:AMQP/tp::TCP/mp::AMQP1.0/direction::Receiver/version::1.5.0",
+      "messageProtocol": "AMQP1.0",
+      "transportProtocol": "TCP",
+      "componentVersion": "1.5.0"
+    }
+  ],
+  "properties": [
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Host",
+      "key": "host"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "xsd:integer",
+      "label": "Port",
+      "key": "port"
+    },
+    {
+      "externalizable": true,
+      "label": "Path",
+      "key": "path"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "none",
+      "label": "Proxy Type",
+      "key": "proxyType",
+      "values": [
+        {
+          "key": "none",
+          "label": "Internet"
+        },
+        {
+          "key": "sapcc",
+          "label": "On-Premise"
+        },
+        {
+          "key": "none",
+          "label": "Internet"
+        },
+        {
+          "key": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Proxy Host",
+      "key": "proxyHost",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "dataType": "xsd:integer",
+      "label": "Proxy Port",
+      "key": "proxyPort",
+      "when": "proxyType in ['manual']"
+    },
+    {
+      "externalizable": true,
+      "label": "Location ID",
+      "key": "location_id",
+      "when": "proxyType in ['sapcc']"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Connect with TLS",
+      "key": "connectWithTLS"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "SASL",
+      "label": "Authentication",
+      "key": "authentication",
+      "values": [
+        {
+          "key": "SASL",
+          "label": "SASL"
+        },
+        {
+          "key": "Transport_OAuth2",
+          "label": "OAuth2 Client Credentials"
+        },
+        {
+          "key": "None",
+          "label": "None"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Credential Name",
+      "key": "credentialName",
+      "when": "NOT (authentication in ['None'])"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "topic",
+      "label": "Destination Type",
+      "key": "destinationType",
+      "values": [
+        {
+          "key": "topic",
+          "label": "Topic"
+        },
+        {
+          "key": "queue",
+          "label": "Queue"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "label": "Destination Name",
+      "key": "destinationName"
+    },
+    {
+      "externalizable": true,
+      "dataType": "xsd:integer",
+      "label": "Expiration Period (in s)",
+      "key": "expirationPeriod"
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "persistent",
+      "label": "Delivery",
+      "key": "delivery",
+      "values": [
+        {
+          "key": "persistent",
+          "label": "Persistent"
+        },
+        {
+          "key": "non_persistent",
+          "label": "Non-Persistent"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "automatic",
+      "label": "Message Type",
+      "key": "messageType",
+      "values": [
+        {
+          "key": "automatic",
+          "label": "Automatic"
+        },
+        {
+          "key": "binary",
+          "label": "Binary"
+        },
+        {
+          "key": "text",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "passthrough",
+      "label": "Header Format Handling",
+      "key": "jmsKeyFormatStrategy",
+      "values": [
+        {
+          "key": "passthrough",
+          "label": "Passthrough"
+        },
+        {
+          "key": "replace",
+          "label": "Replace"
+        }
+      ]
+    }
+  ]
+}

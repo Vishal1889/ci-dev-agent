@@ -1,0 +1,90 @@
+{
+  "name": "Write Variables",
+  "flavor": "Variables",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::Variables/version::1.2.0",
+  "componentVersion": "1.2.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "Variables",
+      "key": "variable",
+      "columns": [
+        {
+          "key": "name",
+          "label": "Name",
+          "mandatory": true
+        },
+        {
+          "key": "type",
+          "label": "Type",
+          "mandatory": true,
+          "values": [
+            {
+              "key": "constant",
+              "label": "Constant"
+            },
+            {
+              "key": "header",
+              "label": "Header"
+            },
+            {
+              "key": "xpath",
+              "label": "Xpath"
+            },
+            {
+              "key": "expression",
+              "label": "Expression"
+            },
+            {
+              "key": "property",
+              "label": "Property"
+            }
+          ]
+        },
+        {
+          "key": "datatype",
+          "label": "Data Type"
+        },
+        {
+          "key": "value",
+          "label": "Value",
+          "mandatory": true
+        },
+        {
+          "key": "scope",
+          "label": "Global Scope"
+        }
+      ]
+    },
+    {
+      "key": "visibility",
+      "defaultValue": "local",
+      "label": "Visibility",
+      "values": [
+        {
+          "key": "local",
+          "label": "Local"
+        },
+        {
+          "key": "global",
+          "label": "Global"
+        }
+      ]
+    },
+    {
+      "key": "encrypt",
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Encrypt"
+    },
+    {
+      "key": "expire",
+      "defaultValue": "90",
+      "dataType": "xsd:integer",
+      "label": "Expire After (days)"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "Message Start Event",
+  "flavor": "MessageStartEvent",
+  "seedId": "StartEvent_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::MessageStartEvent/version::1.0",
+  "componentVersion": "1.0",
+  "bpmnElement": "startEvent",
+  "properties": []
+}

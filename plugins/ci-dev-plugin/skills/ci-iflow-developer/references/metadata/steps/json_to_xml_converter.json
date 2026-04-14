@@ -1,0 +1,87 @@
+{
+  "name": "JSON to XML Converter",
+  "flavor": "JsonToXmlConverter",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::JsonToXmlConverter/version::1.1.2",
+  "componentVersion": "1.1.2",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Use Namespace Mapping",
+      "key": "useNamespaces"
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "Namespace Mapping",
+      "key": "jsonNamespaceMapping",
+      "when": "useNamespaces in ['true']",
+      "columns": [
+        {
+          "key": "jsonPrefix",
+          "label": "JSON Prefix"
+        },
+        {
+          "key": "xmlNamespace",
+          "label": "XML Namespace"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": ":",
+      "label": "JSON Prefix Separator",
+      "key": "jsonNamespaceSeparator",
+      "values": [
+        {
+          "key": ":",
+          "label": "Colon(:)"
+        },
+        {
+          "key": ",",
+          "label": "Comma(,)"
+        },
+        {
+          "key": ".",
+          "label": "Dot(.)"
+        },
+        {
+          "key": "|",
+          "label": "Pipe(|)"
+        },
+        {
+          "key": ";",
+          "label": "Semicolon(;)"
+        },
+        {
+          "key": "space",
+          "label": "Space"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Add XML Root Element",
+      "key": "addXMLRootElement"
+    },
+    {
+      "externalizable": true,
+      "mandatory": true,
+      "defaultValue": "root",
+      "label": "Name",
+      "key": "additionalRootElementName",
+      "when": "addXMLRootElement in ['true']"
+    },
+    {
+      "externalizable": true,
+      "label": "Namespace Mapping",
+      "key": "additionalRootElementNamespace",
+      "when": "addXMLRootElement in ['true']"
+    }
+  ]
+}

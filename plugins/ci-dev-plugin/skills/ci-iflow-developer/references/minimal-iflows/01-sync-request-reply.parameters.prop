@@ -1,0 +1,12 @@
+#Sun Apr 12 10:17:31 UTC 2026
+receiver.ThrowException=true
+sender.CSRFProtected=0
+headerValue=123
+receiver.Address=http\://demo\:8088/mockNumberConversionSoapBinding
+receiver.Credential=
+receiver.Authentication=Basic
+sender.Authorization=RoleBased
+sender.Address=/httpsender
+Incoming_payload=
+receiver.ProxyType=sapcc
+sender.UserRole=ESBMessaging.send

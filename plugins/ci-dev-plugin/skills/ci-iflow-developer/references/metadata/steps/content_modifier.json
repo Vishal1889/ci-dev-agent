@@ -1,0 +1,191 @@
+{
+  "name": "Content Modifier",
+  "flavor": "Enricher",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::Enricher/version::1.6.3",
+  "componentVersion": "1.6.3",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "Headers",
+      "key": "headerTable",
+      "columns": [
+        {
+          "key": "Action",
+          "label": "Action",
+          "mandatory": true,
+          "default": "Create",
+          "values": [
+            {
+              "key": "Create",
+              "label": "Create"
+            },
+            {
+              "key": "Delete",
+              "label": "Delete"
+            }
+          ]
+        },
+        {
+          "key": "Name",
+          "label": "Name",
+          "mandatory": true
+        },
+        {
+          "key": "Type",
+          "label": "Source Type",
+          "mandatory": true,
+          "values": [
+            {
+              "key": "constant",
+              "label": "Constant"
+            },
+            {
+              "key": "header",
+              "label": "Header"
+            },
+            {
+              "key": "xpath",
+              "label": "XPath"
+            },
+            {
+              "key": "expression",
+              "label": "Expression"
+            },
+            {
+              "key": "property",
+              "label": "Property"
+            },
+            {
+              "key": "numberRange",
+              "label": "Number Range"
+            },
+            {
+              "key": "persisted variables",
+              "label": "Local Variable"
+            },
+            {
+              "key": "global persisted variables",
+              "label": "Global Variable"
+            }
+          ]
+        },
+        {
+          "key": "Value",
+          "label": "Source Value"
+        },
+        {
+          "key": "Datatype",
+          "label": "Data Type"
+        },
+        {
+          "key": "Default",
+          "label": "Default Value"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "dataType": "isTable",
+      "label": "Properties",
+      "key": "propertyTable",
+      "columns": [
+        {
+          "key": "Action",
+          "label": "Action",
+          "mandatory": true,
+          "default": "Create",
+          "values": [
+            {
+              "key": "Create",
+              "label": "Create"
+            },
+            {
+              "key": "Delete",
+              "label": "Delete"
+            }
+          ]
+        },
+        {
+          "key": "Name",
+          "label": "Name",
+          "mandatory": true
+        },
+        {
+          "key": "Type",
+          "label": "Source Type",
+          "mandatory": true,
+          "values": [
+            {
+              "key": "constant",
+              "label": "Constant"
+            },
+            {
+              "key": "header",
+              "label": "Header"
+            },
+            {
+              "key": "xpath",
+              "label": "XPath"
+            },
+            {
+              "key": "expression",
+              "label": "Expression"
+            },
+            {
+              "key": "property",
+              "label": "Property"
+            },
+            {
+              "key": "numberRange",
+              "label": "Number Range"
+            },
+            {
+              "key": "persisted variables",
+              "label": "Local Variable"
+            },
+            {
+              "key": "global persisted variables",
+              "label": "Global Variable"
+            }
+          ]
+        },
+        {
+          "key": "Value",
+          "label": "Source Value"
+        },
+        {
+          "key": "Datatype",
+          "label": "Data Type"
+        },
+        {
+          "key": "Default",
+          "label": "Default Value"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "defaultValue": "constant",
+      "label": "Type",
+      "key": "bodyType",
+      "values": [
+        {
+          "key": "expression",
+          "label": "Expression"
+        },
+        {
+          "key": "constant",
+          "label": "Constant"
+        }
+      ]
+    },
+    {
+      "externalizable": true,
+      "label": "Body",
+      "key": "wrapContent"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "TAR Splitter",
+  "flavor": "Splitter_TarSplitter",
+  "seedId": "CallActivity_",
+  "cmdVariantUri": "ctype::FlowstepVariant/cname::TarSplitter/version::1.0.0",
+  "componentVersion": "1.0.0",
+  "bpmnElement": "callActivity",
+  "properties": [
+    {
+      "key": "splitType",
+      "defaultValue": "TarSplitter"
+    },
+    {
+      "key": "stopOnExecution",
+      "defaultValue": "true",
+      "dataType": "xsd:boolean",
+      "label": "Stop on Exception"
+    },
+    {
+      "key": "tarSplitFileName",
+      "label": "File Name"
+    }
+  ]
+}
