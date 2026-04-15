@@ -20,7 +20,7 @@
    - Always pass `destinationName: "default"` and `runtimeDestination: "runtime"`.
 
    **HTTP mode (`transport: "http"`):**
-   - **Priority 2 — Tenant config:** Read `./tenant-destination-config.json`. If it exists:
+   - **Priority 2 — Tenant config:** Read `../../config/tenant-destination-config.json`. If it exists:
      - **User specifies tenant name** (e.g. "deploy to DEV"): look up that key (case-insensitive), use `designTime` / `runtime`.
      - **Single tenant configured:** use it automatically, inform user.
      - **Multiple tenants, user didn't specify:** present table and ask user to pick.

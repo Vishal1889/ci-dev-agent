@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPI Orchestration Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      height: 100vh;
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: #161b22;
+      border-right: 1px solid #30363d;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header {
+      padding: 16px;
+      border-bottom: 1px solid #30363d;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #58a6ff;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .sidebar-header .status {
+      font-size: 11px;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f85149;
+    }
+
+    .status-dot.connected { background: #3fb950; }
+
+    .session-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+    }
+
+    .session-item {
+      padding: 10px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 4px;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+    }
+
+    .session-item:hover { background: #1c2128; }
+
+    .session-item.active {
+      background: #1f2937;
+      border-color: #58a6ff;
+    }
+
+    .session-item.stale { opacity: 0.5; }
+
+    .session-id {
+      font-size: 12px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: #e6edf3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .session-meta {
+      font-size: 11px;
+      color: #8b949e;
+      margin-top: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .no-sessions {
+      padding: 20px;
+      text-align: center;
+      color: #484f58;
+      font-size: 13px;
+    }
+
+    /* Main content */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .toolbar {
+      padding: 12px 20px;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #161b22;
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toolbar h2 {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .stats {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: #8b949e;
+    }
+
+    .stat-value { color: #e6edf3; font-weight: 600; }
+
+    .flow-container {
+      flex: 1;
+      overflow: auto;
+      padding: 20px;
+    }
+
+    .flow-diagram {
+      min-height: 200px;
+    }
+
+    /* Event timeline */
+    .event-list {
+      max-height: 300px;
+      overflow-y: auto;
+      border-top: 1px solid #30363d;
+      background: #161b22;
+    }
+
+    .event-item {
+      padding: 8px 20px;
+      border-bottom: 1px solid #21262d;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .event-time {
+      color: #484f58;
+      white-space: nowrap;
+      min-width: 80px;
+    }
+
+    .event-type {
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .event-type.pre-tool { background: #1f3a5f; color: #58a6ff; }
+    .event-type.post-tool { background: #1a3a2a; color: #3fb950; }
+    .event-type.post-tool.failed { background: #3d1f20; color: #f85149; }
+    .event-type.subagent-start { background: #2d1f3d; color: #bc8cff; }
+    .event-type.subagent-stop { background: #2d1f3d; color: #bc8cff; }
+    .event-type.turn-stop { background: #3d2f1f; color: #d29922; }
+
+    .event-detail { color: #c9d1d9; }
+
+    /* Mermaid overrides */
+    .mermaid svg { max-width: 100%; }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #484f58;
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .empty-state .hint {
+      font-size: 12px;
+      color: #30363d;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h1>CPI Orchestration</h1>
+      <div class="status">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Connecting...</span>
+      </div>
+    </div>
+    <div class="session-list" id="sessionList">
+      <div class="no-sessions">Waiting for events...</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <h2 id="activeSessionLabel">No session selected</h2>
+      </div>
+      <div class="stats">
+        <span>Tools: <span class="stat-value" id="statTools">0</span></span>
+        <span>Agents: <span class="stat-value" id="statAgents">0</span></span>
+        <span>Duration: <span class="stat-value" id="statDuration">-</span></span>
+      </div>
+    </div>
+
+    <div class="flow-container" id="flowContainer">
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 3v18M3 12h18M7.5 7.5l9 9M16.5 7.5l-9 9"/>
+        </svg>
+        <p>No events yet</p>
+        <p class="hint">Invoke a CPI skill to see the orchestration flow</p>
+      </div>
+    </div>
+
+    <div class="event-list" id="eventList"></div>
+  </div>
+
+  <script>
+    // State
+    const sessionData = new Map(); // sessionId -> { events: [], element: null }
+    let activeSessionId = null;
+    let ws = null;
+
+    // DOM refs
+    const sessionListEl = document.getElementById('sessionList');
+    const flowContainer = document.getElementById('flowContainer');
+    const eventListEl = document.getElementById('eventList');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const activeSessionLabel = document.getElementById('activeSessionLabel');
+    const statTools = document.getElementById('statTools');
+    const statAgents = document.getElementById('statAgents');
+    const statDuration = document.getElementById('statDuration');
+
+    // Format tool name: strip mcp__ci-mcp-server-custom__ prefix
+    function formatToolName(name) {
+      if (!name) return 'unknown';
+      return name.replace(/^mcp__ci-mcp-server-custom__/, '');
+    }
+
+    // Format time as HH:MM:SS
+    function formatTime(ts) {
+      const d = new Date(ts);
+      return d.toLocaleTimeString('en-US', { hour12: false });
+    }
+
+    // Format duration
+    function formatDuration(ms) {
+      if (ms < 1000) return ms + 'ms';
+      if (ms < 60000) return (ms / 1000).toFixed(1) + 's';
+      return (ms / 60000).toFixed(1) + 'm';
+    }
+
+    // Stale threshold: 5 minutes
+    const STALE_MS = 5 * 60 * 1000;
+
+    function ensureSession(sessionId) {
+      if (!sessionData.has(sessionId)) {
+        sessionData.set(sessionId, { events: [] });
+      }
+      return sessionData.get(sessionId);
+    }
+
+    function renderSessionList() {
+      const now = Date.now();
+      const entries = Array.from(sessionData.entries()).sort((a, b) => {
+        const aLast = a[1].events[a[1].events.length - 1]?.timestamp || 0;
+        const bLast = b[1].events[b[1].events.length - 1]?.timestamp || 0;
+        return bLast - aLast;
+      });
+
+      if (entries.length === 0) {
+        sessionListEl.innerHTML = '<div class="no-sessions">Waiting for events...</div>';
+        return;
+      }
+
+      sessionListEl.innerHTML = entries.map(([id, data]) => {
+        const lastTs = data.events[data.events.length - 1]?.timestamp || 0;
+        const isStale = (now - lastTs) > STALE_MS;
+        const isActive = id === activeSessionId;
+        const shortId = id.substring(0, 12);
+        const toolCount = data.events.filter(e => e.type === 'pre-tool').length;
+
+        return `<div class="session-item ${isActive ? 'active' : ''} ${isStale ? 'stale' : ''}"
+                     data-session-id="${encodeURIComponent(id)}">
+          <div class="session-id">${shortId}...</div>
+          <div class="session-meta">
+            <span>${toolCount} tools</span>
+            <span>${lastTs ? formatTime(lastTs) : '-'}</span>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // Event delegation for session selection (avoids inline onclick XSS risk)
+    sessionListEl.addEventListener('click', (e) => {
+      const item = e.target.closest('.session-item');
+      if (item && item.dataset.sessionId) {
+        selectSession(decodeURIComponent(item.dataset.sessionId));
+      }
+    });
+
+    function selectSession(sessionId) {
+      activeSessionId = sessionId;
+      renderSessionList();
+      renderFlowDiagram();
+      renderEventList();
+      updateStats();
+      activeSessionLabel.textContent = 'Session ' + sessionId.substring(0, 12) + '...';
+    }
+
+    function updateStats() {
+      if (!activeSessionId || !sessionData.has(activeSessionId)) {
+        statTools.textContent = '0';
+        statAgents.textContent = '0';
+        statDuration.textContent = '-';
+        return;
+      }
+
+      const events = sessionData.get(activeSessionId).events;
+      const toolCount = events.filter(e => e.type === 'pre-tool').length;
+      const agentCount = events.filter(e => e.type === 'subagent-start').length;
+
+      statTools.textContent = toolCount;
+      statAgents.textContent = agentCount;
+
+      if (events.length > 1) {
+        const duration = events[events.length - 1].timestamp - events[0].timestamp;
+        statDuration.textContent = formatDuration(duration);
+      } else {
+        statDuration.textContent = '-';
+      }
+    }
+
+    function renderFlowDiagram() {
+      if (!activeSessionId || !sessionData.has(activeSessionId)) {
+        flowContainer.innerHTML = `<div class="empty-state">
+          <p>No events yet</p>
+          <p class="hint">Invoke a CPI skill to see the orchestration flow</p>
+        </div>`;
+        return;
+      }
+
+      const events = sessionData.get(activeSessionId).events;
+      if (events.length === 0) return;
+
+      // Build flow nodes from events
+      const nodes = [];
+      const toolTimings = new Map(); // toolName -> { startTime, endTime, status }
+
+      for (const event of events) {
+        if (event.type === 'pre-tool') {
+          const toolName = formatToolName(event.data?.tool_name);
+          const nodeId = 'tool_' + nodes.length;
+          toolTimings.set(toolName + '_' + event.timestamp, { startTime: event.timestamp, nodeId });
+          nodes.push({
+            id: nodeId,
+            label: toolName,
+            type: 'tool',
+            status: 'running',
+            time: formatTime(event.timestamp),
+          });
+        } else if (event.type === 'post-tool') {
+          const toolName = formatToolName(event.data?.tool_name);
+          // Find the matching pre-tool node (most recent one with same name)
+          for (let i = nodes.length - 1; i >= 0; i--) {
+            if (nodes[i].label === toolName && nodes[i].status === 'running') {
+              nodes[i].status = 'success';
+              nodes[i].duration = event.timestamp - (events.find(
+                e => e.type === 'pre-tool' && formatToolName(e.data?.tool_name) === toolName
+              )?.timestamp || event.timestamp);
+              break;
+            }
+          }
+        } else if (event.type === 'subagent-start') {
+          const agentType = event.data?.agent_type || 'agent';
+          nodes.push({
+            id: 'agent_' + nodes.length,
+            label: agentType,
+            type: 'agent',
+            status: 'running',
+            time: formatTime(event.timestamp),
+          });
+        } else if (event.type === 'subagent-stop') {
+          for (let i = nodes.length - 1; i >= 0; i--) {
+            if (nodes[i].type === 'agent' && nodes[i].status === 'running') {
+              nodes[i].status = 'success';
+              break;
+            }
+          }
+        } else if (event.type === 'turn-stop') {
+          nodes.push({
+            id: 'stop_' + nodes.length,
+            label: 'Turn Complete',
+            type: 'stop',
+            status: 'success',
+            time: formatTime(event.timestamp),
+          });
+        }
+      }
+
+      // Build Mermaid diagram
+      let mermaid = 'graph TD\n';
+      mermaid += '  classDef running fill:#1f3a5f,stroke:#58a6ff,color:#58a6ff\n';
+      mermaid += '  classDef success fill:#1a3a2a,stroke:#3fb950,color:#3fb950\n';
+      mermaid += '  classDef failed fill:#3d1f20,stroke:#f85149,color:#f85149\n';
+      mermaid += '  classDef agent fill:#2d1f3d,stroke:#bc8cff,color:#bc8cff\n';
+      mermaid += '  classDef stop fill:#3d2f1f,stroke:#d29922,color:#d29922\n\n';
+
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        const durationLabel = node.duration ? ' (' + formatDuration(node.duration) + ')' : '';
+        const timeLabel = node.time;
+
+        if (node.type === 'agent') {
+          mermaid += `  ${node.id}{{"\`**${node.label}**\n${timeLabel}\`"}}\n`;
+          mermaid += `  class ${node.id} agent\n`;
+        } else if (node.type === 'stop') {
+          mermaid += `  ${node.id}(["${node.label} ${timeLabel}"])\n`;
+          mermaid += `  class ${node.id} stop\n`;
+        } else {
+          mermaid += `  ${node.id}["\`**${node.label}**${durationLabel}\n${timeLabel}\`"]\n`;
+          mermaid += `  class ${node.id} ${node.status}\n`;
+        }
+
+        // Connect to previous node
+        if (i > 0) {
+          mermaid += `  ${nodes[i - 1].id} --> ${node.id}\n`;
+        }
+      }
+
+      flowContainer.innerHTML = `<div class="flow-diagram"><pre class="mermaid">${mermaid}</pre></div>`;
+
+      // Re-render Mermaid
+      if (window.mermaid) {
+        window.mermaid.run({ nodes: flowContainer.querySelectorAll('.mermaid') });
+      }
+
+      // Auto-scroll to bottom
+      flowContainer.scrollTop = flowContainer.scrollHeight;
+    }
+
+    function renderEventList() {
+      if (!activeSessionId || !sessionData.has(activeSessionId)) {
+        eventListEl.innerHTML = '';
+        return;
+      }
+
+      const events = sessionData.get(activeSessionId).events;
+      const recent = events.slice(-50); // Show last 50 events
+
+      eventListEl.innerHTML = recent.map(event => {
+        const toolName = formatToolName(event.data?.tool_name);
+        const agentType = event.data?.agent_type || '';
+        let detail = '';
+        let typeClass = event.type;
+
+        switch (event.type) {
+          case 'pre-tool':
+            detail = toolName;
+            break;
+          case 'post-tool':
+            detail = toolName;
+            break;
+          case 'subagent-start':
+            detail = 'Agent: ' + agentType;
+            break;
+          case 'subagent-stop':
+            detail = 'Agent finished: ' + agentType;
+            break;
+          case 'turn-stop':
+            detail = 'Claude turn completed';
+            break;
+        }
+
+        return `<div class="event-item">
+          <span class="event-time">${formatTime(event.timestamp)}</span>
+          <span class="event-type ${typeClass}">${event.type}</span>
+          <span class="event-detail">${detail}</span>
+        </div>`;
+      }).join('');
+
+      eventListEl.scrollTop = eventListEl.scrollHeight;
+    }
+
+    function handleEvent(event) {
+      const sessionId = event.sessionId || event.data?.session_id || 'unknown';
+      const session = ensureSession(sessionId);
+      session.events.push(event);
+
+      // Auto-select first session or switch to most recent active
+      if (!activeSessionId) {
+        selectSession(sessionId);
+      }
+
+      renderSessionList();
+
+      if (sessionId === activeSessionId) {
+        renderFlowDiagram();
+        renderEventList();
+        updateStats();
+      }
+    }
+
+    // WebSocket connection
+    function connect() {
+      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${protocol}//${location.host}`);
+
+      ws.onopen = () => {
+        statusDot.className = 'status-dot connected';
+        statusText.textContent = 'Connected';
+      };
+
+      ws.onmessage = (msg) => {
+        try {
+          const data = JSON.parse(msg.data);
+
+          if (data.type === 'init') {
+            // Server sends existing session list on connect
+            statusText.textContent = `Connected (${data.sessions?.length || 0} sessions)`;
+            // Fetch full events for each session
+            (data.sessions || []).forEach(s => {
+              fetch(`/api/sessions/${s.sessionId}/events`)
+                .then(r => r.json())
+                .then(events => {
+                  const session = ensureSession(s.sessionId);
+                  session.events = events;
+                  renderSessionList();
+                  if (!activeSessionId && events.length > 0) {
+                    selectSession(s.sessionId);
+                  }
+                });
+            });
+          } else {
+            handleEvent(data);
+          }
+        } catch (e) {
+          console.error('Failed to parse event:', e);
+        }
+      };
+
+      ws.onclose = () => {
+        statusDot.className = 'status-dot';
+        statusText.textContent = 'Disconnected — reconnecting...';
+        setTimeout(connect, 3000);
+      };
+
+      ws.onerror = () => {
+        ws.close();
+      };
+    }
+
+    // Load Mermaid from CDN
+    const mermaidScript = document.createElement('script');
+    mermaidScript.src = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js';
+    mermaidScript.onload = () => {
+      window.mermaid.initialize({
+        startOnLoad: false,
+        theme: 'dark',
+        themeVariables: {
+          darkMode: true,
+          background: '#0d1117',
+          primaryColor: '#1f3a5f',
+          primaryTextColor: '#c9d1d9',
+          primaryBorderColor: '#58a6ff',
+          lineColor: '#30363d',
+          secondaryColor: '#161b22',
+          tertiaryColor: '#1c2128',
+        },
+        flowchart: {
+          htmlLabels: true,
+          useMaxWidth: false,
+          curve: 'basis',
+        },
+      });
+    };
+    mermaidScript.onerror = () => {
+      const notice = document.createElement('div');
+      notice.style.cssText = 'padding:12px 20px;background:#3d2f1f;color:#d29922;font-size:12px;border-bottom:1px solid #30363d';
+      notice.textContent = 'Flow diagram unavailable — Mermaid.js CDN could not be reached. Event timeline still works.';
+      document.querySelector('.main').prepend(notice);
+    };
+    document.head.appendChild(mermaidScript);
+
+    // Start connection
+    connect();
+  </script>
+</body>
+</html>

@@ -48,6 +48,30 @@ Verify before ANY BPMN generation:
 9. **Scaffold-first BPMN generation for NEW artifacts:** After `scaffold-iflow` + `get-iflow-content`, extract the scaffold's structural boilerplate (`<bpmn2:definitions>` attributes, `<bpmn2:collaboration>` extensionElements, `<bpmn2:documentation>`, participant extensionElements). Use this as the structural shell for your generated XML. Do NOT generate BPMN purely from minimal-iflow templates — the scaffold's structure may differ and cause `GenerationFailed` errors.
 10. **Uploading parameters.prop/propdef to fresh scaffolds is safe — but guard `&amp;` encoding in `schedule1`:** When the user opts for externalization, uploading `parameters.prop` and `parameters.propdef` to freshly scaffolded artifacts works correctly. **After every upload of a `parameters.prop` containing a `Scheduler` value, verify with `get-iflow-content` that `schedule1` contains `&amp;trigger.timeZone` (not `&trigger.timeZone`).** If `&amp;` was decoded, re-upload. See `known-errors.md` "SAXParseException / &amp; decoding in schedule1" for details. When the user opts to NOT externalize, hardcode values directly in the BPMN XML — for inline `scheduleKey`, the `schedule1` `&` separator must be double XML-encoded as `&amp;amp;`.
 
+## MANDATORY: Design-First Plan Mode
+
+This skill operates in **plan mode by default**. Before ANY execution (MCP tool calls that create or modify artifacts, BPMN generation, upload, or deploy), the skill MUST:
+
+1. Complete Phase A requirement gathering
+2. Present the full design to the user (requirements summary table + flow diagram — see Phase A Gate in `phase-a-requirements.md`)
+3. Wait for explicit user confirmation (e.g., "looks good", "proceed", "yes")
+4. Only THEN transition to Phase B and beyond
+
+**What counts as execution (blocked until confirmation):**
+- `scaffold-iflow`, `update-iflow-content`, `deploy-iflow`
+- `scaffold-message-mapping`, `update-message-mapping-content`, `deploy-message-mapping`
+- Writing any generated BPMN XML, Groovy scripts, or mapping files
+- Any MCP tool call that creates or modifies tenant artifacts
+
+**What is allowed before confirmation:**
+- `get-server-info` (transport detection)
+- `list-all-packages`, `get-package-details` (read-only queries to validate package existence)
+- `get-iflow-content`, `get-message-mapping-content` (read-only inspection of existing artifacts)
+- Reading reference files, templates, and metadata within the skill directory
+- Spawning the requirements analysis sub-agent
+
+If the user's input is ambiguous or incomplete, ask clarifying questions rather than proceeding with assumptions. Never skip the confirmation step, even for "simple" iFlows.
+
 ## MCP Tool Reference
 
 This server uses **named tools with typed parameters** (not raw OData). Full tool guide: `./references/guides/ci-mcp-tool-guide.md`.
@@ -67,7 +91,7 @@ Available tools: `get-server-info`, `list-all-packages`, `get-package-details`, 
 
 ### Critical: Transport-Aware Destination Handling
 
-This MCP server runs in **stdio** or **http** mode. Auto-detect by calling `get-server-info` in Phase A step 1. Stdio mode uses `destinationName: "default"` / `runtimeDestination: "runtime"`. HTTP mode resolves destinations via user input, `tenant-destination-config.json`, or by asking the user. See `phase-a-requirements.md` step 1 for the full decision tree.
+This MCP server runs in **stdio** or **http** mode. Auto-detect by calling `get-server-info` in Phase A step 1. Stdio mode uses `destinationName: "default"` / `runtimeDestination: "runtime"`. HTTP mode resolves destinations via user input, `config/tenant-destination-config.json`, or by asking the user. See `phase-a-requirements.md` step 1 for the full decision tree.
 
 ---
 
@@ -106,7 +130,10 @@ This skill executes in phases. **At each phase gate, output the gate message and
 
 ### Phase Gate Protocol
 
-At each phase transition, output the gate message and immediately read the next file:
+At each phase transition, output the gate message and immediately read the next file.
+
+**Phase A to B transition is BLOCKED until user confirms.** Do not output the Phase A gate message or read phase-b-pattern-matching.md until the user has explicitly approved the design presented in the Phase A Gate. All other phase transitions may proceed automatically.
+
 - `"Phase A complete — user confirmed design. Reading phase-b-pattern-matching.md."` → Read `./references/phases/phase-b-pattern-matching.md`
 - `"Phase B complete — Template: {name}. Reading phase-c-generation.md."` → Read `./references/phases/phase-c-generation.md`
 - `"Phase C complete — generated {N} files for {ArtifactId}. Reading phase-d-upload.md."` → Read `./references/phases/phase-d-upload.md`

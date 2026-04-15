@@ -24,6 +24,27 @@ Package and document Script Collection artifacts for SAP Cloud Integration.
 4. iFlows referencing this SC must add `Require-Bundle: {BundleSymbolicName}` to their MANIFEST.MF.
 5. **NEVER hallucinate MANIFEST.MF headers.** Use the sample at `./references/sample-script-collection/META-INF/MANIFEST.MF` as template.
 
+## MANDATORY: Design-First Plan Mode
+
+This skill operates in **plan mode by default**. Before ANY execution (file generation, directory structure creation, or artifact packaging), the skill MUST:
+
+1. Complete Phase 1 script gathering
+2. Present the Design Confirmation Gate (see below) to the user — showing exactly what will be created
+3. Wait for explicit user confirmation (e.g., "looks good", "proceed", "yes")
+4. Only THEN proceed to Phase 2 (packaging) and beyond
+
+**What counts as execution (blocked until confirmation):**
+- Creating any directory structures or files (MANIFEST.MF, .project, metainfo.prop, scripts)
+- Writing to the `.tmp/` directory
+- Any artifact packaging work
+
+**What is allowed before confirmation:**
+- Reading reference files and samples within the skill directory
+- Reading user-provided script files or paths
+- Asking clarifying questions about scripts and their purposes
+
+If the user's input is ambiguous or incomplete, ask clarifying questions rather than proceeding with assumptions. Never skip the confirmation step.
+
 ## Phase 1: Gather Scripts
 
 Collect the scripts to bundle:
@@ -58,6 +79,71 @@ function processData(message) {
 ```
 
 > **Note:** Groovy is preferred over JavaScript for new scripts. JavaScript is supported for legacy compatibility.
+
+## Design Confirmation Gate (MANDATORY)
+
+> This gate comes AFTER Phase 1 (gather scripts) and BEFORE Phase 2 (packaging). Do NOT proceed to Phase 2 until the user confirms the design.
+
+**After gathering all script information in Phase 1, present the following design summary:**
+
+~~~
+================================================
+  SCRIPT COLLECTION DESIGN SUMMARY
+================================================
+
+  General
+  ------------------------------------------------
+  | Field               | Value                   |
+  |---------------------|-------------------------|
+  | Artifact Name       | <display name>          |
+  | Artifact ID         | <SC_Purpose or ID>      |
+  | Package ID          | <package_id>            |
+  | Bundle-SymbolicName | <same as Artifact ID>   |
+
+  Scripts to Bundle
+  ------------------------------------------------
+  | #  | Filename            | Language   | Entry Point              | Purpose              |
+  |----|---------------------|------------|--------------------------|----------------------|
+  | 1  | <script1.groovy>    | Groovy     | processData(Message)     | <description>        |
+  | 2  | <script2.groovy>    | Groovy     | processData(Message)     | <description>        |
+  | 3  | <utils.js>          | JavaScript | processData(message)     | <description>        |
+
+  JAR Dependencies (if any)
+  ------------------------------------------------
+  | Library              | Purpose                                  |
+  |----------------------|------------------------------------------|
+  | <lib.jar>            | <description>                            |
+  | (none)               |                                          |
+
+  Files to Generate
+  ------------------------------------------------
+  | File Path                                       | Purpose             |
+  |-------------------------------------------------|---------------------|
+  | META-INF/MANIFEST.MF                             | Bundle manifest     |
+  | .project                                         | Eclipse project     |
+  | metainfo.prop                                    | Description file    |
+  | src/main/resources/script/<script1>.groovy        | Groovy script       |
+  | src/main/resources/script/<script2>.groovy        | Groovy script       |
+  | src/main/resources/lib/<lib>.jar                  | JAR dependency      |
+
+  iFlow Integration Notes
+  ------------------------------------------------
+  Referencing iFlows must add to their MANIFEST.MF:
+    Require-Bundle: <ArtifactId>
+  Groovy Script steps in referencing iFlows must set:
+    scriptBundleId = <ArtifactId>
+  Deploy this Script Collection BEFORE any referencing iFlows.
+~~~
+
+**After presenting the summary, ask the user:**
+
+> "Does this Script Collection design match your requirements? Please review the scripts, file structure, and naming. If anything needs to change, let me know before I proceed to packaging."
+
+**Do NOT proceed to Phase 2 until the user confirms the design is correct.**
+
+If the user requests changes, update the design and re-present the summary. Only after explicit confirmation, output:
+
+> "Design confirmed. Proceeding to Phase 2: Package."
 
 ## Phase 2: Package
 

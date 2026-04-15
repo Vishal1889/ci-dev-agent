@@ -1,0 +1,10 @@
+{
+  "name": "ci-dev-plugin-orchestration",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Orchestration dashboard for SAP CPI skill execution visualization",
+  "dependencies": {
+    "express": "^4.21.0",
+    "ws": "^8.18.0"
+  }
+}

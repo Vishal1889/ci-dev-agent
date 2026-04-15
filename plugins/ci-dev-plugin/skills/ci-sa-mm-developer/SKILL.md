@@ -24,12 +24,35 @@ Build and deploy standalone Message Mapping artifacts using ci-mcp-server-custom
 2. Never overwrite an existing artifact without first reading current content.
 3. All temp files go in `skills/ci-sa-mm-developer/.tmp/` — NEVER system temp dirs.
 
+## MANDATORY: Design-First Plan Mode
+
+This skill operates in **plan mode by default**. Before ANY execution (MCP tool calls that create or modify artifacts, .mmap generation, upload, or deploy), the skill MUST:
+
+1. Complete Phase 1 requirements gathering
+2. Present the Design Confirmation Gate (see below) to the user — showing exactly what will be created
+3. Wait for explicit user confirmation (e.g., "looks good", "proceed", "yes")
+4. Only THEN proceed to Phase 2 (.mmap generation) and beyond
+
+**What counts as execution (blocked until confirmation):**
+- `scaffold-message-mapping`, `update-message-mapping-content`, `deploy-message-mapping`
+- `create-mapping-test-iflow`, `deploy-iflow` (test harness)
+- Generating any .mmap XML, XSD schemas, MANIFEST.MF, or Groovy UDF files
+
+**What is allowed before confirmation:**
+- `get-server-info` (transport detection)
+- `get-package-details` (read-only validation)
+- `get-all-message-mappings` (read-only listing)
+- `get-message-mapping-content` (read-only inspection of existing artifacts)
+- Reading reference files and samples within the skill directory
+
+If the user's input is ambiguous or incomplete, ask clarifying questions rather than proceeding with assumptions. Never skip the confirmation step.
+
 ## Transport-Aware Destination Handling
 
 Call `get-server-info` first to detect transport mode (`stdio` vs `http`).
 
 - **Stdio mode:** Always use `destinationName: "default"`.
-- **HTTP mode:** Read `./tenant-destination-config.json` for destination names, or ask the user.
+- **HTTP mode:** Read `../../config/tenant-destination-config.json` for destination names, or ask the user.
 
 ## Phase 1: Requirements
 
@@ -47,6 +70,85 @@ Extract these fields:
 | Functions/conditions | If applicable |
 
 **Naming convention:** `MM_{SourceMsg}_to_{TargetMsg}` (e.g., `MM_ORDERS05_to_PurchaseOrder`). ID must not start with a number, space, or period.
+
+## Design Confirmation Gate (MANDATORY)
+
+> This gate comes AFTER Phase 1 (requirements) and BEFORE Phase 2 (generation). Do NOT proceed to Phase 2 until the user confirms the design.
+
+**After gathering all requirements in Phase 1, present the following design summary:**
+
+~~~
+================================================
+  MESSAGE MAPPING DESIGN SUMMARY
+================================================
+
+  General
+  ------------------------------------------------
+  | Field               | Value                   |
+  |---------------------|-------------------------|
+  | Mapping Name        | <display name>          |
+  | Artifact ID         | <MM_Source_to_Target>    |
+  | Package ID          | <package_id>            |
+
+  Source Structure
+  ------------------------------------------------
+  | Field               | Value                   |
+  |---------------------|-------------------------|
+  | Format              | <XML/JSON/CSV>          |
+  | Schema              | <filename or "to generate">|
+  | Root Element        | <root element name>     |
+  | Key Fields          | <list of source fields> |
+
+  Target Structure
+  ------------------------------------------------
+  | Field               | Value                   |
+  |---------------------|-------------------------|
+  | Format              | <XML/JSON/CSV>          |
+  | Schema              | <filename or "to generate">|
+  | Root Element        | <root element name>     |
+  | Key Fields          | <list of target fields> |
+
+  Field Mapping Rules
+  ------------------------------------------------
+  | #  | Source Field       | Target Field       | Transform/Function  |
+  |----|-------------------|--------------------|---------------------|
+  | 1  | <source_field_1>  | <target_field_1>   | <direct/concat/etc> |
+  | 2  | <source_field_2>  | <target_field_2>   | <function or UDF>   |
+  | .. | ...               | ...                | ...                 |
+
+  Functions & Conditions
+  ------------------------------------------------
+  | Function            | Applied To              | Purpose             |
+  |---------------------|-------------------------|---------------------|
+  | <concat/substring/> | <field(s)>              | <description>       |
+
+  Groovy UDFs (if needed)
+  ------------------------------------------------
+  | Script Name         | Function Name           | Purpose             |
+  |---------------------|-------------------------|---------------------|
+  | <script.groovy>     | <functionName>          | <description>       |
+
+  Files to Generate
+  ------------------------------------------------
+  | File Path                                      | Purpose             |
+  |------------------------------------------------|---------------------|
+  | src/main/resources/mapping/{id}.mmap           | Mapping definition  |
+  | src/main/resources/xsd/{Source}.xsd             | Source schema       |
+  | src/main/resources/xsd/{Target}.xsd             | Target schema       |
+  | src/main/resources/script/{script}.groovy       | Groovy UDF (if any) |
+  | META-INF/MANIFEST.MF                            | Bundle manifest     |
+  | .project                                        | Eclipse project     |
+~~~
+
+**After presenting the summary, ask the user:**
+
+> "Does this message mapping design match your requirements? Please review the field mappings, functions, and file structure. If anything needs to change, let me know before I proceed to generation."
+
+**Do NOT proceed to Phase 2 until the user confirms the design is correct.**
+
+If the user requests changes, update the design and re-present the summary. Only after explicit confirmation, output:
+
+> "Design confirmed. Proceeding to Phase 2: Generate .mmap Artifact."
 
 ## Phase 2: Generate .mmap Artifact
 

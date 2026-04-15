@@ -12,5 +12,8 @@ Desktop.ini
 # Plugin temp/working directories
 plugins/**/skills/*/.tmp/
 
+# MCP server config (contains tenant-specific OAuth credentials)
+plugins/**/.mcp.json
+
 # Playwright MCP
 .playwright-mcp/

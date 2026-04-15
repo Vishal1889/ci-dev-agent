@@ -155,7 +155,7 @@ Step 3: get-deploy-error  — check deployment errors per artifact
 | Use `includeDetails: true` on 50+ messages | 250+ API calls, slow and costly | Filter to <10 messages first, then enable details |
 | Pass `Authorization` header in `send-http-message` | Header is stripped for security | Let the server inject auth from BTP Destination |
 | Use design-time destination for `send-http-message` | Sends to management API, not iflow | Use the runtime destination (`CPI_RUNTIME`) |
-| Assume destination name in HTTP mode | Names vary per tenant | Resolve via tenant config (`tenant-destination-config.json`) or ask the user on the first call |
+| Assume destination name in HTTP mode | Names vary per tenant | Resolve via tenant config (`config/tenant-destination-config.json`) or ask the user on the first call |
 
 ## Execution Mechanics
 
