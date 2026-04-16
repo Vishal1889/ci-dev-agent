@@ -27,3 +27,6 @@ Desktop.ini
 
 # Plugin temp/working directories
 skills/*/.tmp/
+
+# Orchestration session state
+orchestration/.active-session

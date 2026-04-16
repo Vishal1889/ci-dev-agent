@@ -50,27 +50,71 @@ Verify before ANY BPMN generation:
 
 ## MANDATORY: Design-First Plan Mode
 
-This skill operates in **plan mode by default**. Before ANY execution (MCP tool calls that create or modify artifacts, BPMN generation, upload, or deploy), the skill MUST:
+This skill operates in **plan mode by default**. **Immediately upon skill invocation, call `EnterPlanMode`** to enforce read-only constraints during requirement gathering.
 
-1. Complete Phase A requirement gathering
-2. Present the full design to the user (requirements summary table + flow diagram — see Phase A Gate in `phase-a-requirements.md`)
-3. Wait for explicit user confirmation (e.g., "looks good", "proceed", "yes")
-4. Only THEN transition to Phase B and beyond
+Before ANY execution (MCP tool calls that create or modify artifacts, BPMN generation, upload, or deploy), the skill MUST:
 
-**What counts as execution (blocked until confirmation):**
+1. **Call `EnterPlanMode`** — this blocks all write tools (Edit, Write, Bash non-readonly, MCP write tools) until plan mode is exited
+2. Complete Phase A requirement gathering (read-only operations + sub-agent analysis)
+3. Present the full design to the user (requirements summary table + flow diagram — see Phase A Gate in `phase-a-requirements.md`)
+4. Wait for explicit user confirmation via `AskUserQuestion` (user selects "Approve")
+5. **Call `ExitPlanMode`** — this exits plan mode and unblocks all write tools
+6. Only THEN transition to Phase B and beyond
+
+**What counts as execution (blocked by `EnterPlanMode` until `ExitPlanMode`):**
 - `scaffold-iflow`, `update-iflow-content`, `deploy-iflow`
 - `scaffold-message-mapping`, `update-message-mapping-content`, `deploy-message-mapping`
 - Writing any generated BPMN XML, Groovy scripts, or mapping files
 - Any MCP tool call that creates or modifies tenant artifacts
 
-**What is allowed before confirmation:**
-- `get-server-info` (transport detection)
-- `list-all-packages`, `get-package-details` (read-only queries to validate package existence)
-- `get-iflow-content`, `get-message-mapping-content` (read-only inspection of existing artifacts)
+**What is allowed in plan mode (before user confirmation):**
 - Reading reference files, templates, and metadata within the skill directory
-- Spawning the requirements analysis sub-agent
+- Spawning the requirements analysis sub-agent via `Agent` tool (sub-agents operate independently — they are NOT constrained by the parent's plan mode and can call MCP tools, run Bash/Python, etc.)
+- `AskUserQuestion` for gathering missing requirements
+
+**IMPORTANT — MCP tools are blocked in plan mode:** `EnterPlanMode` blocks ALL tool calls except read-only file tools (Read, Glob, Grep), Agent, and AskUserQuestion. This means MCP tools like `get-server-info`, `list-all-packages`, and `get-package-details` cannot be called by the main agent during Phase A. **Delegate all MCP read calls to the sub-agent.** Include destination resolution instructions (transport detection, tenant config lookup) in the sub-agent prompt so it can call `get-server-info` and resolve destinations on behalf of the main agent.
+
+**IMPORTANT — file-based inputs require sub-agent:** When the user provides ANY file path (PDF, DOCX, Excel, MD, etc.) as requirements input, you MUST spawn the sub-agent for extraction. Never attempt file reading, DOCX embedded file extraction, or Python-based processing inline — the main agent is in plan mode and cannot run Bash/Python. The sub-agent handles all file extraction independently.
 
 If the user's input is ambiguous or incomplete, ask clarifying questions rather than proceeding with assumptions. Never skip the confirmation step, even for "simple" iFlows.
+
+## MANDATORY: Structured Question Format (AskUserQuestion)
+
+**Every question presented to the user MUST use the `AskUserQuestion` tool.** Never present questions as plain text, blockquotes, or markdown-formatted questions. This applies to ALL phases, ALL question types, and ALL sub-agent `MISSING_INFORMATION` relays.
+
+### Question Type Mapping
+
+| Category | When | AskUserQuestion Strategy |
+|----------|------|--------------------------|
+| **Enumerated choices** | Adapter type, auth method, format, artifact type | Use 2-4 specific `options` with descriptive labels |
+| **Binary / Yes-No** | Externalize params?, mapping needed?, sync/async? | Use 2 `options` with descriptions explaining trade-offs |
+| **Open-ended** | Endpoint URL, system name, mapping rules, package ID | Present the question with 2-3 common-pattern options — user selects "Other" (always available) for custom input |
+| **Design confirmation gates** | Phase A Gate, Design Gate | Use 2 `options`: "Approve — proceed" / "Request changes" |
+| **Permission requests** | Read tenant iFlows?, delete artifact? | Use 2 `options`: "Yes — proceed" / "No — skip" |
+
+### Grouping Rules
+
+Group related questions into a single `AskUserQuestion` call (max 4 questions per call, each question with its own `header`, `options`, and `multiSelect` setting):
+
+- **Sender details** (system name + adapter type + auth + endpoint) → 1 call with up to 4 questions
+- **Receiver details** (system name + adapter type + auth + endpoint) → 1 call with up to 4 questions
+- **Processing options** (sync/async + mapping needed + schemas available + externalize) → 1 call with up to 4 questions
+- **Admin** (artifact type + package ID) → 1 call with 2 questions
+
+Do NOT group unrelated questions across different domains (e.g., sender details + mapping rules).
+
+### Sub-Agent MISSING_INFORMATION Relay
+
+When the Requirements Analysis Sub-Agent returns `STATUS=INCOMPLETE` with `MISSING_INFORMATION` items:
+1. Parse each missing item
+2. Classify per the Question Type Mapping above
+3. Group related items (up to 4 per call)
+4. Present each group via `AskUserQuestion` with appropriate `header` and `options`
+5. **Never paste the sub-agent's raw MISSING_INFORMATION text as plain text to the user**
+
+### Inline Fast-Path Questions
+
+When using the inline extraction fast path (≤3 sentence input, single artifact), every ASK_USER field that cannot be inferred MUST still use `AskUserQuestion` — not plain text.
 
 ## MCP Tool Reference
 
@@ -91,7 +135,7 @@ Available tools: `get-server-info`, `list-all-packages`, `get-package-details`, 
 
 ### Critical: Transport-Aware Destination Handling
 
-This MCP server runs in **stdio** or **http** mode. Auto-detect by calling `get-server-info` in Phase A step 1. Stdio mode uses `destinationName: "default"` / `runtimeDestination: "runtime"`. HTTP mode resolves destinations via user input, `config/tenant-destination-config.json`, or by asking the user. See `phase-a-requirements.md` step 1 for the full decision tree.
+This MCP server runs in **stdio** or **http** mode. The sub-agent calls `get-server-info` during Phase A to auto-detect the mode (the main agent cannot call MCP tools in plan mode). Stdio mode uses `destinationName: "default"` / `runtimeDestination: "runtime"`. HTTP mode resolves destinations via user input, `config/tenant-destination-config.json`, or by asking the user. See `phase-a-requirements.md` step 1 for the full decision tree.
 
 ---
 
@@ -110,6 +154,53 @@ Record approximate phase durations based on tool call timestamps visible in the 
 - Phase H: Completion Summary
 
 **At skill completion**, present a timing summary in the Phase H Completion Summary (approximate durations are fine, e.g., `~15s`).
+
+## Orchestration Dashboard (Optional)
+
+The orchestration dashboard provides a real-time visual view of skill execution phases and MCP tool calls. It is **opt-in**: it only activates if `orchestration_dashboard: true` is set in `.claude/ci-dev-plugin.local.md` YAML frontmatter. All orchestration commands are **silent no-ops** if the dashboard is not enabled — they exit immediately with no error.
+
+### Launching the Dashboard (once at skill start)
+
+Before calling `EnterPlanMode`, run the dashboard launcher via Bash:
+
+```bash
+node "skills/ci-iflow-developer/../../orchestration/launcher.js" --skill-name ci-iflow-developer
+```
+
+If the dashboard is enabled, this starts the server and opens the browser. The script prints a session ID line to stdout (e.g., `session:skill-a1b2c3d4`). **Capture this session ID** — you will pass it to subsequent phase event commands. If the output is empty or the command fails, skip all subsequent orchestration commands silently.
+
+### Sending Phase Events
+
+At each phase boundary, send a phase event via Bash using `--json` and `--session`:
+
+```bash
+node "skills/ci-iflow-developer/../../orchestration/send-event.js" phase-transition --json "{\"phase\":\"A\",\"name\":\"Requirement Analysis\"}" --session <captured-session-id>
+```
+
+Replace `<captured-session-id>` with the session ID captured from the launcher output.
+
+**Phase event table:**
+
+| Phase | `phase` value | `name` value |
+|-------|--------------|--------------|
+| A | `A` | `Requirement Analysis` |
+| B | `B` | `Pattern Matching` |
+| C | `C` | `Artifact Generation` |
+| D | `D` | `Upload to CPI` |
+| E | `E` | `Deploy & Error Resolution` |
+| F | `F` | `Escalation` |
+| G | `G` | `User Decision` |
+| H | `H` | `Completion Summary` |
+| end | `done` | `Skill Complete` |
+
+**Important:**
+- All orchestration commands use `node` with `--json` args — no shell piping — so they work on all platforms (Windows, macOS, Linux)
+- Never block skill execution on orchestration failures. If any command fails, continue the skill normally
+- MCP tool events (PreToolUse/PostToolUse) and sub-agent events are tracked automatically by hooks — no action needed in the skill for those
+- For the final `done` event, add `--cleanup` to remove the session tracking file:
+  ```bash
+  node "skills/ci-iflow-developer/../../orchestration/send-event.js" phase-transition --json "{\"phase\":\"done\",\"name\":\"Skill Complete\"}" --session <captured-session-id> --cleanup
+  ```
 
 ## Template Selection
 
@@ -130,15 +221,15 @@ This skill executes in phases. **At each phase gate, output the gate message and
 
 ### Phase Gate Protocol
 
-At each phase transition, output the gate message and immediately read the next file.
+At each phase transition, output the gate message, send the orchestration phase event (if session ID was captured), and immediately read the next file.
 
-**Phase A to B transition is BLOCKED until user confirms.** Do not output the Phase A gate message or read phase-b-pattern-matching.md until the user has explicitly approved the design presented in the Phase A Gate. All other phase transitions may proceed automatically.
+**Phase A to B transition is BLOCKED until user confirms AND plan mode is exited.** Do not output the Phase A gate message or read phase-b-pattern-matching.md until the user has explicitly approved the design presented in the Phase A Gate. After user approves, call `ExitPlanMode` first, then proceed. All other phase transitions may proceed automatically.
 
-- `"Phase A complete — user confirmed design. Reading phase-b-pattern-matching.md."` → Read `./references/phases/phase-b-pattern-matching.md`
-- `"Phase B complete — Template: {name}. Reading phase-c-generation.md."` → Read `./references/phases/phase-c-generation.md`
-- `"Phase C complete — generated {N} files for {ArtifactId}. Reading phase-d-upload.md."` → Read `./references/phases/phase-d-upload.md`
-- `"Phase D complete — artifact {ArtifactId} uploaded and build-validated. Reading phase-e-deploy.md."` → Read `./references/phases/phase-e-deploy.md`
-- `"Phase E complete — {ArtifactId} deployed. Reading phase-fgh-completion.md."` → Read `./references/phases/phase-fgh-completion.md`
+- `"Phase A complete — user confirmed design."` → Call `ExitPlanMode` → Send phase event: `node "skills/ci-iflow-developer/../../orchestration/send-event.js" phase-transition --json "{\"phase\":\"B\",\"name\":\"Pattern Matching\"}" --session <session-id>` → Read `./references/phases/phase-b-pattern-matching.md`
+- `"Phase B complete — Template: {name}. Reading phase-c-generation.md."` → Send phase event C (`Artifact Generation`) → Read `./references/phases/phase-c-generation.md`
+- `"Phase C complete — generated {N} files for {ArtifactId}. Reading phase-d-upload.md."` → Send phase event D (`Upload to CPI`) → Read `./references/phases/phase-d-upload.md`
+- `"Phase D complete — artifact {ArtifactId} uploaded and build-validated. Reading phase-e-deploy.md."` → Send phase event E (`Deploy & Error Resolution`) → Read `./references/phases/phase-e-deploy.md`
+- `"Phase E complete — {ArtifactId} deployed. Reading phase-fgh-completion.md."` → Send phase event H (`Completion Summary`) → Read `./references/phases/phase-fgh-completion.md`
 
 ### Fast Paths
 
@@ -148,4 +239,6 @@ At each phase transition, output the gate message and immediately read the next 
 
 ### Start Here
 
-Read `./references/phases/phase-a-requirements.md` to begin Phase A.
+1. Launch the orchestration dashboard (Bash): `node "skills/ci-iflow-developer/../../orchestration/launcher.js" --skill-name ci-iflow-developer` — capture the session ID from stdout if printed (e.g., `session:skill-a1b2c3d4`). If the output is empty or the command fails, skip all orchestration commands silently.
+2. Send Phase A event (Bash): `node "skills/ci-iflow-developer/../../orchestration/send-event.js" phase-transition --json "{\"phase\":\"A\",\"name\":\"Requirement Analysis\"}" --session <session-id>`
+3. Call `EnterPlanMode`, then read `./references/phases/phase-a-requirements.md` to begin Phase A.

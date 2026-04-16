@@ -13,548 +13,1020 @@
       color: #c9d1d9;
       height: 100vh;
       display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
-    /* Sidebar */
-    .sidebar {
-      width: 260px;
-      background: #161b22;
-      border-right: 1px solid #30363d;
+    /* ── Header ── */
+    .header {
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      padding: 0 20px;
+      height: 48px;
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      flex-shrink: 0;
+      gap: 16px;
+    }
+
+    .logo {
+      font-size: 13px;
+      font-weight: 600;
+      color: #58a6ff;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo svg { width: 16px; height: 16px; }
+
+    .connection-indicator {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #f85149;
       flex-shrink: 0;
     }
 
-    .sidebar-header {
-      padding: 16px;
-      border-bottom: 1px solid #30363d;
+    .connection-indicator.connected { background: #3fb950; }
+
+    .divider {
+      width: 1px;
+      height: 24px;
+      background: #30363d;
     }
 
-    .sidebar-header h1 {
-      font-size: 14px;
-      font-weight: 600;
-      color: #58a6ff;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
+    /* Session tabs */
+    .session-tabs {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      flex: 1;
+      scrollbar-width: none;
     }
 
-    .sidebar-header .status {
-      font-size: 11px;
-      margin-top: 6px;
+    .session-tabs::-webkit-scrollbar { display: none; }
+
+    .session-tab {
       display: flex;
       align-items: center;
       gap: 6px;
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #f85149;
-    }
-
-    .status-dot.connected { background: #3fb950; }
-
-    .session-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 8px;
-    }
-
-    .session-item {
-      padding: 10px 12px;
+      padding: 4px 12px;
       border-radius: 6px;
-      cursor: pointer;
-      margin-bottom: 4px;
       border: 1px solid transparent;
+      background: transparent;
+      color: #8b949e;
+      font-size: 12px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      cursor: pointer;
+      white-space: nowrap;
       transition: all 0.15s;
     }
 
-    .session-item:hover { background: #1c2128; }
+    .session-tab:hover { background: #1c2128; color: #c9d1d9; }
 
-    .session-item.active {
+    .session-tab.active {
       background: #1f2937;
       border-color: #58a6ff;
-    }
-
-    .session-item.stale { opacity: 0.5; }
-
-    .session-id {
-      font-size: 12px;
-      font-family: 'SF Mono', 'Fira Code', monospace;
       color: #e6edf3;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .session-meta {
-      font-size: 11px;
-      color: #8b949e;
-      margin-top: 4px;
-      display: flex;
-      justify-content: space-between;
+    .session-tab.stale { opacity: 0.4; }
+
+    .session-tab .phase-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: #1f3a5f;
+      color: #58a6ff;
     }
 
-    .no-sessions {
-      padding: 20px;
-      text-align: center;
-      color: #484f58;
-      font-size: 13px;
+    .session-tab .phase-badge.done {
+      background: #1a3a2a;
+      color: #3fb950;
     }
 
-    /* Main content */
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+    .session-tab .phase-badge.waiting {
+      background: #3d2f1f;
+      color: #d29922;
+      animation: badgePulse 2s ease-in-out infinite;
     }
 
-    .toolbar {
-      padding: 12px 20px;
-      border-bottom: 1px solid #30363d;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #161b22;
-    }
-
-    .toolbar-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .toolbar h2 {
-      font-size: 14px;
-      font-weight: 500;
-    }
-
+    /* Stats */
     .stats {
       display: flex;
-      gap: 16px;
-      font-size: 12px;
-      color: #8b949e;
-    }
-
-    .stat-value { color: #e6edf3; font-weight: 600; }
-
-    .flow-container {
-      flex: 1;
-      overflow: auto;
-      padding: 20px;
-    }
-
-    .flow-diagram {
-      min-height: 200px;
-    }
-
-    /* Event timeline */
-    .event-list {
-      max-height: 300px;
-      overflow-y: auto;
-      border-top: 1px solid #30363d;
-      background: #161b22;
-    }
-
-    .event-item {
-      padding: 8px 20px;
-      border-bottom: 1px solid #21262d;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 12px;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-    }
-
-    .event-time {
-      color: #484f58;
-      white-space: nowrap;
-      min-width: 80px;
-    }
-
-    .event-type {
-      padding: 2px 8px;
-      border-radius: 3px;
+      gap: 14px;
       font-size: 11px;
-      font-weight: 600;
+      color: #8b949e;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
-    .event-type.pre-tool { background: #1f3a5f; color: #58a6ff; }
-    .event-type.post-tool { background: #1a3a2a; color: #3fb950; }
-    .event-type.post-tool.failed { background: #3d1f20; color: #f85149; }
-    .event-type.subagent-start { background: #2d1f3d; color: #bc8cff; }
-    .event-type.subagent-stop { background: #2d1f3d; color: #bc8cff; }
-    .event-type.turn-stop { background: #3d2f1f; color: #d29922; }
+    .stats .val { color: #e6edf3; font-weight: 600; }
 
-    .event-detail { color: #c9d1d9; }
+    .no-sessions-hint {
+      font-size: 12px;
+      color: #484f58;
+      flex: 1;
+    }
 
-    /* Mermaid overrides */
-    .mermaid svg { max-width: 100%; }
+    /* ── Main flow area ── */
+    .flow-area {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 32px 24px;
+      overflow-x: auto;
+      overflow-y: auto;
+    }
 
     .empty-state {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      width: 100%;
       height: 100%;
       color: #484f58;
     }
 
-    .empty-state svg {
-      width: 64px;
-      height: 64px;
-      margin-bottom: 16px;
-      opacity: 0.3;
+    .empty-state .icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px dashed #30363d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
     }
 
-    .empty-state p {
+    .empty-state .icon svg { width: 20px; height: 20px; opacity: 0.4; }
+
+    .empty-state p { font-size: 13px; }
+    .empty-state .hint { font-size: 11px; color: #30363d; margin-top: 4px; }
+
+    /* Pipeline */
+    .pipeline {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      min-height: 80px;
+      padding-top: 12px;
+    }
+
+    /* Connector line */
+    .connector {
+      width: 32px;
+      height: 2px;
+      background: #30363d;
+      flex-shrink: 0;
+      margin-top: 19px; /* vertically center with 40px phase node */
+    }
+
+    .connector.active { background: #58a6ff; }
+    .connector.complete { background: #3fb950; }
+
+    /* Phase column: wraps phase node + sub-branch */
+    .phase-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      min-width: 48px;
+    }
+
+    /* Phase node */
+    .phase-node {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #484f58;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 14px;
-      margin-bottom: 4px;
+      font-weight: 700;
+      color: #484f58;
+      flex-shrink: 0;
+      position: relative;
+      cursor: default;
+      transition: all 0.3s ease;
+      animation: nodeEnter 0.3s ease-out;
     }
 
-    .empty-state .hint {
-      font-size: 12px;
-      color: #30363d;
+    @keyframes nodeEnter {
+      from { opacity: 0; transform: scale(0.6) translateX(12px); }
+      to { opacity: 1; transform: scale(1) translateX(0); }
     }
+
+    .phase-node.active {
+      border-color: #58a6ff;
+      color: #58a6ff;
+      background: rgba(88, 166, 255, 0.06);
+      box-shadow:
+        0 0 0 4px rgba(88, 166, 255, 0.2),
+        0 0 12px rgba(88, 166, 255, 0.15),
+        0 0 24px rgba(88, 166, 255, 0.05);
+      animation: nodeEnter 0.3s ease-out, activeGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes activeGlow {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow:
+          0 0 0 4px rgba(88, 166, 255, 0.2),
+          0 0 12px rgba(88, 166, 255, 0.15),
+          0 0 24px rgba(88, 166, 255, 0.05);
+        border-color: #58a6ff;
+      }
+      50% {
+        transform: scale(1.08);
+        box-shadow:
+          0 0 0 8px rgba(88, 166, 255, 0.3),
+          0 0 20px rgba(88, 166, 255, 0.25),
+          0 0 40px rgba(88, 166, 255, 0.1);
+        border-color: #79b8ff;
+      }
+    }
+
+    .phase-node.complete {
+      border-color: #3fb950;
+      color: #3fb950;
+      background: rgba(63, 185, 80, 0.08);
+    }
+
+    .phase-node.done {
+      border-color: #d29922;
+      color: #d29922;
+      background: rgba(210, 153, 34, 0.08);
+    }
+
+    /* Skipped phase — dimmed with dashed border */
+    .phase-node.skipped {
+      border-color: #30363d;
+      border-style: dashed;
+      color: #30363d;
+      opacity: 0.5;
+    }
+
+    /* Pending (not yet reached) — subtle solid */
+    .phase-node.pending {
+      border-color: #484f58;
+      color: #484f58;
+      opacity: 0.4;
+    }
+
+    /* Waiting for human input — amber pulsing glow */
+    .phase-node.waiting {
+      border-color: #d29922;
+      color: #d29922;
+      background: rgba(210, 153, 34, 0.06);
+      box-shadow:
+        0 0 0 4px rgba(210, 153, 34, 0.2),
+        0 0 12px rgba(210, 153, 34, 0.15),
+        0 0 24px rgba(210, 153, 34, 0.05);
+      animation: nodeEnter 0.3s ease-out, waitingGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes waitingGlow {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow:
+          0 0 0 4px rgba(210, 153, 34, 0.2),
+          0 0 12px rgba(210, 153, 34, 0.15),
+          0 0 24px rgba(210, 153, 34, 0.05);
+        border-color: #d29922;
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow:
+          0 0 0 8px rgba(210, 153, 34, 0.3),
+          0 0 20px rgba(210, 153, 34, 0.25),
+          0 0 40px rgba(210, 153, 34, 0.1);
+        border-color: #e3b341;
+      }
+    }
+
+    /* Waiting badge overlay */
+    .waiting-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #d29922;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 700;
+      color: #0d1117;
+      animation: badgePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Tooltip */
+    .phase-node .tooltip {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1c2128;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 400;
+      color: #c9d1d9;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      z-index: 10;
+    }
+
+    .phase-node:hover .tooltip { opacity: 1; }
+
+    .tooltip .tt-label { font-weight: 600; color: #e6edf3; }
+    .tooltip .tt-time { color: #8b949e; margin-left: 6px; }
+
+    /* Sub-branch container: vertical list below the phase node */
+    .sub-branch {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-top: 8px;
+      padding-left: 0;
+      margin-left: 0;
+      min-width: 0;
+      position: relative;
+    }
+
+    .sub-branch:empty { display: none; }
+
+    /* Vertical line running down the left side of the branch */
+    .sub-branch::before {
+      content: '';
+      position: absolute;
+      left: 19px; /* center of the 40px phase node */
+      top: 0;
+      bottom: 8px;
+      width: 2px;
+      background: #30363d;
+    }
+
+    .phase-column.active .sub-branch::before,
+    .phase-column.waiting .sub-branch::before {
+      background: #58a6ff;
+    }
+
+    .phase-column.waiting .sub-branch::before {
+      background: #d29922;
+    }
+
+    /* Each branch item */
+    .branch-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 0 3px 28px;
+      position: relative;
+      animation: branchEnter 0.25s ease-out;
+      white-space: nowrap;
+    }
+
+    @keyframes branchEnter {
+      from { opacity: 0; transform: translateX(-8px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Horizontal tick mark from the vertical line */
+    .branch-item::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 50%;
+      width: 8px;
+      height: 2px;
+      background: #30363d;
+    }
+
+    .phase-column.active .branch-item::before {
+      background: #58a6ff;
+    }
+
+    .phase-column.waiting .branch-item::before {
+      background: #d29922;
+    }
+
+    /* Branch dot (small indicator) */
+    .branch-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .branch-dot.running { background: #58a6ff; animation: dotPulse 1s ease-in-out infinite; }
+    .branch-dot.success { background: #3fb950; }
+    .branch-dot.failed { background: #f85149; }
+    .branch-dot.subagent { background: #d2a8ff; }
+
+    @keyframes dotPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    /* Branch label */
+    .branch-label {
+      font-size: 11px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: #8b949e;
+    }
+
+    .branch-label .dur {
+      color: #484f58;
+      margin-left: 4px;
+    }
+
+    /* Skill name badge in session tab */
+    .skill-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: #1f2d3d;
+      color: #8b949e;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ── Event log ── */
+    .event-log {
+      border-top: 1px solid #30363d;
+      background: #161b22;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      max-height: 220px;
+      transition: max-height 0.3s ease;
+    }
+
+    .event-log.collapsed { max-height: 32px; }
+
+    .event-log-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 20px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 11px;
+      color: #8b949e;
+      border-bottom: 1px solid #21262d;
+      flex-shrink: 0;
+    }
+
+    .event-log-header:hover { color: #c9d1d9; }
+
+    .event-log-header .toggle {
+      font-size: 10px;
+      transition: transform 0.2s;
+    }
+
+    .event-log.collapsed .toggle { transform: rotate(180deg); }
+
+    .event-log-body {
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .event-log.collapsed .event-log-body { display: none; }
+
+    .event-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 20px;
+      border-bottom: 1px solid #1c2128;
+      font-size: 11px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .event-row:last-child { border-bottom: none; }
+
+    .ev-time {
+      color: #484f58;
+      white-space: nowrap;
+      min-width: 70px;
+    }
+
+    .ev-badge {
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .ev-badge.phase-transition { background: #2f3a1f; color: #a3d977; }
+    .ev-badge.pre-tool { background: #1f3a5f; color: #58a6ff; }
+    .ev-badge.post-tool { background: #1a3a2a; color: #3fb950; }
+    .ev-badge.subagent-stop { background: #2d1f3d; color: #bc8cff; }
+    .ev-badge.turn-stop { background: #3d2f1f; color: #d29922; }
+
+    .ev-detail { color: #c9d1d9; }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <h1>CPI Orchestration</h1>
-      <div class="status">
-        <span class="status-dot" id="statusDot"></span>
-        <span id="statusText">Connecting...</span>
-      </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="4 17 10 11 4 5"></polyline>
+        <line x1="12" y1="19" x2="20" y2="19"></line>
+      </svg>
+      CPI Orchestration
     </div>
-    <div class="session-list" id="sessionList">
-      <div class="no-sessions">Waiting for events...</div>
+    <span class="connection-indicator" id="connDot"></span>
+    <div class="divider"></div>
+    <div class="session-tabs" id="sessionTabs">
+      <span class="no-sessions-hint">Waiting for skill invocation...</span>
+    </div>
+    <div class="stats" id="statsBar">
+      <span>Phase: <span class="val" id="statPhase">-</span></span>
+      <span>Tools: <span class="val" id="statTools">0</span></span>
+      <span>Time: <span class="val" id="statTime">-</span></span>
     </div>
   </div>
 
-  <div class="main">
-    <div class="toolbar">
-      <div class="toolbar-left">
-        <h2 id="activeSessionLabel">No session selected</h2>
-      </div>
-      <div class="stats">
-        <span>Tools: <span class="stat-value" id="statTools">0</span></span>
-        <span>Agents: <span class="stat-value" id="statAgents">0</span></span>
-        <span>Duration: <span class="stat-value" id="statDuration">-</span></span>
-      </div>
-    </div>
-
-    <div class="flow-container" id="flowContainer">
-      <div class="empty-state">
+  <!-- Flow area -->
+  <div class="flow-area" id="flowArea">
+    <div class="empty-state">
+      <div class="icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M12 3v18M3 12h18M7.5 7.5l9 9M16.5 7.5l-9 9"/>
+          <polyline points="4 17 10 11 4 5"></polyline>
+          <line x1="12" y1="19" x2="20" y2="19"></line>
         </svg>
-        <p>No events yet</p>
-        <p class="hint">Invoke a CPI skill to see the orchestration flow</p>
       </div>
+      <p>No events yet</p>
+      <p class="hint">Invoke a CPI skill to see the orchestration flow</p>
     </div>
+  </div>
 
-    <div class="event-list" id="eventList"></div>
+  <!-- Event log -->
+  <div class="event-log" id="eventLog">
+    <div class="event-log-header" id="logToggle">
+      <span>Event Log <span id="logCount">(0)</span></span>
+      <span class="toggle">&#x25BC;</span>
+    </div>
+    <div class="event-log-body" id="logBody"></div>
   </div>
 
   <script>
-    // State
-    const sessionData = new Map(); // sessionId -> { events: [], element: null }
-    let activeSessionId = null;
+    // ── State ──
+    const sessions = new Map(); // id -> { events:[], phases:[], activitiesByPhase:Map, skillName:null }
+    let activeId = null;
     let ws = null;
+    let logCollapsed = false;
 
-    // DOM refs
-    const sessionListEl = document.getElementById('sessionList');
-    const flowContainer = document.getElementById('flowContainer');
-    const eventListEl = document.getElementById('eventList');
-    const statusDot = document.getElementById('statusDot');
-    const statusText = document.getElementById('statusText');
-    const activeSessionLabel = document.getElementById('activeSessionLabel');
+    // ── DOM ──
+    const connDot = document.getElementById('connDot');
+    const sessionTabs = document.getElementById('sessionTabs');
+    const flowArea = document.getElementById('flowArea');
+    const logBody = document.getElementById('logBody');
+    const logCount = document.getElementById('logCount');
+    const statPhase = document.getElementById('statPhase');
     const statTools = document.getElementById('statTools');
-    const statAgents = document.getElementById('statAgents');
-    const statDuration = document.getElementById('statDuration');
+    const statTime = document.getElementById('statTime');
+    const eventLog = document.getElementById('eventLog');
+    const logToggle = document.getElementById('logToggle');
 
-    // Format tool name: strip mcp__ci-mcp-server-custom__ prefix
+    logToggle.addEventListener('click', () => {
+      logCollapsed = !logCollapsed;
+      eventLog.classList.toggle('collapsed', logCollapsed);
+    });
+
+    // ── Helpers ──
     function formatToolName(name) {
       if (!name) return 'unknown';
-      return name.replace(/^mcp__ci-mcp-server-custom__/, '');
+      return name
+        .replace(/^mcp__plugin_ci-dev-plugin_ci-mcp-server-custom__/, '')
+        .replace(/^mcp__ci-mcp-server-custom__/, '');
     }
 
-    // Format time as HH:MM:SS
     function formatTime(ts) {
-      const d = new Date(ts);
-      return d.toLocaleTimeString('en-US', { hour12: false });
+      return new Date(ts).toLocaleTimeString('en-US', { hour12: false });
     }
 
-    // Format duration
     function formatDuration(ms) {
       if (ms < 1000) return ms + 'ms';
       if (ms < 60000) return (ms / 1000).toFixed(1) + 's';
       return (ms / 60000).toFixed(1) + 'm';
     }
 
-    // Stale threshold: 5 minutes
     const STALE_MS = 5 * 60 * 1000;
+    const PHASE_ORDER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'done'];
+    const PHASE_LABELS = {
+      A: 'Requirement Analysis', B: 'Pattern Matching', C: 'Artifact Generation',
+      D: 'Upload to CPI', E: 'Deploy & Error Resolution', F: 'Escalation',
+      G: 'User Decision', H: 'Completion Summary', done: 'Skill Complete'
+    };
 
-    function ensureSession(sessionId) {
-      if (!sessionData.has(sessionId)) {
-        sessionData.set(sessionId, { events: [] });
+    function ensureSession(id) {
+      if (!sessions.has(id)) {
+        sessions.set(id, {
+          events: [],
+          phases: [],                // [{ letter, name, ts, status:'active'|'complete'|'waiting'|'done' }]
+          activitiesByPhase: new Map(), // phaseLetter -> [{ category:'tool'|'subagent', name, startTs, endTs, status }]
+          skillName: null
+        });
       }
-      return sessionData.get(sessionId);
+      return sessions.get(id);
     }
 
-    function renderSessionList() {
+    // ── Process incoming event ──
+    function processEvent(event) {
+      const sid = event.sessionId || event.data?.session_id || 'unknown';
+      const s = ensureSession(sid);
+      s.events.push(event);
+
+      // Capture skill name from event data (set by send-event.js)
+      if (event.data?.skill_name && !s.skillName) {
+        s.skillName = event.data.skill_name;
+      }
+
+      // Resume waiting phase on any non-turn-stop event
+      if (event.type !== 'turn-stop') {
+        for (const p of s.phases) {
+          if (p.status === 'waiting') p.status = 'active';
+        }
+      }
+
+      if (event.type === 'phase-transition') {
+        const letter = event.data?.phase || '?';
+        const name = event.data?.name || PHASE_LABELS[letter] || 'Unknown';
+
+        // Mark previous active/waiting phase as complete
+        for (const p of s.phases) {
+          if (p.status === 'active' || p.status === 'waiting') p.status = 'complete';
+        }
+
+        s.phases.push({
+          letter,
+          name,
+          ts: event.timestamp,
+          status: letter === 'done' ? 'done' : 'active'
+        });
+
+        if (letter !== 'done' && !s.activitiesByPhase.has(letter)) {
+          s.activitiesByPhase.set(letter, []);
+        }
+
+      } else if (event.type === 'pre-tool') {
+        const toolName = formatToolName(event.data?.tool_name);
+        // Attach to current active phase
+        const activePhase = s.phases.find(p => p.status === 'active' || p.status === 'waiting');
+        const phaseKey = activePhase ? activePhase.letter : '_none';
+        if (!s.activitiesByPhase.has(phaseKey)) s.activitiesByPhase.set(phaseKey, []);
+        s.activitiesByPhase.get(phaseKey).push({
+          category: 'tool',
+          name: toolName,
+          startTs: event.timestamp,
+          endTs: null,
+          status: 'running'
+        });
+
+      } else if (event.type === 'post-tool') {
+        const toolName = formatToolName(event.data?.tool_name);
+        // Find the matching running tool (most recent)
+        for (const [, activities] of s.activitiesByPhase) {
+          for (let i = activities.length - 1; i >= 0; i--) {
+            if (activities[i].category === 'tool' && activities[i].name === toolName && activities[i].status === 'running') {
+              activities[i].status = 'success';
+              activities[i].endTs = event.timestamp;
+              break;
+            }
+          }
+        }
+
+      } else if (event.type === 'subagent-stop') {
+        const agentName = event.data?.agent_type || event.data?.description || 'Sub-agent';
+        const activePhase = s.phases.find(p => p.status === 'active' || p.status === 'waiting');
+        const phaseKey = activePhase ? activePhase.letter : '_none';
+        if (!s.activitiesByPhase.has(phaseKey)) s.activitiesByPhase.set(phaseKey, []);
+        s.activitiesByPhase.get(phaseKey).push({
+          category: 'subagent',
+          name: agentName,
+          startTs: event.timestamp,
+          endTs: event.timestamp,
+          status: 'complete'
+        });
+
+      } else if (event.type === 'turn-stop') {
+        // Mark active phase as waiting for human interaction
+        for (const p of s.phases) {
+          if (p.status === 'active') p.status = 'waiting';
+        }
+      }
+
+      // Auto-select first session
+      if (!activeId) selectSession(sid);
+
+      renderTabs();
+      if (sid === activeId) {
+        renderPipeline();
+        updateStats();
+      }
+      renderLog(sid);
+    }
+
+    // ── Session selection ──
+    function selectSession(id) {
+      activeId = id;
+      renderTabs();
+      renderPipeline();
+      renderLog(id);
+      updateStats();
+    }
+
+    // ── Render session tabs ──
+    function renderTabs() {
       const now = Date.now();
-      const entries = Array.from(sessionData.entries()).sort((a, b) => {
-        const aLast = a[1].events[a[1].events.length - 1]?.timestamp || 0;
-        const bLast = b[1].events[b[1].events.length - 1]?.timestamp || 0;
+      const entries = Array.from(sessions.entries()).sort((a, b) => {
+        const aLast = a[1].events.at(-1)?.timestamp || 0;
+        const bLast = b[1].events.at(-1)?.timestamp || 0;
         return bLast - aLast;
       });
 
       if (entries.length === 0) {
-        sessionListEl.innerHTML = '<div class="no-sessions">Waiting for events...</div>';
+        sessionTabs.innerHTML = '<span class="no-sessions-hint">Waiting for skill invocation...</span>';
         return;
       }
 
-      sessionListEl.innerHTML = entries.map(([id, data]) => {
-        const lastTs = data.events[data.events.length - 1]?.timestamp || 0;
+      sessionTabs.innerHTML = entries.map(([id, s]) => {
+        const lastTs = s.events.at(-1)?.timestamp || 0;
         const isStale = (now - lastTs) > STALE_MS;
-        const isActive = id === activeSessionId;
-        const shortId = id.substring(0, 12);
-        const toolCount = data.events.filter(e => e.type === 'pre-tool').length;
+        const isActive = id === activeId;
+        const shortId = id.length > 14 ? id.substring(0, 14) + '\u2026' : id;
+        const lastPhase = s.phases.at(-1);
+        const badgeLetter = lastPhase ? lastPhase.letter : '-';
+        const isDone = lastPhase?.status === 'done';
+        const isWaiting = lastPhase?.status === 'waiting';
+        const skillLabel = s.skillName ? s.skillName.replace(/^ci-/, '').replace(/-developer$/, '') : '';
 
-        return `<div class="session-item ${isActive ? 'active' : ''} ${isStale ? 'stale' : ''}"
-                     data-session-id="${encodeURIComponent(id)}">
-          <div class="session-id">${shortId}...</div>
-          <div class="session-meta">
-            <span>${toolCount} tools</span>
-            <span>${lastTs ? formatTime(lastTs) : '-'}</span>
-          </div>
+        return `<div class="session-tab ${isActive ? 'active' : ''} ${isStale ? 'stale' : ''}"
+                     data-sid="${encodeURIComponent(id)}">
+          ${skillLabel ? `<span class="skill-badge">${skillLabel}</span>` : ''}
+          ${shortId}
+          <span class="phase-badge ${isDone ? 'done' : ''} ${isWaiting ? 'waiting' : ''}">${badgeLetter === 'done' ? '\u2713' : isWaiting ? '\u23F8' : badgeLetter}</span>
         </div>`;
       }).join('');
     }
 
-    // Event delegation for session selection (avoids inline onclick XSS risk)
-    sessionListEl.addEventListener('click', (e) => {
-      const item = e.target.closest('.session-item');
-      if (item && item.dataset.sessionId) {
-        selectSession(decodeURIComponent(item.dataset.sessionId));
-      }
+    sessionTabs.addEventListener('click', (e) => {
+      const tab = e.target.closest('.session-tab');
+      if (tab && tab.dataset.sid) selectSession(decodeURIComponent(tab.dataset.sid));
     });
 
-    function selectSession(sessionId) {
-      activeSessionId = sessionId;
-      renderSessionList();
-      renderFlowDiagram();
-      renderEventList();
-      updateStats();
-      activeSessionLabel.textContent = 'Session ' + sessionId.substring(0, 12) + '...';
-    }
-
-    function updateStats() {
-      if (!activeSessionId || !sessionData.has(activeSessionId)) {
-        statTools.textContent = '0';
-        statAgents.textContent = '0';
-        statDuration.textContent = '-';
-        return;
-      }
-
-      const events = sessionData.get(activeSessionId).events;
-      const toolCount = events.filter(e => e.type === 'pre-tool').length;
-      const agentCount = events.filter(e => e.type === 'subagent-start').length;
-
-      statTools.textContent = toolCount;
-      statAgents.textContent = agentCount;
-
-      if (events.length > 1) {
-        const duration = events[events.length - 1].timestamp - events[0].timestamp;
-        statDuration.textContent = formatDuration(duration);
-      } else {
-        statDuration.textContent = '-';
-      }
-    }
-
-    function renderFlowDiagram() {
-      if (!activeSessionId || !sessionData.has(activeSessionId)) {
-        flowContainer.innerHTML = `<div class="empty-state">
+    // ── Render horizontal pipeline with vertical sub-branches ──
+    function renderPipeline() {
+      if (!activeId || !sessions.has(activeId)) {
+        flowArea.innerHTML = `<div class="empty-state">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <polyline points="4 17 10 11 4 5"></polyline>
+              <line x1="12" y1="19" x2="20" y2="19"></line>
+            </svg>
+          </div>
           <p>No events yet</p>
           <p class="hint">Invoke a CPI skill to see the orchestration flow</p>
         </div>`;
         return;
       }
 
-      const events = sessionData.get(activeSessionId).events;
-      if (events.length === 0) return;
-
-      // Build flow nodes from events
-      const nodes = [];
-      const toolTimings = new Map(); // toolName -> { startTime, endTime, status }
-
-      for (const event of events) {
-        if (event.type === 'pre-tool') {
-          const toolName = formatToolName(event.data?.tool_name);
-          const nodeId = 'tool_' + nodes.length;
-          toolTimings.set(toolName + '_' + event.timestamp, { startTime: event.timestamp, nodeId });
-          nodes.push({
-            id: nodeId,
-            label: toolName,
-            type: 'tool',
-            status: 'running',
-            time: formatTime(event.timestamp),
-          });
-        } else if (event.type === 'post-tool') {
-          const toolName = formatToolName(event.data?.tool_name);
-          // Find the matching pre-tool node (most recent one with same name)
-          for (let i = nodes.length - 1; i >= 0; i--) {
-            if (nodes[i].label === toolName && nodes[i].status === 'running') {
-              nodes[i].status = 'success';
-              nodes[i].duration = event.timestamp - (events.find(
-                e => e.type === 'pre-tool' && formatToolName(e.data?.tool_name) === toolName
-              )?.timestamp || event.timestamp);
-              break;
-            }
-          }
-        } else if (event.type === 'subagent-start') {
-          const agentType = event.data?.agent_type || 'agent';
-          nodes.push({
-            id: 'agent_' + nodes.length,
-            label: agentType,
-            type: 'agent',
-            status: 'running',
-            time: formatTime(event.timestamp),
-          });
-        } else if (event.type === 'subagent-stop') {
-          for (let i = nodes.length - 1; i >= 0; i--) {
-            if (nodes[i].type === 'agent' && nodes[i].status === 'running') {
-              nodes[i].status = 'success';
-              break;
-            }
-          }
-        } else if (event.type === 'turn-stop') {
-          nodes.push({
-            id: 'stop_' + nodes.length,
-            label: 'Turn Complete',
-            type: 'stop',
-            status: 'success',
-            time: formatTime(event.timestamp),
-          });
-        }
-      }
-
-      // Build Mermaid diagram
-      let mermaid = 'graph TD\n';
-      mermaid += '  classDef running fill:#1f3a5f,stroke:#58a6ff,color:#58a6ff\n';
-      mermaid += '  classDef success fill:#1a3a2a,stroke:#3fb950,color:#3fb950\n';
-      mermaid += '  classDef failed fill:#3d1f20,stroke:#f85149,color:#f85149\n';
-      mermaid += '  classDef agent fill:#2d1f3d,stroke:#bc8cff,color:#bc8cff\n';
-      mermaid += '  classDef stop fill:#3d2f1f,stroke:#d29922,color:#d29922\n\n';
-
-      for (let i = 0; i < nodes.length; i++) {
-        const node = nodes[i];
-        const durationLabel = node.duration ? ' (' + formatDuration(node.duration) + ')' : '';
-        const timeLabel = node.time;
-
-        if (node.type === 'agent') {
-          mermaid += `  ${node.id}{{"\`**${node.label}**\n${timeLabel}\`"}}\n`;
-          mermaid += `  class ${node.id} agent\n`;
-        } else if (node.type === 'stop') {
-          mermaid += `  ${node.id}(["${node.label} ${timeLabel}"])\n`;
-          mermaid += `  class ${node.id} stop\n`;
-        } else {
-          mermaid += `  ${node.id}["\`**${node.label}**${durationLabel}\n${timeLabel}\`"]\n`;
-          mermaid += `  class ${node.id} ${node.status}\n`;
-        }
-
-        // Connect to previous node
-        if (i > 0) {
-          mermaid += `  ${nodes[i - 1].id} --> ${node.id}\n`;
-        }
-      }
-
-      flowContainer.innerHTML = `<div class="flow-diagram"><pre class="mermaid">${mermaid}</pre></div>`;
-
-      // Re-render Mermaid
-      if (window.mermaid) {
-        window.mermaid.run({ nodes: flowContainer.querySelectorAll('.mermaid') });
-      }
-
-      // Auto-scroll to bottom
-      flowContainer.scrollTop = flowContainer.scrollHeight;
-    }
-
-    function renderEventList() {
-      if (!activeSessionId || !sessionData.has(activeSessionId)) {
-        eventListEl.innerHTML = '';
+      const s = sessions.get(activeId);
+      if (s.phases.length === 0) {
+        flowArea.innerHTML = `<div class="empty-state">
+          <p>Session started, waiting for phase events...</p>
+        </div>`;
         return;
       }
 
-      const events = sessionData.get(activeSessionId).events;
-      const recent = events.slice(-50); // Show last 50 events
+      // Build a map of visited phases: letter -> phase object
+      const visitedMap = new Map();
+      for (const p of s.phases) {
+        visitedMap.set(p.letter, p);
+      }
 
-      eventListEl.innerHTML = recent.map(event => {
-        const toolName = formatToolName(event.data?.tool_name);
-        const agentType = event.data?.agent_type || '';
+      // Find the furthest visited phase index in PHASE_ORDER
+      let furthestIdx = -1;
+      for (let i = PHASE_ORDER.length - 1; i >= 0; i--) {
+        if (visitedMap.has(PHASE_ORDER[i])) {
+          furthestIdx = i;
+          break;
+        }
+      }
+
+      let html = '<div class="pipeline">';
+
+      for (let i = 0; i < PHASE_ORDER.length; i++) {
+        const phaseLetter = PHASE_ORDER[i];
+        const visited = visitedMap.get(phaseLetter);
+        let statusClass, letter, label, time;
+
+        if (visited) {
+          // Phase was visited — use actual status
+          statusClass = visited.status;
+          letter = phaseLetter === 'done' ? '\u2713' : phaseLetter;
+          label = visited.name || PHASE_LABELS[phaseLetter] || '';
+          time = formatTime(visited.ts);
+        } else if (i < furthestIdx) {
+          // Phase was skipped (a later phase exists but this one was never visited)
+          statusClass = 'skipped';
+          letter = phaseLetter === 'done' ? '\u2713' : phaseLetter;
+          label = PHASE_LABELS[phaseLetter] || '';
+          time = 'skipped';
+        } else {
+          // Phase not yet reached
+          statusClass = 'pending';
+          letter = phaseLetter === 'done' ? '\u2713' : phaseLetter;
+          label = PHASE_LABELS[phaseLetter] || '';
+          time = '';
+        }
+
+        // Connector before (except first)
+        if (i > 0) {
+          let connClass = '';
+          if (visited) {
+            connClass = (visited.status === 'active' || visited.status === 'waiting') ? 'active' : 'complete';
+          } else if (statusClass === 'skipped') {
+            connClass = 'complete';
+          }
+          html += `<div class="connector ${connClass}"></div>`;
+        }
+
+        // Phase column (node + sub-branch)
+        html += `<div class="phase-column ${statusClass}">`;
+
+        // Phase node
+        const tooltipExtra = statusClass === 'skipped'
+          ? '<br><span style="color:#484f58">Skipped</span>'
+          : (statusClass === 'waiting' ? '<br><span style="color:#d29922">Awaiting user input</span>' : '');
+
+        html += `<div class="phase-node ${statusClass}">
+          ${letter}
+          ${statusClass === 'waiting' ? '<div class="waiting-badge">\u23F8</div>' : ''}
+          <div class="tooltip">
+            <span class="tt-label">${phaseLetter === 'done' ? 'Complete' : 'Phase ' + phaseLetter + ': ' + label}</span>
+            ${tooltipExtra}
+            ${time ? `<span class="tt-time">${time}</span>` : ''}
+          </div>
+        </div>`;
+
+        // Sub-branch: activities (tools + subagents) under this phase (only for visited phases)
+        if (visited) {
+          const activities = s.activitiesByPhase.get(phaseLetter) || [];
+          if (activities.length > 0) {
+            html += '<div class="sub-branch">';
+            for (const act of activities) {
+              if (act.category === 'tool') {
+                const dotClass = act.status === 'running' ? 'running' : act.status;
+                const dur = act.endTs ? formatDuration(act.endTs - act.startTs) : 'running...';
+                html += `<div class="branch-item">
+                  <span class="branch-dot ${dotClass}"></span>
+                  <span class="branch-label">${act.name} <span class="dur">${dur}</span></span>
+                </div>`;
+              } else if (act.category === 'subagent') {
+                html += `<div class="branch-item">
+                  <span class="branch-dot subagent"></span>
+                  <span class="branch-label">${act.name}</span>
+                </div>`;
+              }
+            }
+            html += '</div>';
+          }
+        }
+
+        html += '</div>'; // close phase-column
+      }
+
+      html += '</div>';
+      flowArea.innerHTML = html;
+
+      // Auto-scroll to the right
+      flowArea.scrollLeft = flowArea.scrollWidth;
+    }
+
+    // ── Update stats ──
+    function updateStats() {
+      if (!activeId || !sessions.has(activeId)) {
+        statPhase.textContent = '-';
+        statTools.textContent = '0';
+        statTime.textContent = '-';
+        return;
+      }
+
+      const s = sessions.get(activeId);
+      const lastPhase = s.phases.at(-1);
+
+      if (lastPhase) {
+        if (lastPhase.letter === 'done') {
+          statPhase.textContent = 'Complete';
+        } else if (lastPhase.status === 'waiting') {
+          statPhase.textContent = lastPhase.letter + ': Awaiting Input';
+          statPhase.style.color = '#d29922';
+        } else {
+          statPhase.textContent = lastPhase.letter + ': ' + (lastPhase.name || '');
+          statPhase.style.color = '';
+        }
+      } else {
+        statPhase.textContent = '-';
+        statPhase.style.color = '';
+      }
+
+      let activityCount = 0;
+      for (const [, activities] of s.activitiesByPhase) activityCount += activities.length;
+      statTools.textContent = activityCount;
+
+      if (s.events.length > 1) {
+        const dur = s.events.at(-1).timestamp - s.events[0].timestamp;
+        statTime.textContent = formatDuration(dur);
+      } else {
+        statTime.textContent = '-';
+      }
+    }
+
+    // ── Render event log ──
+    function renderLog(sid) {
+      if (!sid || !sessions.has(sid)) {
+        logBody.innerHTML = '';
+        logCount.textContent = '(0)';
+        return;
+      }
+
+      const events = sessions.get(sid).events;
+      const recent = events.slice(-80);
+      logCount.textContent = `(${events.length})`;
+
+      // Only re-render for active session
+      if (sid !== activeId) return;
+
+      logBody.innerHTML = recent.map(ev => {
         let detail = '';
-        let typeClass = event.type;
+        const badgeClass = ev.type;
 
-        switch (event.type) {
+        switch (ev.type) {
+          case 'phase-transition': {
+            const p = ev.data?.phase || '?';
+            detail = p === 'done' ? 'Skill Complete' : 'Phase ' + p + ': ' + (ev.data?.name || '');
+            break;
+          }
           case 'pre-tool':
-            detail = toolName;
+            detail = formatToolName(ev.data?.tool_name);
             break;
           case 'post-tool':
-            detail = toolName;
-            break;
-          case 'subagent-start':
-            detail = 'Agent: ' + agentType;
+            detail = formatToolName(ev.data?.tool_name);
             break;
           case 'subagent-stop':
-            detail = 'Agent finished: ' + agentType;
+            detail = 'Agent finished' + (ev.data?.agent_type ? ': ' + ev.data.agent_type : '');
             break;
           case 'turn-stop':
             detail = 'Claude turn completed';
             break;
+          default:
+            detail = ev.type;
         }
 
-        return `<div class="event-item">
-          <span class="event-time">${formatTime(event.timestamp)}</span>
-          <span class="event-type ${typeClass}">${event.type}</span>
-          <span class="event-detail">${detail}</span>
+        return `<div class="event-row">
+          <span class="ev-time">${formatTime(ev.timestamp)}</span>
+          <span class="ev-badge ${badgeClass}">${ev.type}</span>
+          <span class="ev-detail">${detail}</span>
         </div>`;
       }).join('');
 
-      eventListEl.scrollTop = eventListEl.scrollHeight;
+      logBody.scrollTop = logBody.scrollHeight;
     }
 
-    function handleEvent(event) {
-      const sessionId = event.sessionId || event.data?.session_id || 'unknown';
-      const session = ensureSession(sessionId);
-      session.events.push(event);
-
-      // Auto-select first session or switch to most recent active
-      if (!activeSessionId) {
-        selectSession(sessionId);
-      }
-
-      renderSessionList();
-
-      if (sessionId === activeSessionId) {
-        renderFlowDiagram();
-        renderEventList();
-        updateStats();
-      }
-    }
-
-    // WebSocket connection
+    // ── WebSocket ──
     function connect() {
       const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
       ws = new WebSocket(`${protocol}//${location.host}`);
 
       ws.onopen = () => {
-        statusDot.className = 'status-dot connected';
-        statusText.textContent = 'Connected';
+        connDot.className = 'connection-indicator connected';
       };
 
       ws.onmessage = (msg) => {
@@ -562,23 +1034,16 @@
           const data = JSON.parse(msg.data);
 
           if (data.type === 'init') {
-            // Server sends existing session list on connect
-            statusText.textContent = `Connected (${data.sessions?.length || 0} sessions)`;
-            // Fetch full events for each session
+            // Fetch full events for each existing session
             (data.sessions || []).forEach(s => {
               fetch(`/api/sessions/${s.sessionId}/events`)
                 .then(r => r.json())
                 .then(events => {
-                  const session = ensureSession(s.sessionId);
-                  session.events = events;
-                  renderSessionList();
-                  if (!activeSessionId && events.length > 0) {
-                    selectSession(s.sessionId);
-                  }
+                  events.forEach(e => processEvent(e));
                 });
             });
           } else {
-            handleEvent(data);
+            processEvent(data);
           }
         } catch (e) {
           console.error('Failed to parse event:', e);
@@ -586,49 +1051,13 @@
       };
 
       ws.onclose = () => {
-        statusDot.className = 'status-dot';
-        statusText.textContent = 'Disconnected — reconnecting...';
+        connDot.className = 'connection-indicator';
         setTimeout(connect, 3000);
       };
 
-      ws.onerror = () => {
-        ws.close();
-      };
+      ws.onerror = () => { ws.close(); };
     }
 
-    // Load Mermaid from CDN
-    const mermaidScript = document.createElement('script');
-    mermaidScript.src = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js';
-    mermaidScript.onload = () => {
-      window.mermaid.initialize({
-        startOnLoad: false,
-        theme: 'dark',
-        themeVariables: {
-          darkMode: true,
-          background: '#0d1117',
-          primaryColor: '#1f3a5f',
-          primaryTextColor: '#c9d1d9',
-          primaryBorderColor: '#58a6ff',
-          lineColor: '#30363d',
-          secondaryColor: '#161b22',
-          tertiaryColor: '#1c2128',
-        },
-        flowchart: {
-          htmlLabels: true,
-          useMaxWidth: false,
-          curve: 'basis',
-        },
-      });
-    };
-    mermaidScript.onerror = () => {
-      const notice = document.createElement('div');
-      notice.style.cssText = 'padding:12px 20px;background:#3d2f1f;color:#d29922;font-size:12px;border-bottom:1px solid #30363d';
-      notice.textContent = 'Flow diagram unavailable — Mermaid.js CDN could not be reached. Event timeline still works.';
-      document.querySelector('.main').prepend(notice);
-    };
-    document.head.appendChild(mermaidScript);
-
-    // Start connection
     connect();
   </script>
 </body>

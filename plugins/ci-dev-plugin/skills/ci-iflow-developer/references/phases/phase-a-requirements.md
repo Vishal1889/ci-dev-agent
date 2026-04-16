@@ -4,17 +4,19 @@
 
 **Input sources:** verbal description, Functional Specification (FS), Technical Specification (TS), or combination.
 
-> **Parallelization:** Steps 1 and 2 have no dependency. Launch `get-server-info` (or resolve destinations from user input) and the Requirements Analysis Sub-Agent in the same message (parallel tool calls). The sub-agent does not need destination info.
+> **Parallelization:** Steps 1 and 2 are combined into a single sub-agent call. The sub-agent handles both destination resolution (`get-server-info`) and requirements extraction in parallel within its own context. The main agent is in plan mode and cannot call MCP tools directly.
 
-1. **Determine transport mode and resolve destinations:**
+1. **Determine transport mode and resolve destinations (delegated to sub-agent):**
 
-   First check if the user already provided destination names in their request — if so, use them as-is (Priority 1).
+   First check if the user already provided destination names in their request — if so, use them as-is (Priority 1) and skip `get-server-info`.
 
-   Otherwise, call `get-server-info` to detect the transport mode:
-   ```
-   Tool: get-server-info
-   → Returns: { "transport": "stdio" | "http", ... }
-   ```
+   Otherwise, **include destination resolution instructions in the sub-agent prompt** (see Sub-Agent Prompt Template below). The sub-agent will call `get-server-info` and return the resolved destinations alongside the extracted requirements.
+
+   The main agent cannot call `get-server-info` or any other MCP tools during Phase A because `EnterPlanMode` is active. All MCP read calls must be delegated to the sub-agent.
+
+   **Destination resolution rules (included in sub-agent prompt):**
+
+   After calling `get-server-info`:
 
    **Stdio mode (`transport: "stdio"`):**
    - Always pass `destinationName: "default"` and `runtimeDestination: "runtime"`.
@@ -23,8 +25,8 @@
    - **Priority 2 — Tenant config:** Read `../../config/tenant-destination-config.json`. If it exists:
      - **User specifies tenant name** (e.g. "deploy to DEV"): look up that key (case-insensitive), use `designTime` / `runtime`.
      - **Single tenant configured:** use it automatically, inform user.
-     - **Multiple tenants, user didn't specify:** present table and ask user to pick.
-   - **Priority 3 — Ask user (fallback):** If config file missing/empty, ask: "What is the BTP Destination name for the Design-Time API?"
+     - **Multiple tenants, user didn't specify:** return `DESTINATION_UNRESOLVED` with the tenant list. The main agent will present via `AskUserQuestion` with header: `Tenant`, each tenant name as an option label with description showing its destination names (e.g., "designTime: CI_API_B, runtime: CI_Iflow_B").
+   - **Priority 3 — Ask user (fallback):** If config file missing/empty, return `DESTINATION_UNRESOLVED`. The main agent will ask via `AskUserQuestion` with header: `Destination`, question: "What is the BTP Destination name for the Design-Time API?", no predefined options (user provides name via "Other").
    - **After resolved, remember for the rest of the session.** Do not ask again.
    - If runtime destination needed but tenant has no `runtime` key, ask for runtime only.
    - If user switches tenant mid-session, allow it — update and confirm.
@@ -36,6 +38,8 @@
    - Single artifact (not multi-artifact)
    → Extract requirements inline using the Extraction Checklist fields below. Skip sub-agent spawn.
    → Otherwise: spawn the sub-agent as specified.
+
+   **IMPORTANT — file-based inputs ALWAYS require sub-agent:** If the user provided ANY file path (PDF, DOCX, Excel, MD, etc.), you MUST spawn the sub-agent for extraction — never attempt file reading or extraction inline. The main agent is in plan mode (`EnterPlanMode` is active) and cannot run Bash/Python for file processing. The sub-agent operates independently outside plan mode constraints and handles all document reading, DOCX embedded file extraction, and Excel parsing.
 
 3. **Validate sub-agent output:**
    - If `STATUS=COMPLETE` → proceed to Phase A Gate.
@@ -52,41 +56,41 @@ This sub-agent handles requirement extraction, validation, and archetype pre-cla
 
 **For iFlow creation, the sub-agent validates:**
 
-| # | Field | Required? | If Missing |
-|---|-------|-----------|------------|
-| 1 | Artifact type (iFlow / MessageMapping / both) | Yes | Infer from context if clearly implied (e.g., user says "create an iFlow"). If ambiguous, ASK_USER. |
-| 2 | iFlow Name and ID | Yes | Derive per naming convention |
-| 3 | Package ID | Yes | ASK_USER |
-| 4 | Sender system name | Yes | ASK_USER. **For Timer-triggered iFlows:** set to `N/A` — Timer has no sender system. **For JMS-triggered iFlows:** set to `JMS Queue` — JMS uses the built-in message broker. |
-| 5 | Sender adapter type | Yes | ASK_USER — "What protocol does the sender use? (HTTPS/SOAP/SFTP/Timer/ProcessDirect (=called by another iFlow)/IDoc/XI/JMS)" |
-| 6 | Sender authentication | Yes | ASK_USER — "What authentication method?" Map user response to exact CPI XML values: Basic→`Basic`, OAuth2/OAuth2CC→`OAuth2 Client Credentials`, ClientCert/mTLS→`ClientCertificate`, UserRole→`RoleBased`, UserNamePassword(SFTP)→`user_password`, PublicKey/KeyPair(SFTP)→`publickey`, SASL(Kafka)→`PLAIN` or `SCRAM-SHA-256`, None→`None`. **For Timer-triggered iFlows:** set to `N/A`. **For IDoc/XI-triggered:** typically `ClientCertificate` (SAP system authenticates via client cert) or `None` (if handled at infrastructure level). **For JMS-triggered:** set to `N/A` — built-in broker requires no auth config. **For ProcessDirect-triggered:** set to `N/A` — internal CPI-to-CPI calls require no auth config. |
-| 7 | Sender endpoint | Yes | ASK_USER or derive from adapter type. **For Timer-triggered iFlows:** set to `N/A` — derive schedule from trigger specification instead. **For IDoc/XI-triggered:** endpoint is auto-assigned by CPI (IDoc sender channel address is typically `/sap/bc/srt/idoc` or auto-generated). **For JMS-triggered:** set to the JMS queue name to consume from (e.g., `OrderQueue`). Externalize as `{{queueName}}`. **For SFTP-triggered:** set to the SFTP directory path to poll (e.g., `/inbound/payments/`). Externalize as `{{sftpDirectory}}`. SFTP-specific config (pollInterval, readLock, moveTo, fileName filter) are adapter properties configured in the BPMN XML — see `./references/metadata/adapters/sftp_sender.json` for property keys. |
-| 8 | Receiver system name(s) | Yes | ASK_USER. Note: "receiver" here means external systems called via adapter-based messageFlows. Data Store operations and Persist Message steps are NOT receivers — they are flow steps listed in Processing Steps (field 17). **JMS queue writes ARE adapter-based receivers** — list the queue name as the receiver endpoint and externalize it as `{{queueName}}`. |
-| 9 | Receiver adapter type(s) | Yes | ASK_USER — "What protocol does the receiver use? (HTTP/SFTP/SOAP/JDBC/ProcessDirect/etc.)" |
-| 10 | Receiver authentication | Yes | ASK_USER |
-| 11 | Receiver endpoint(s) | Yes | ASK_USER |
-| 12 | Intermediate data fetching | If mentioned | Note Request-Reply calls to external systems (see "Intermediate Request-Reply" in Common Integration Patterns) |
-| 12b | Sync or async response | If HTTPS/SOAP-triggered | ASK_USER — "Should this iFlow return a synchronous response to the caller, or accept the message and process asynchronously?" Sync = `returnExceptionToSender=true` and final response flows back. Async = fire-and-forget with 202 Accepted. **N/A for SFTP/Timer/IDoc/XI/JMS-triggered iFlows** — these are inherently async. **For ProcessDirect-triggered iFlows:** ASK_USER — ProcessDirect calls are synchronous (caller blocks until response). The response behavior matters: sync = return response body to calling iFlow, async = return acknowledgment only. |
-| 13 | Mapping needed? | Yes | ASK_USER — "Is message transformation/mapping needed between source and target formats?" Note: this refers to formal Message Mapping artifacts (`.mmap`). If the user plans to use Groovy Script or XSLT for transformation instead, record that in Processing Steps (field 17) rather than here. |
-| 14 | Source/target structures | If mapping=Yes | ASK_USER — "Are the source and target message structures (XSD/JSON schema) available?" |
-| 15 | Mapping rules | If mapping=Yes | ASK_USER — "What are the field mapping rules?" |
-| 16 | Exception handling | Yes | Default to Yes with standard exception subprocess (ErrorStartEvent → Content Modifier → ErrorEnd). If user specifies a different pattern (e.g., terminate for critical failures), note the specific type. |
-| 17 | Processing steps (ordered) | Yes | Derive from requirements |
-| 18 | Externalize parameters? | Yes | ASK_USER — "Should adapter endpoints, credentials, and schedule be externalized as configurable parameters (recommended for production — allows per-environment configuration without redeployment), or hardcoded (simpler for prototyping/testing)?" Default: Yes (externalize). If user says No, hardcode all values directly in BPMN XML. |
-| 19 | Archetype suggestion | Yes | Heuristic — used by Phase B fast path |
+| # | Field | Required? | If Missing | AskUserQuestion Format |
+|---|-------|-----------|------------|------------------------|
+| 1 | Artifact type (iFlow / MessageMapping / both) | Yes | Infer from context if clearly implied (e.g., user says "create an iFlow"). If ambiguous, ASK_USER. | header: `Artifact`, options: `[iFlow, Message Mapping, Both iFlow + Mapping]` |
+| 2 | iFlow Name and ID | Yes | Derive per naming convention | N/A — derived, not asked |
+| 3 | Package ID | Yes | ASK_USER | header: `Package`, question only (user provides package ID via "Other"). If the sub-agent resolved a package list, use those as options. |
+| 4 | Sender system name | Yes | ASK_USER. **For Timer-triggered iFlows:** set to `N/A` — Timer has no sender system. **For JMS-triggered iFlows:** set to `JMS Queue` — JMS uses the built-in message broker. | header: `Sender`, question only (no predefined options — user provides name via "Other") |
+| 5 | Sender adapter type | Yes | ASK_USER — "What protocol does the sender use? (HTTPS/SOAP/SFTP/Timer/ProcessDirect (=called by another iFlow)/IDoc/XI/JMS)" | header: `Protocol`, options: `[HTTPS, SOAP, SFTP, Timer/Scheduler]`. If user needs more: follow-up with `[ProcessDirect, IDoc/XI, JMS]` |
+| 6 | Sender authentication | Yes | ASK_USER — "What authentication method?" Map user response to exact CPI XML values: Basic→`Basic`, OAuth2/OAuth2CC→`OAuth2 Client Credentials`, ClientCert/mTLS→`ClientCertificate`, UserRole→`RoleBased`, UserNamePassword(SFTP)→`user_password`, PublicKey/KeyPair(SFTP)→`publickey`, SASL(Kafka)→`PLAIN` or `SCRAM-SHA-256`, None→`None`. **For Timer-triggered iFlows:** set to `N/A`. **For IDoc/XI-triggered:** typically `ClientCertificate` (SAP system authenticates via client cert) or `None` (if handled at infrastructure level). **For JMS-triggered:** set to `N/A` — built-in broker requires no auth config. **For ProcessDirect-triggered:** set to `N/A` — internal CPI-to-CPI calls require no auth config. | header: `Auth`, options conditional on adapter. HTTPS/SOAP: `[RoleBased, Basic, Client Certificate, None]`. SFTP: `[Username/Password, Public Key]`. Timer/ProcessDirect/JMS: skip (N/A). |
+| 7 | Sender endpoint | Yes | ASK_USER or derive from adapter type. **For Timer-triggered iFlows:** set to `N/A` — derive schedule from trigger specification instead. **For IDoc/XI-triggered:** endpoint is auto-assigned by CPI (IDoc sender channel address is typically `/sap/bc/srt/idoc` or auto-generated). **For JMS-triggered:** set to the JMS queue name to consume from (e.g., `OrderQueue`). Externalize as `{{queueName}}`. **For SFTP-triggered:** set to the SFTP directory path to poll (e.g., `/inbound/payments/`). Externalize as `{{sftpDirectory}}`. SFTP-specific config (pollInterval, readLock, moveTo, fileName filter) are adapter properties configured in the BPMN XML — see `./references/metadata/adapters/sftp_sender.json` for property keys. | header: `Endpoint`, question only (user provides path/URL via "Other") |
+| 8 | Receiver system name(s) | Yes | ASK_USER. Note: "receiver" here means external systems called via adapter-based messageFlows. Data Store operations and Persist Message steps are NOT receivers — they are flow steps listed in Processing Steps (field 17). **JMS queue writes ARE adapter-based receivers** — list the queue name as the receiver endpoint and externalize it as `{{queueName}}`. | header: `Receiver`, question only (user provides name via "Other") |
+| 9 | Receiver adapter type(s) | Yes | ASK_USER — "What protocol does the receiver use? (HTTP/SFTP/SOAP/JDBC/ProcessDirect/etc.)" | header: `Protocol`, options: `[HTTP, SFTP, SOAP, JDBC]`. If user needs more: follow-up with `[OData, ProcessDirect, JMS, RFC]` |
+| 10 | Receiver authentication | Yes | ASK_USER | header: `Auth`, options conditional on adapter. HTTP/SOAP: `[Basic, OAuth2 Client Credentials, Client Certificate, None]`. SFTP: `[Username/Password, Public Key]`. |
+| 11 | Receiver endpoint(s) | Yes | ASK_USER | header: `Endpoint`, question only (user provides URL via "Other") |
+| 12 | Intermediate data fetching | If mentioned | Note Request-Reply calls to external systems (see "Intermediate Request-Reply" in Common Integration Patterns) | N/A — derived from requirements |
+| 12b | Sync or async response | If HTTPS/SOAP-triggered | ASK_USER — "Should this iFlow return a synchronous response to the caller, or accept the message and process asynchronously?" Sync = `returnExceptionToSender=true` and final response flows back. Async = fire-and-forget with 202 Accepted. **N/A for SFTP/Timer/IDoc/XI/JMS-triggered iFlows** — these are inherently async. **For ProcessDirect-triggered iFlows:** ASK_USER — ProcessDirect calls are synchronous (caller blocks until response). The response behavior matters: sync = return response body to calling iFlow, async = return acknowledgment only. | header: `Response`, options: `[Synchronous — return response to caller, Asynchronous — fire-and-forget]` |
+| 13 | Mapping needed? | Yes | ASK_USER — "Is message transformation/mapping needed between source and target formats?" Note: this refers to formal Message Mapping artifacts (`.mmap`). If the user plans to use Groovy Script or XSLT for transformation instead, record that in Processing Steps (field 17) rather than here. | header: `Mapping`, options: `[Yes — Message Mapping (.mmap), No mapping needed, Script/XSLT transformation instead]` |
+| 14 | Source/target structures | If mapping=Yes | ASK_USER — "Are the source and target message structures (XSD/JSON schema) available?" | header: `Schemas`, options: `[Yes — I can provide them, Not available — derive from requirements]` |
+| 15 | Mapping rules | If mapping=Yes | ASK_USER — "What are the field mapping rules?" | header: `Rules`, options: `[I will provide a mapping table, Derive from schemas, I will describe in text]` |
+| 16 | Exception handling | Yes | Default to Yes with standard exception subprocess (ErrorStartEvent → Content Modifier → ErrorEnd). If user specifies a different pattern (e.g., terminate for critical failures), note the specific type. | N/A — defaults to Yes, only ask if ambiguous |
+| 17 | Processing steps (ordered) | Yes | Derive from requirements | N/A — derived, not asked |
+| 18 | Externalize parameters? | Yes | ASK_USER — "Should adapter endpoints, credentials, and schedule be externalized as configurable parameters (recommended for production — allows per-environment configuration without redeployment), or hardcoded (simpler for prototyping/testing)?" Default: Yes (externalize). If user says No, hardcode all values directly in BPMN XML. | header: `Params`, options: `[Externalize (recommended for production), Hardcode (simpler for prototyping)]` |
+| 19 | Archetype suggestion | Yes | Heuristic — used by Phase B fast path | N/A — derived, not asked |
 
 **For Message Mapping creation, the sub-agent validates:**
 
-| # | Field | Required? | If Missing |
-|---|-------|-----------|------------|
-| 1 | Placement: in-iFlow or standalone? | Yes | ASK_USER — "Should this mapping be a step within an iFlow, or a standalone reusable artifact?" |
-| 2 | Parent iFlow ID (if in-iFlow) | If in-iFlow | ASK_USER — "Which iFlow should contain this mapping?" |
-| 3 | Source structure format (XML/JSON/CSV) | Yes | ASK_USER |
-| 4 | Source schema available? | Yes | ASK_USER — "Can you provide the source message structure/schema?" |
-| 5 | Target structure format | Yes | ASK_USER |
-| 6 | Target schema available? | Yes | ASK_USER — "Can you provide the target message structure/schema?" |
-| 7 | Mapping rules (field-to-field) | Yes | ASK_USER — "What are the mapping rules between source and target fields?" |
-| 8 | Functions/conditions | If applicable | Extract from requirements or ASK_USER |
+| # | Field | Required? | If Missing | AskUserQuestion Format |
+|---|-------|-----------|------------|------------------------|
+| 1 | Placement: in-iFlow or standalone? | Yes | ASK_USER — "Should this mapping be a step within an iFlow, or a standalone reusable artifact?" | header: `Placement`, options: `[In-iFlow step, Standalone reusable artifact]` |
+| 2 | Parent iFlow ID (if in-iFlow) | If in-iFlow | ASK_USER — "Which iFlow should contain this mapping?" | header: `iFlow`, question only (user provides ID via "Other") |
+| 3 | Source structure format (XML/JSON/CSV) | Yes | ASK_USER | header: `Format`, options: `[XML, JSON, CSV]` |
+| 4 | Source schema available? | Yes | ASK_USER — "Can you provide the source message structure/schema?" | header: `Schema`, options: `[Yes — I can provide it, No — derive from requirements]` |
+| 5 | Target structure format | Yes | ASK_USER | header: `Format`, options: `[XML, JSON, CSV]` |
+| 6 | Target schema available? | Yes | ASK_USER — "Can you provide the target message structure/schema?" | header: `Schema`, options: `[Yes — I can provide it, No — derive from requirements]` |
+| 7 | Mapping rules (field-to-field) | Yes | ASK_USER — "What are the mapping rules between source and target fields?" | header: `Rules`, question only (user describes mapping rules via "Other") |
+| 8 | Functions/conditions | If applicable | Extract from requirements or ASK_USER | header: `Functions`, question only (user describes via "Other") |
 
 #### Input Source Handling
 
@@ -98,9 +102,19 @@ Build the `{input_source_block}` for the prompt template below based on the inpu
 | **Chat text** (user typed requirements) | Condense user messages into key facts: `"User requirements:\n- Source: SAP S/4HANA\n- Target: SFTP\n- Trigger: Timer every 5 min\n- ..."` |
 | **Mixed** (document + clarifications) | `"Read the document at: {file_path}. Additional context from user:\n- {clarification_1}\n- {clarification_2}"` |
 
+#### Destination Context Handling
+
+Build the `{destination_context}` for the sub-agent prompt template:
+
+| Scenario | How to build `{destination_context}` |
+|----------|--------------------------------------|
+| **User provided destination names** | `"User provided destinations: designTime={name}, runtime={name}. Skip get-server-info."` |
+| **User specified tenant name** | `"User specified tenant: {tenant_name}. Look up in tenant config after detecting transport."` |
+| **No destination info from user** | `""` (empty — sub-agent will detect and resolve) |
+
 **Embedded File Extraction (DOCX/Office documents):**
 
-DOCX files are ZIP archives that may contain embedded files critical for mapping structure generation. Before invoking the sub-agent, OR as an instruction within the sub-agent prompt, extract embedded files:
+DOCX files are ZIP archives that may contain embedded files critical for mapping structure generation. **Always delegate embedded file extraction to the sub-agent** — include the extraction instructions in the sub-agent prompt. The main agent is in plan mode (`EnterPlanMode` is active) and cannot run Bash/Python directly.
 
 1. **Detect embedded files:** Use Python to unzip the `.docx` and list files under `word/embeddings/` — common types: `.xlsx`, `.xlsm`, `.xls` (Excel mapping sheets), `.bin` (OLE objects), `.pdf`, `.docx` (nested documents)
 2. **Extract and read Excel files:** Embedded Excel files (`.xlsx`, `.xlsm`) frequently contain:
@@ -134,7 +148,18 @@ Use the Agent tool with `name: "req-analyst"` and this prompt (replace `{input_s
 
 BOUNDARY RULE: Only access files within the project directory or paths explicitly provided by the user. All skill reference files are under skills/ci-iflow-developer/. Temp files go in skills/ci-iflow-developer/.tmp/ — NEVER use /tmp or system temp directories.
 
-TASK: Read requirements and extract structured integration details.
+TASK 1 — DESTINATION RESOLUTION:
+Call `get-server-info` (MCP tool: mcp__ci-mcp-server-custom__get-server-info) to detect the transport mode.
+- If stdio: set DESTINATION_DESIGNTIME='default', DESTINATION_RUNTIME='runtime'.
+- If http: Read skills/ci-iflow-developer/../../config/tenant-destination-config.json.
+  - Single tenant: use its designTime/runtime values.
+  - Multiple tenants and user specified one: look up that key (case-insensitive).
+  - Multiple tenants and user did NOT specify: return DESTINATION_UNRESOLVED with the tenant list.
+  - Config missing/empty: return DESTINATION_UNRESOLVED.
+{destination_context}
+
+TASK 2 — REQUIREMENTS EXTRACTION:
+Read requirements and extract structured integration details.
 
 INPUT: {input_source_block}
 
@@ -154,6 +179,12 @@ ARCHETYPE: Suggest likely pattern with confidence (High/Medium/Low). Do NOT gues
 VALIDATION: Extract if present, set ASK_USER if missing. Never guess values.
 
 OUTPUT FORMAT (compact key:value, under 800 tokens):
+
+DESTINATION:
+  Transport: stdio | http
+  DesignTime: <destination name or UNRESOLVED>
+  Runtime: <destination name or UNRESOLVED>
+  Tenants: <list of tenant names, if UNRESOLVED and multiple tenants>
 
 ARTIFACT_TYPE: iFlow | MessageMapping | Multi
 STATUS: COMPLETE | INCOMPLETE
@@ -218,10 +249,14 @@ EMBEDDED_FILES:
 #### Completeness Validation Loop
 
 1. Invoke sub-agent (spawned with `name: "req-analyst"`) → receive structured output
-2. If `STATUS=COMPLETE` → proceed to Phase A Gate
-3. If `STATUS=INCOMPLETE`:
+2. **Check DESTINATION section first:**
+   - If `DesignTime=UNRESOLVED` and `Tenants` list returned: present via `AskUserQuestion` with header: `Tenant`, each tenant as an option.
+   - If `DesignTime=UNRESOLVED` and no tenants: ask via `AskUserQuestion` with header: `Destination`, question: "What is the BTP Destination name for the Design-Time API?"
+   - Store resolved destination names for use in Phase B onwards.
+3. If `STATUS=COMPLETE` → proceed to Phase A Gate
+4. If `STATUS=INCOMPLETE`:
    a. Present to user: *"Here's what I understood from your requirements:"* followed by the extracted fields in a readable format
-   b. Present: *"The following details are still needed for a complete integration design:"* followed by each `MISSING_INFORMATION` question
+   b. Present the `MISSING_INFORMATION` questions to the user **using the `AskUserQuestion` tool**: classify each missing item per the Question Type Mapping in SKILL.md, set appropriate `header` and `options`, group related items (up to 4 per call). **Never paste the sub-agent's raw MISSING_INFORMATION text as plain text.**
    c. Wait for user answers
    d. Send user answers to the existing agent via `SendMessage` — do NOT spawn a new Agent. The agent retains its full context including the already-read document:
       ```
@@ -345,12 +380,17 @@ Then present a **flow diagram** showing the end-to-end message flow. Use the sub
 
 Note: These flow diagrams are **simplified conceptual representations** for requirements approval. They show the high-level message flow, not exact BPMN structure. Exact BPMN wiring rules (Request-Reply vs Send vs EndEvent) are defined in Phase C under "Receiver Adapter Wiring Rules."
 
-**After presenting the summary and diagram, ask the user:**
+**After presenting the summary and diagram, ask the user using the `AskUserQuestion` tool:**
 
-> "Does this iFlow design match your requirements? Please review the summary table and flow diagram. If anything needs to change (steps, adapters, authentication, parameters), let me know before I proceed."
+Use `AskUserQuestion` with:
+- question: "Does this iFlow design match your requirements? Please review the summary table and flow diagram."
+- header: `Design`
+- options:
+  - label: "Approve — proceed to generation", description: "The design is correct, proceed to Phase B"
+  - label: "Request changes", description: "I want to modify steps, adapters, authentication, parameters, or other details before proceeding"
 
 **Do NOT proceed to Phase B until the user confirms the design is correct.**
 
-> **Phase gate:** After receiving user confirmation, output: "Phase A complete — user confirmed design. Reading phase-b-pattern-matching.md."
+> **Phase gate:** After receiving user confirmation (user selects "Approve"), call `ExitPlanMode` to unblock write tools, then output: "Phase A complete — user confirmed design. Exited plan mode. Reading phase-b-pattern-matching.md."
 > Then: Read `./references/phases/phase-b-pattern-matching.md` before proceeding to Phase B.
 > If you find yourself generating BPMN XML without having received user confirmation on the requirements summary, stop immediately and go back to Phase A Gate.

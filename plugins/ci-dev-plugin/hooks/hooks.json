@@ -1,21 +1,9 @@
 {
   "description": "Orchestration dashboard hooks — opt-in via .claude/ci-dev-plugin.local.md",
   "hooks": {
-    "SessionStart": [
-      {
-        "matcher": ".*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/orchestration/launcher.js\"",
-            "timeout": 15
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
-        "matcher": "mcp__ci-mcp-server-custom__.*",
+        "matcher": "mcp__plugin_ci-dev-plugin_ci-mcp-server-custom__.*",
         "hooks": [
           {
             "type": "command",
@@ -27,7 +15,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "mcp__ci-mcp-server-custom__.*",
+        "matcher": "mcp__plugin_ci-dev-plugin_ci-mcp-server-custom__.*",
         "hooks": [
           {
             "type": "command",

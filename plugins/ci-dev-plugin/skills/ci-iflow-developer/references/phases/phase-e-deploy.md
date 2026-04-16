@@ -35,8 +35,14 @@
 
    If any discrepancy is found between the deployed iFlow and the original requirements, fix the issue and re-upload/re-deploy before proceeding.
 
-4. **After successful validation — ASK the user** whether to keep the iFlow deployed or undeploy it:
-   > "The iFlow deployed and verified successfully against requirements. Should I keep it deployed, or undeploy it?"
+4. **After successful validation — ASK the user** whether to keep the iFlow deployed or undeploy it, using the `AskUserQuestion` tool:
+
+   Use `AskUserQuestion` with:
+   - question: "The iFlow deployed and verified successfully against requirements. Should I keep it deployed, or undeploy it?"
+   - header: `Deploy`
+   - options:
+     - label: "Keep deployed", description: "Leave the iFlow running on the runtime"
+     - label: "Undeploy", description: "Remove from runtime — design-time source remains intact and can be re-deployed later"
 
    If user wants to undeploy:
    ```
@@ -86,6 +92,8 @@ Parameters: {
    ```
 5. Fix the issue in the artifact source files.
 6. Re-upload via `update-iflow-content`, re-validate, re-deploy. For minor property changes, use `autoDeploy: true`. For structural fixes, always re-run `get-iflow-build-errors` before deploying.
+
+   > **Large iFlow re-uploads (40KB+ .iflw):** When fixing errors on large iFlows, do NOT re-read the full artifact content into the main context. Instead: (a) edit the local `.tmp/` file with the targeted fix using the Edit tool, (b) delegate the re-upload to a **sub-agent** using the "Large iFlow Upload Strategy" pattern from Phase D. The sub-agent reads the file, uploads it, and returns the exact build-error response for the main agent to evaluate.
 8. **If the error was resolved and is NOT already in `known-errors.md`**, append a new entry using the `## Error:` heading format:
    ```
    File: ./references/guides/known-errors.md

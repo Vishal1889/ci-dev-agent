@@ -129,9 +129,33 @@ Three types of participants:
 ```xml
 <bpmn2:participant id="Participant_Process_1" ifl:type="IntegrationProcess"
     name="Integration Process" processRef="Process_1">
-    <bpmn2:extensionElements/>
+    <bpmn2:extensionElements>
+        <ifl:property><key>componentVersion</key><value>1.2</value></ifl:property>
+        <ifl:property>
+            <key>cmdVariantUri</key>
+            <value>ctype::FlowElementVariant/cname::IntegrationProcess/version::1.2.1</value>
+        </ifl:property>
+    </bpmn2:extensionElements>
 </bpmn2:participant>
 ```
+
+> **CRITICAL — Never use empty `<bpmn2:extensionElements/>` on IntegrationProcess participants.** Every `IntegrationProcess` participant MUST have `componentVersion` and `cmdVariantUri` properties. Empty extensionElements causes "Error while loading the details of the integration flow" in the CPI Web UI.
+
+**Local Integration Process (LIP) pool participant:**
+```xml
+<bpmn2:participant id="Participant_Process_2" ifl:type="IntegrationProcess"
+    name="LIP_MyProcess" processRef="Process_2">
+    <bpmn2:extensionElements>
+        <ifl:property><key>componentVersion</key><value>1.1</value></ifl:property>
+        <ifl:property>
+            <key>cmdVariantUri</key>
+            <value>ctype::FlowElementVariant/cname::LocalIntegrationProcess/version::1.1.3</value>
+        </ifl:property>
+    </bpmn2:extensionElements>
+</bpmn2:participant>
+```
+
+> **Note:** The participant `cmdVariantUri` uses `FlowElementVariant` (matching the `<bpmn2:process>` cmdVariantUri), NOT `FlowstepVariant`. Main process uses `IntegrationProcess/version::1.2.1`, LIPs use `LocalIntegrationProcess/version::1.1.3`. Both use `ifl:type="IntegrationProcess"` on the participant element — the difference is only in the cmdVariantUri value.
 
 **Multiple participants:** Use unique IDs and descriptive names for each (e.g., `Participant_2` = "SAP_S4HANA", `Participant_3` = "SFTP_Payroll"). For multi-sender patterns (e.g., Poll Enrich from a second source), add a second `EndpointSender` participant with its own messageFlow.
 
@@ -561,15 +585,27 @@ Use sequential numbering. CPI also accepts large random numbers (e.g., `Particip
 
 All CPI iFlows use a horizontal left-to-right layout. The BPMNDiagram section provides coordinates for visual rendering.
 
+> **CRITICAL — Complete Diagram Coverage Rule:** The `<bpmndi:BPMNDiagram>` section MUST contain a `<bpmndi:BPMNShape>` for **every** BPMN element across **all** processes — the main Integration Process AND every Local Integration Process (LIP). It MUST also contain a `<bpmndi:BPMNEdge>` for **every** `sequenceFlow` and `messageFlow`. Missing shapes or edges causes "Error while loading the details of the integration flow" in the CPI Web UI. The iFlow may deploy and run successfully at runtime, but the Web UI designer will refuse to render it.
+>
+> **Checklist:** Before finalizing the BPMNDiagram section, verify:
+> - Every `<bpmn2:participant>` has a BPMNShape (sender, receivers, main process pool, ALL LIP pools)
+> - Every `<bpmn2:startEvent>`, `<bpmn2:endEvent>`, `<bpmn2:callActivity>`, `<bpmn2:serviceTask>`, `<bpmn2:exclusiveGateway>`, `<bpmn2:parallelGateway>`, `<bpmn2:subProcess>` has a BPMNShape — including those **inside LIPs and exception subprocesses**
+> - Every `<bpmn2:sequenceFlow>` has a BPMNEdge — including those **inside LIPs and exception subprocesses**
+> - Every `<bpmn2:messageFlow>` has a BPMNEdge
+
 ### Standard Dimensions
 
 | Element | Width | Height |
 |---------|-------|--------|
 | Sender/Receiver participant | 100.0 | 140.0 |
 | Integration Process pool | 540.0+ (auto-size) | 220.0-280.0 |
+| Local Integration Process pool | 400.0-700.0 (auto-size) | 150.0-250.0 (180 base + 70 per exception subprocess) |
 | Start/End Event | 32.0 | 32.0 |
 | CallActivity (step) | 100.0 | 60.0 |
+| ServiceTask (Request-Reply/Send) | 100.0 | 60.0 |
 | ExclusiveGateway | 40.0 | 40.0 |
+| ParallelGateway (Multicast) | 40.0 | 40.0 |
+| SubProcess (Exception Subprocess) | 414.0 | 100.0 |
 
 ### Coordinate Formulas
 
@@ -694,6 +730,82 @@ For a 3-step flow (Sender → Start → ContentModifier → GroovyScript → End
         </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
 </bpmndi:BPMNDiagram>
+```
+
+### LIP Layout Rules (Local Integration Processes)
+
+When the iFlow contains Local Integration Processes (LIPs), each LIP is rendered as a **separate pool** stacked vertically below the main Integration Process pool. Every element inside each LIP — including elements inside exception subprocesses — MUST have its own BPMNShape and BPMNEdge entries.
+
+**LIP pool positioning:** Stack LIP pools vertically below the main process pool with ~60px gaps:
+```
+Main Process Pool:     y=30,   height=280
+LIP_1 Pool:            y=380,  height=180  (gap: 380 - (30+280) = 70)
+LIP_2 Pool:            y=620,  height=250  (gap: 620 - (380+180) = 60)
+LIP_3 Pool:            y=930,  height=250  (gap: 930 - (620+250) = 60)
+```
+
+**LIP pool height:** Base height = 180 (for LIPs without exception subprocesses). Add +70 for each exception subprocess inside the LIP (subprocess height ~100 + gap).
+
+**Elements inside LIPs:** Use the same coordinate formulas as the main process, but offset the y-coordinates to fall within the LIP pool's vertical bounds. Each LIP's elements start at `pool_y + 60` for start events and `pool_y + 48` for steps.
+
+**Exception subprocess elements:** Exception subprocesses inside LIPs need shapes for:
+- The `<bpmn2:subProcess>` container itself
+- The `ErrorStartEvent` inside it
+- All callActivities and serviceTasks inside it
+- The `ErrorEndEvent` inside it
+- All sequenceFlows inside it
+
+**MessageFlow edges from LIP elements:** When a serviceTask inside a LIP has a messageFlow to a receiver participant, the BPMNEdge connects from the serviceTask's position (inside the LIP pool) to the receiver participant. The y-coordinate of the source waypoint must match the serviceTask's y-center within the LIP.
+
+**Complete LIP BPMNDiagram Example (3-step LIP with exception subprocess):**
+
+```xml
+<!-- LIP Pool shape -->
+<bpmndi:BPMNShape bpmnElement="Participant_Process_3" id="BPMNShape_Participant_Process_3">
+    <dc:Bounds height="250.0" width="600.0" x="250.0" y="620.0"/>
+</bpmndi:BPMNShape>
+<!-- LIP main flow elements (y within pool bounds: 620+62=682 for events, 620+48=668 for steps) -->
+<bpmndi:BPMNShape bpmnElement="StartEvent_3" id="BPMNShape_StartEvent_3">
+    <dc:Bounds height="32.0" width="32.0" x="280.0" y="682.0"/>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape bpmnElement="CallActivity_20" id="BPMNShape_CallActivity_20">
+    <dc:Bounds height="60.0" width="100.0" x="360.0" y="668.0"/>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape bpmnElement="ServiceTask_1" id="BPMNShape_ServiceTask_1">
+    <dc:Bounds height="60.0" width="100.0" x="510.0" y="668.0"/>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape bpmnElement="EndEvent_4" id="BPMNShape_EndEvent_4">
+    <dc:Bounds height="32.0" width="32.0" x="660.0" y="682.0"/>
+</bpmndi:BPMNShape>
+<!-- Exception Subprocess container (below the main flow, still inside pool) -->
+<bpmndi:BPMNShape bpmnElement="SubProcess_1" id="BPMNShape_SubProcess_1">
+    <dc:Bounds height="100.0" width="414.0" x="280.0" y="760.0"/>
+</bpmndi:BPMNShape>
+<!-- Exception Subprocess internal elements -->
+<bpmndi:BPMNShape bpmnElement="StartEvent_10" id="BPMNShape_StartEvent_10">
+    <dc:Bounds height="32.0" width="32.0" x="300.0" y="786.0"/>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape bpmnElement="CallActivity_30" id="BPMNShape_CallActivity_30">
+    <dc:Bounds height="60.0" width="100.0" x="380.0" y="772.0"/>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape bpmnElement="ServiceTask_4" id="BPMNShape_ServiceTask_4">
+    <dc:Bounds height="60.0" width="100.0" x="530.0" y="772.0"/>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape bpmnElement="EndEvent_10" id="BPMNShape_EndEvent_10">
+    <dc:Bounds height="32.0" width="32.0" x="660.0" y="786.0"/>
+</bpmndi:BPMNShape>
+<!-- LIP main flow edges -->
+<bpmndi:BPMNEdge bpmnElement="SequenceFlow_30" id="BPMNEdge_SequenceFlow_30"
+    sourceElement="BPMNShape_StartEvent_3" targetElement="BPMNShape_CallActivity_20">
+    <di:waypoint x="312.0" xsi:type="dc:Point" y="698.0"/>
+    <di:waypoint x="360.0" xsi:type="dc:Point" y="698.0"/>
+</bpmndi:BPMNEdge>
+<!-- ... (all sequenceFlow edges for main flow + exception subprocess) -->
+<!-- MessageFlow from LIP serviceTask to external receiver -->
+<bpmndi:BPMNEdge bpmnElement="MessageFlow_2" id="BPMNEdge_MessageFlow_2">
+    <di:waypoint x="610.0" xsi:type="dc:Point" y="698.0"/>
+    <di:waypoint x="1400.0" xsi:type="dc:Point" y="-30.0"/>
+</bpmndi:BPMNEdge>
 ```
 
 ---

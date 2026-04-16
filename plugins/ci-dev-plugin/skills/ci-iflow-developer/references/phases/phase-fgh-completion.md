@@ -3,7 +3,14 @@
 If Phase E fails after 10 attempts, escalate with additional investigation techniques:
 
 ### Strategy: Attempts 11-15 — Tenant Reference Study
-1. **Ask permission** to read existing deployed iFlows from the tenant for reference.
+1. **Ask permission** to read existing deployed iFlows from the tenant for reference, using the `AskUserQuestion` tool:
+
+   Use `AskUserQuestion` with:
+   - question: "Can I read existing deployed iFlows from the tenant to find working reference patterns for debugging?"
+   - header: `Permission`
+   - options:
+     - label: "Yes — read tenant iFlows", description: "Browse and study similar working iFlows for reference"
+     - label: "No — skip", description: "Skip tenant study, continue with other debugging approaches"
 2. Use `list-all-packages` and `list-iflows-in-package` to browse, find similar working iFlows.
 3. Download and study with `get-iflow-content` — examine adapter properties, BPMN structure.
 4. **Read distilled metadata** for all adapters/steps involved in the failing flow — `./references/metadata/adapters/{a}_{dir}.json` and `./references/metadata/steps/{s}.json`. Compare expected vs actual configuration.
@@ -36,26 +43,33 @@ Summarize concretely:
 - **Root cause assessment:** Best understanding of why it's failing (BPMN structure issue, adapter configuration, infrastructure, credential)
 
 ### Step 2: Offer Options
-Present these concrete choices:
 
-**Option A — Keep current state:**
-- Artifact remains uploaded (design-time) but undeployed (not running).
-- User can open it in the CPI Web UI to inspect and fix manually.
-- Provide: the exact error, which XML section to examine, and suggested fix.
+Present the choices using the `AskUserQuestion` tool:
 
-**Option B — Continue manual debugging:**
-- Provide the user with: complete error log, generated artifact files (`.iflw`, scripts, manifests), and diff of changes attempted during Phase E/F.
-- The user can modify files externally and re-upload via `update-iflow-content`.
+Use `AskUserQuestion` with:
+- question: "All deployment attempts exhausted. How would you like to proceed with the failed artifact?"
+- header: `Decision`
+- options:
+  - label: "Keep for manual fix", description: "Artifact stays uploaded (design-time) but undeployed. You can open it in the CPI Web UI to inspect and fix manually. I will provide the exact error, XML section to examine, and suggested fix."
+  - label: "Continue debugging", description: "I will provide complete error log, generated artifact files (.iflw, scripts, manifests), and diff of changes attempted. You can modify files externally and re-upload via update-iflow-content."
+  - label: "Abandon", description: "Give up on this artifact. I will ask whether to delete it or leave it for later."
 
-**Option C — Abandon:**
-- Ask user: *"Should I delete the artifact from the package, or leave it for later?"*
-- If delete: call `undeploy-artifact` (if deployed) and confirm with user before deleting the design-time artifact.
-- If keep: leave as-is, note it in the completion summary.
+**If user selects "Abandon"**, follow up with another `AskUserQuestion`:
+
+Use `AskUserQuestion` with:
+- question: "Should I delete the artifact from the package, or leave it for later?"
+- header: `Cleanup`
+- options:
+  - label: "Delete from package", description: "Remove the artifact from design-time (undeploy first if deployed)"
+  - label: "Keep for later", description: "Leave the artifact as-is in the package — you can return to it later"
+
+If delete: call `undeploy-artifact` (if deployed) and confirm with user before deleting the design-time artifact.
+If keep: leave as-is, note it in the completion summary.
 
 ### Step 3: Multi-Artifact Handling
 If part of a set: report which artifacts succeeded/failed individually. Successfully deployed artifacts are NOT rolled back unless the user explicitly requests it.
 
-**Ask user before any cleanup — never auto-delete.**
+**Always use `AskUserQuestion` before any cleanup — never auto-delete.**
 
 > **Phase gate:** After user decision is complete, proceed to **Phase H: Completion Summary**.
 
@@ -109,6 +123,14 @@ If part of a set: report which artifacts succeeded/failed individually. Successf
 ```
 
 Adapt the summary based on actual execution — omit sections that don't apply.
+
+### Orchestration: Skill Complete
+
+After presenting the completion summary, send the skill-complete orchestration event:
+
+```bash
+node "skills/ci-iflow-developer/../../orchestration/send-event.js" phase-transition --json "{\"phase\":\"done\",\"name\":\"Skill Complete\"}" --session <session-id> --cleanup
+```
 
 **Mandatory user action items for polling adapters (SFTP, FTP, Mail, etc.):**
 When the iFlow uses a polling sender adapter, ALWAYS include this action item in the completion summary:

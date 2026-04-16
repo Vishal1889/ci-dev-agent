@@ -297,9 +297,14 @@ When calling OData APIs (SAP S/4HANA, SuccessFactors, etc.), query parameters ar
 
 ### Message Mapping Placement
 
-The Requirements Analysis Sub-Agent (Phase A) should have determined mapping placement. If not determined, ask the user now:
+The Requirements Analysis Sub-Agent (Phase A) should have determined mapping placement. If not determined, ask the user now using the `AskUserQuestion` tool:
 
-> "Should the message mapping be created as a step within the iFlow, or as a separate reusable Message Mapping artifact?"
+Use `AskUserQuestion` with:
+- question: "Should the message mapping be created as a step within the iFlow, or as a separate reusable artifact?"
+- header: `Placement`
+- options:
+  - label: "In-iFlow step", description: "Mapping is embedded within this iFlow — simpler, used only by this iFlow"
+  - label: "Standalone reusable artifact", description: "Separate Message Mapping artifact that can be referenced by multiple iFlows"
 
 - **In-iFlow** (default if user says "doesn't matter"): Add as a `MessageMapping` callActivity step in the BPMN XML. The `.mmap` file goes inside the iFlow zip under `src/main/resources/mapping/`.
 - **Separate artifact**: Create a standalone Message Mapping artifact via `scaffold-message-mapping` + `update-message-mapping-content`. Reference it from the iFlow using `mappingSource=mappingSrcExternal` and add `Require-Capability` to the iFlow's MANIFEST.MF.
@@ -449,6 +454,7 @@ When an iFlow has 12+ processing steps or 3+ receiver systems:
 - **Coordinate layout:** Large iFlows need careful BPMNDiagram coordinates to avoid overlapping elements. Increase horizontal spacing between steps. See `bpmn-generation-guide.md` §7 for layout rules.
 - **Consider splitting:** If the iFlow exceeds ~20 steps or has unrelated processing branches, consider splitting into multiple iFlows connected via ProcessDirect or JMS. This improves readability, maintainability, and error isolation.
 - **Context management:** When generating BPMN XML for large iFlows, the XML itself may be 500+ lines. Generate incrementally — build the collaboration section first, then each process section, then sequence flows, then the diagram section.
+- **Upload strategy:** iFlows with 3+ LIPs typically produce 60-100KB `.iflw` files. **Always write generated BPMN to the `.tmp/` directory** (not just hold in context). In Phase D, use the **sub-agent upload pattern** instead of inlining large content in `update-iflow-content`. See Phase D "Large iFlow Upload Strategy" for the prompt template and error fix loop.
 - **Validation priority:** For large iFlows, run Phase C.1 pre-upload validation extra carefully — more steps means more opportunities for sequenceFlow wiring errors, missing IDs, or orphaned elements.
 
 ### Phase C.1: Pre-Upload Validation Checklist
@@ -464,6 +470,32 @@ Before uploading, validate the generated BPMN XML. **If any check fails, fix and
 - [ ] EndEvents with receiver messageFlows have `<bpmn2:messageEventDefinition/>`
 - [ ] Timer iFlows: NO sender participant, NO sender messageFlow
 - [ ] Receiver messageFlow `sourceRef` = ServiceTask (not EndEvent) for Request-Reply/Send adapters
+- [ ] **IntegrationProcess participant extensionElements are NOT empty** — every `<bpmn2:participant ifl:type="IntegrationProcess">` MUST have `componentVersion` and `cmdVariantUri` properties (main: `IntegrationProcess/version::1.2.1`, LIP: `LocalIntegrationProcess/version::1.1.3`). Empty `<bpmn2:extensionElements/>` causes "Error while loading" in CPI Web UI.
+
+**BPMNDiagram Completeness (CRITICAL for LIP iFlows):**
+- [ ] **Every BPMN element has a BPMNShape** — count all startEvents, endEvents, callActivities, serviceTasks, gateways, subProcesses across ALL processes (main + LIPs + exception subprocesses) and verify the BPMNDiagram has the same count of BPMNShape entries
+- [ ] **Every sequenceFlow has a BPMNEdge** — count all sequenceFlows across ALL processes and verify matching BPMNEdge count
+- [ ] **Every messageFlow has a BPMNEdge** — including messageFlows from serviceTasks inside LIPs to receiver participants
+- [ ] **Every participant has a BPMNShape** — sender, all receivers, main process pool, ALL LIP pools
+- [ ] When multiple messageFlows target the same receiver participant (e.g., 3 JMS error channels to one JMS_ErrorQueue), each channel name MUST be unique
+
+> **Programmatic verification (recommended for iFlows with LIPs):** Use Python to count and cross-check:
+> ```python
+> import xml.etree.ElementTree as ET
+> ns = {'b': 'http://www.omg.org/spec/BPMN/20100524/MODEL', 'd': 'http://www.omg.org/spec/BPMN/20100524/DI'}
+> tree = ET.parse('file.iflw')
+> # Count all BPMN elements that need shapes
+> elements = len(tree.findall('.//b:startEvent', ns)) + len(tree.findall('.//b:endEvent', ns)) + \
+>            len(tree.findall('.//b:callActivity', ns)) + len(tree.findall('.//b:serviceTask', ns)) + \
+>            len(tree.findall('.//b:exclusiveGateway', ns)) + len(tree.findall('.//b:parallelGateway', ns)) + \
+>            len(tree.findall('.//b:subProcess', ns)) + len(tree.findall('.//b:participant', ns))
+> shapes = len(tree.findall('.//d:BPMNShape', ns))
+> seq_flows = len(tree.findall('.//b:sequenceFlow', ns))
+> msg_flows = len(tree.findall('.//b:messageFlow', ns))
+> edges = len(tree.findall('.//d:BPMNEdge', ns))
+> assert shapes == elements, f"BPMNShape mismatch: {shapes} shapes vs {elements} elements"
+> assert edges == seq_flows + msg_flows, f"BPMNEdge mismatch: {edges} edges vs {seq_flows + msg_flows} flows"
+> ```
 
 **Adapter Channels:**
 - [ ] Every messageFlow has ALL 12 standard channel properties: `ComponentType`, `ComponentNS`, `ComponentSWCVName`, `ComponentSWCVId`, `TransportProtocol`, `TransportProtocolVersion`, `MessageProtocol`, `MessageProtocolVersion`, `Name`, `direction`, `system`, `cmdVariantUri`

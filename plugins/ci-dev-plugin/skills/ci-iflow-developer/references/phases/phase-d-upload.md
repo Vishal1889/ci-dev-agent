@@ -65,6 +65,56 @@ This server provides **dedicated tools** for upload. You do NOT need to manually
    ```
    If `FAILED`: check `./references/guides/known-errors.md` for known build issues before attempting custom fixes. Loop within Phase D — fix artifact files → re-upload (step 4) → re-validate (step 5). Only exit Phase D to Phase E when build errors are clean. This is an inner loop within Phase D, not a phase regression.
 
+### Large iFlow Upload Strategy
+
+When an iFlow has 3+ Local Integration Processes, 3+ exception subprocesses, or the generated `.iflw` exceeds ~40KB (~500 lines minified), the file is too large to inline in the `update-iflow-content` tool call parameter. **Delegate the upload to a sub-agent.**
+
+**Size indicators (use sub-agent upload when ANY apply):**
+- Generated `.iflw` file is > 40KB
+- iFlow has 3+ Local Integration Processes
+- iFlow has 3+ exception subprocesses
+- BPMNDiagram section has 40+ shapes
+
+**Sub-agent upload pattern:**
+
+Spawn a sub-agent via the `Agent` tool. The sub-agent reads the file from `.tmp/` and calls the MCP tool in its own fresh context — it doesn't carry the main conversation history, so 85-100KB of XML content fits comfortably.
+
+**Prompt template (copy and fill in placeholders):**
+```
+Agent(
+  description: "Upload large iFlow to CPI",
+  prompt: "Upload the iFlow '{artifact_id}' to CPI and validate.
+
+  STEPS:
+  1. Read the iflw file at: skills/ci-iflow-developer/.tmp/{artifact_id}/{filename}.iflw
+  2. Read any Groovy scripts at: skills/ci-iflow-developer/.tmp/{artifact_id}/*.groovy
+  3. Call mcp__plugin_ci-dev-plugin_ci-mcp-server-custom__update-iflow-content with:
+     - destinationName: '{destination}'
+     - id: '{artifact_id}'
+     - files: array containing the .iflw (filepath: 'src/main/resources/scenarioflows/integrationflow/{exact_iflw_name}.iflw')
+       and all .groovy scripts (filepath: 'src/main/resources/script/{name}.groovy')
+  4. If update succeeds, call mcp__plugin_ci-dev-plugin_ci-mcp-server-custom__get-iflow-build-errors
+     with destinationName: '{destination}', id: '{artifact_id}'
+  5. Return EXACTLY:
+     - The update-iflow-content response (status + message)
+     - The build-errors response (full error text if any, including severity, message, sourceObject, resourceName)
+     Do NOT summarize or interpret. The calling agent needs the raw details to diagnose fixes."
+)
+```
+
+**Error propagation and fix loop:**
+
+The sub-agent returns the exact MCP tool responses. The main agent then:
+1. Reads the error text from the Agent tool result
+2. Diagnoses the root cause (e.g., missing property, duplicate channel name, wrong property key)
+3. Fixes the **local `.tmp/` file** using the Edit tool (small surgical fix — not full file rewrite)
+4. Spawns a **new** sub-agent for re-upload (the previous sub-agent's context is gone)
+5. Repeats until build passes, or escalates to user after 3 failed fix attempts
+
+**Key principle:** The main agent never needs to hold the full 85KB XML in its context. It only reads error messages (small) and makes targeted edits to the local file (small). The sub-agent handles the bulk content transfer.
+
+**For Phase E re-uploads:** When `deploy-iflow` fails and the fix requires modifying the `.iflw` file, use the same sub-agent pattern. Edit the local `.tmp/` file, then spawn a sub-agent to upload + validate. Never re-read the full artifact content from the API into the main context just to re-upload it — the local `.tmp/` file is the source of truth.
+
 ### For Message Mappings
 
 Same pattern but with mapping-specific tools:
@@ -91,6 +141,7 @@ Tool: scaffold-message-mapping → update-message-mapping-content → deploy-mes
 | Pass artifact ID to `get-messages` iflowName filter | Returns no results — API uses display name | Use iFlow display name (e.g., `Order Replication`), NOT artifact ID (e.g., `IF_Order_Replication`) |
 | Upload `parameters.prop` with decoded `&amp;` in `schedule1` | "Error while loading" in Web UI — `&amp;` decoded to bare `&` breaks schedule parser | After upload, verify `schedule1` contains `&amp;trigger.timeZone` via `get-iflow-content` |
 | Generate BPMN purely from templates without reading scaffold | `GenerationFailed` — missing scaffold structural boilerplate | Use scaffold-first workflow: read scaffold XML, preserve its structure, merge custom content |
+| Inline 85KB+ iflw content in `update-iflow-content` call | Context overflow, failed retries, wasted time (~1hr+) | Delegate to sub-agent for large uploads (see "Large iFlow Upload Strategy" above) |
 
 
 > **Phase gate:** Output: "Phase D complete — artifact {ArtifactId} uploaded and build-validated. Reading phase-e-deploy.md."

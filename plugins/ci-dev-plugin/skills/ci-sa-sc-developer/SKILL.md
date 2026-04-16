@@ -26,24 +26,40 @@ Package and document Script Collection artifacts for SAP Cloud Integration.
 
 ## MANDATORY: Design-First Plan Mode
 
-This skill operates in **plan mode by default**. Before ANY execution (file generation, directory structure creation, or artifact packaging), the skill MUST:
+This skill operates in **plan mode by default**. **Immediately upon skill invocation, call `EnterPlanMode`** to enforce read-only constraints during requirement gathering.
 
-1. Complete Phase 1 script gathering
-2. Present the Design Confirmation Gate (see below) to the user — showing exactly what will be created
-3. Wait for explicit user confirmation (e.g., "looks good", "proceed", "yes")
-4. Only THEN proceed to Phase 2 (packaging) and beyond
+Before ANY execution (file generation, directory structure creation, or artifact packaging), the skill MUST:
 
-**What counts as execution (blocked until confirmation):**
+1. **Call `EnterPlanMode`** — this blocks all write tools (Edit, Write, Bash non-readonly) until plan mode is exited
+2. Complete Phase 1 script gathering
+3. Present the Design Confirmation Gate (see below) to the user — showing exactly what will be created
+4. Wait for explicit user confirmation via `AskUserQuestion` (user selects "Approve")
+5. **Call `ExitPlanMode`** — this exits plan mode and unblocks all write tools
+6. Only THEN proceed to Phase 2 (packaging) and beyond
+
+**What counts as execution (blocked by `EnterPlanMode` until `ExitPlanMode`):**
 - Creating any directory structures or files (MANIFEST.MF, .project, metainfo.prop, scripts)
 - Writing to the `.tmp/` directory
 - Any artifact packaging work
 
-**What is allowed before confirmation:**
+**What is allowed in plan mode (before user confirmation):**
 - Reading reference files and samples within the skill directory
 - Reading user-provided script files or paths
-- Asking clarifying questions about scripts and their purposes
+- `AskUserQuestion` for gathering missing requirements and clarifying scripts
 
 If the user's input is ambiguous or incomplete, ask clarifying questions rather than proceeding with assumptions. Never skip the confirmation step.
+
+## MANDATORY: Structured Question Format (AskUserQuestion)
+
+**Every question presented to the user MUST use the `AskUserQuestion` tool.** Never present questions as plain text, blockquotes, or markdown-formatted questions. This applies to ALL phases and ALL question types.
+
+### Question Type Mapping
+
+| Category | When | AskUserQuestion Strategy |
+|----------|------|--------------------------|
+| **Enumerated choices** | Script language (Groovy/JavaScript) | Use 2-4 specific `options` with descriptive labels |
+| **Open-ended** | Script purpose, package ID, file names | Present the question with 2-3 common-pattern options — user selects "Other" (always available) for custom input |
+| **Design confirmation gates** | Design Gate | Use 2 `options`: "Approve — proceed" / "Request changes" |
 
 ## Phase 1: Gather Scripts
 
@@ -135,15 +151,21 @@ function processData(message) {
   Deploy this Script Collection BEFORE any referencing iFlows.
 ~~~
 
-**After presenting the summary, ask the user:**
+**After presenting the summary, ask the user using the `AskUserQuestion` tool:**
 
-> "Does this Script Collection design match your requirements? Please review the scripts, file structure, and naming. If anything needs to change, let me know before I proceed to packaging."
+Use `AskUserQuestion` with:
+- question: "Does this Script Collection design match your requirements? Please review the scripts, file structure, and naming."
+- header: `Design`
+- options:
+  - label: "Approve — proceed to packaging", description: "The design is correct, proceed to Phase 2"
+  - label: "Request changes", description: "I want to modify scripts, naming, or other details before proceeding"
 
 **Do NOT proceed to Phase 2 until the user confirms the design is correct.**
 
-If the user requests changes, update the design and re-present the summary. Only after explicit confirmation, output:
+If the user requests changes, update the design and re-present the summary. Only after explicit confirmation:
 
-> "Design confirmed. Proceeding to Phase 2: Package."
+1. Call `ExitPlanMode` to unblock write tools
+2. Output: "Design confirmed. Exited plan mode. Proceeding to Phase 2: Package."
 
 ## Phase 2: Package
 

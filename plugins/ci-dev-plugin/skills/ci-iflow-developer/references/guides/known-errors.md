@@ -460,6 +460,24 @@ When encountering an error not matched above:
 - **Grep key:** `SAXParseException`, `element type "row"`, `matching end-tag`, `scheduleKey`, `&amp;trigger`, `Error while loading`
 - **Category:** DISCOVERED — 2026-04-13
 
+---
+
+## Error: "Error while loading" caused by incomplete BPMNDiagram for Local Integration Processes
+
+- **Phase:** D (upload) / UI rendering
+- **Root Cause:** Two combined defects when generating iFlows with Local Integration Processes (LIPs):
+  1. **Missing BPMNDiagram shapes/edges for LIP elements:** The `<bpmndi:BPMNDiagram>` section only contained shapes and edges for the main Integration Process pool and top-level participants. All elements inside LIPs (startEvents, callActivities, serviceTasks, endEvents, subProcesses, sequenceFlows) were missing their BPMNShape and BPMNEdge entries. CPI's Web UI requires a shape for every BPMN element to render the designer view.
+  2. **Empty `<bpmn2:extensionElements/>` on IntegrationProcess participants:** All `<bpmn2:participant ifl:type="IntegrationProcess">` elements had self-closing empty `<bpmn2:extensionElements/>` instead of containing the required `componentVersion` and `cmdVariantUri` properties. Main process participants need `IntegrationProcess/version::1.2.1`, LIP participants need `LocalIntegrationProcess/version::1.1.3`.
+- **Symptoms:** "Error while loading the details of the integration flow" in the CPI Web UI. The iFlow deploys and runs successfully at runtime — only the Web UI designer view is broken.
+- **Fix:**
+  1. Add BPMNShape entries for every element inside every LIP (including exception subprocess elements). Add BPMNEdge entries for every sequenceFlow inside every LIP.
+  2. Add `componentVersion` and `cmdVariantUri` properties to all IntegrationProcess participant extensionElements. Never use empty `<bpmn2:extensionElements/>`.
+  See bpmn-generation-guide.md §3.2 for correct participant XML and §7 for the Complete Diagram Coverage Rule.
+- **Grep key:** `Error while loading`, `Local Integration Process`, `LIP`, `BPMNDiagram`, `BPMNShape`
+- **Category:** DISCOVERED — 2026-04-15
+
+---
+
 ## Error Severity
 
 | Severity | Description | Automated Fix? |
