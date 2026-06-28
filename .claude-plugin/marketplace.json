@@ -1,10 +1,10 @@
 {
-  "name": "ci-marketplace",
+  "name": "ci-dev-agent",
   "owner": { "name": "Vishal Jain" },
   "plugins": [
     {
       "name": "ci-dev-plugin",
-      "source": "./plugins/ci-dev-plugin"
+      "source": "."
     }
   ]
 }

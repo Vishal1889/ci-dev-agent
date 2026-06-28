@@ -47,6 +47,7 @@ Verify before ANY BPMN generation:
 8. **NEVER hallucinate adapter properties, cmdVariantUri values, or BPMN structures.** If the metadata file does not exist in `./references/metadata/`, or you are unsure about correct property keys/values, **stop and tell the user**. Do not guess, invent properties, or retry with fabricated values.
 9. **Scaffold-first BPMN generation for NEW artifacts:** After `scaffold-iflow` + `get-iflow-content`, extract the scaffold's structural boilerplate (`<bpmn2:definitions>` attributes, `<bpmn2:collaboration>` extensionElements, `<bpmn2:documentation>`, participant extensionElements). Use this as the structural shell for your generated XML. Do NOT generate BPMN purely from minimal-iflow templates — the scaffold's structure may differ and cause `GenerationFailed` errors.
 10. **Uploading parameters.prop/propdef to fresh scaffolds is safe — but guard `&amp;` encoding in `schedule1`:** When the user opts for externalization, uploading `parameters.prop` and `parameters.propdef` to freshly scaffolded artifacts works correctly. **After every upload of a `parameters.prop` containing a `Scheduler` value, verify with `get-iflow-content` that `schedule1` contains `&amp;trigger.timeZone` (not `&trigger.timeZone`).** If `&amp;` was decoded, re-upload. See `known-errors.md` "SAXParseException / &amp; decoding in schedule1" for details. When the user opts to NOT externalize, hardcode values directly in the BPMN XML — for inline `scheduleKey`, the `schedule1` `&` separator must be double XML-encoded as `&amp;amp;`.
+11. **MANDATORY BPMNDiagram validation before upload:** After generating the `.iflw` XML and BEFORE calling `update-iflow-content`, you MUST run the BPMNDiagram completeness validation script (see `phase-c-generation.md` §C.1b). If the assertion fails, fix the XML and re-validate. NEVER upload an iFlow with mismatched shape/edge counts. For complex flows (>8 steps), use Python-based XML generation that builds process elements and diagram entries in lockstep to prevent truncation.
 
 ## MANDATORY: Design-First Plan Mode
 
@@ -155,53 +156,6 @@ Record approximate phase durations based on tool call timestamps visible in the 
 
 **At skill completion**, present a timing summary in the Phase H Completion Summary (approximate durations are fine, e.g., `~15s`).
 
-## Orchestration Dashboard (Optional)
-
-The orchestration dashboard provides a real-time visual view of skill execution phases and MCP tool calls. It is **opt-in**: it only activates if `orchestration_dashboard: true` is set in `.claude/ci-dev-plugin.local.md` YAML frontmatter. All orchestration commands are **silent no-ops** if the dashboard is not enabled — they exit immediately with no error.
-
-### Launching the Dashboard (once at skill start)
-
-Before calling `EnterPlanMode`, run the dashboard launcher via Bash:
-
-```bash
-node "skills/ci-iflow-developer/../../orchestration/launcher.js" --skill-name ci-iflow-developer
-```
-
-If the dashboard is enabled, this starts the server and opens the browser. The script prints a session ID line to stdout (e.g., `session:skill-a1b2c3d4`). **Capture this session ID** — you will pass it to subsequent phase event commands. If the output is empty or the command fails, skip all subsequent orchestration commands silently.
-
-### Sending Phase Events
-
-At each phase boundary, send a phase event via Bash using `--json` and `--session`:
-
-```bash
-node "skills/ci-iflow-developer/../../orchestration/send-event.js" phase-transition --json "{\"phase\":\"A\",\"name\":\"Requirement Analysis\"}" --session <captured-session-id>
-```
-
-Replace `<captured-session-id>` with the session ID captured from the launcher output.
-
-**Phase event table:**
-
-| Phase | `phase` value | `name` value |
-|-------|--------------|--------------|
-| A | `A` | `Requirement Analysis` |
-| B | `B` | `Pattern Matching` |
-| C | `C` | `Artifact Generation` |
-| D | `D` | `Upload to CPI` |
-| E | `E` | `Deploy & Error Resolution` |
-| F | `F` | `Escalation` |
-| G | `G` | `User Decision` |
-| H | `H` | `Completion Summary` |
-| end | `done` | `Skill Complete` |
-
-**Important:**
-- All orchestration commands use `node` with `--json` args — no shell piping — so they work on all platforms (Windows, macOS, Linux)
-- Never block skill execution on orchestration failures. If any command fails, continue the skill normally
-- MCP tool events (PreToolUse/PostToolUse) and sub-agent events are tracked automatically by hooks — no action needed in the skill for those
-- For the final `done` event, add `--cleanup` to remove the session tracking file:
-  ```bash
-  node "skills/ci-iflow-developer/../../orchestration/send-event.js" phase-transition --json "{\"phase\":\"done\",\"name\":\"Skill Complete\"}" --session <captured-session-id> --cleanup
-  ```
-
 ## Template Selection
 
 Templates are selected in Phase B using a 14-row lookup table (in `phase-b-pattern-matching.md`) that matches trigger type, receiver count, routing, and splitting to one of 14 minimal `.iflw` templates in `./references/minimal-iflows/`.
@@ -221,15 +175,15 @@ This skill executes in phases. **At each phase gate, output the gate message and
 
 ### Phase Gate Protocol
 
-At each phase transition, output the gate message, send the orchestration phase event (if session ID was captured), and immediately read the next file.
+At each phase transition, output the gate message and immediately read the next file.
 
 **Phase A to B transition is BLOCKED until user confirms AND plan mode is exited.** Do not output the Phase A gate message or read phase-b-pattern-matching.md until the user has explicitly approved the design presented in the Phase A Gate. After user approves, call `ExitPlanMode` first, then proceed. All other phase transitions may proceed automatically.
 
-- `"Phase A complete — user confirmed design."` → Call `ExitPlanMode` → Send phase event: `node "skills/ci-iflow-developer/../../orchestration/send-event.js" phase-transition --json "{\"phase\":\"B\",\"name\":\"Pattern Matching\"}" --session <session-id>` → Read `./references/phases/phase-b-pattern-matching.md`
-- `"Phase B complete — Template: {name}. Reading phase-c-generation.md."` → Send phase event C (`Artifact Generation`) → Read `./references/phases/phase-c-generation.md`
-- `"Phase C complete — generated {N} files for {ArtifactId}. Reading phase-d-upload.md."` → Send phase event D (`Upload to CPI`) → Read `./references/phases/phase-d-upload.md`
-- `"Phase D complete — artifact {ArtifactId} uploaded and build-validated. Reading phase-e-deploy.md."` → Send phase event E (`Deploy & Error Resolution`) → Read `./references/phases/phase-e-deploy.md`
-- `"Phase E complete — {ArtifactId} deployed. Reading phase-fgh-completion.md."` → Send phase event H (`Completion Summary`) → Read `./references/phases/phase-fgh-completion.md`
+- `"Phase A complete — user confirmed design."` → Call `ExitPlanMode` → Read `./references/phases/phase-b-pattern-matching.md`
+- `"Phase B complete — Template: {name}. Reading phase-c-generation.md."` → Read `./references/phases/phase-c-generation.md`
+- `"Phase C complete — generated {N} files for {ArtifactId}. Reading phase-d-upload.md."` → Read `./references/phases/phase-d-upload.md`
+- `"Phase D complete — artifact {ArtifactId} uploaded and build-validated. Reading phase-e-deploy.md."` → Read `./references/phases/phase-e-deploy.md`
+- `"Phase E complete — {ArtifactId} deployed. Reading phase-fgh-completion.md."` → Read `./references/phases/phase-fgh-completion.md`
 
 ### Fast Paths
 
@@ -239,6 +193,4 @@ At each phase transition, output the gate message, send the orchestration phase 
 
 ### Start Here
 
-1. Launch the orchestration dashboard (Bash): `node "skills/ci-iflow-developer/../../orchestration/launcher.js" --skill-name ci-iflow-developer` — capture the session ID from stdout if printed (e.g., `session:skill-a1b2c3d4`). If the output is empty or the command fails, skip all orchestration commands silently.
-2. Send Phase A event (Bash): `node "skills/ci-iflow-developer/../../orchestration/send-event.js" phase-transition --json "{\"phase\":\"A\",\"name\":\"Requirement Analysis\"}" --session <session-id>`
-3. Call `EnterPlanMode`, then read `./references/phases/phase-a-requirements.md` to begin Phase A.
+1. Call `EnterPlanMode`, then read `./references/phases/phase-a-requirements.md` to begin Phase A.

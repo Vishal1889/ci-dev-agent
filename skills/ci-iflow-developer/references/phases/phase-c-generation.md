@@ -472,30 +472,60 @@ Before uploading, validate the generated BPMN XML. **If any check fails, fix and
 - [ ] Receiver messageFlow `sourceRef` = ServiceTask (not EndEvent) for Request-Reply/Send adapters
 - [ ] **IntegrationProcess participant extensionElements are NOT empty** — every `<bpmn2:participant ifl:type="IntegrationProcess">` MUST have `componentVersion` and `cmdVariantUri` properties (main: `IntegrationProcess/version::1.2.1`, LIP: `LocalIntegrationProcess/version::1.1.3`). Empty `<bpmn2:extensionElements/>` causes "Error while loading" in CPI Web UI.
 
-**BPMNDiagram Completeness (CRITICAL for LIP iFlows):**
+**BPMNDiagram Completeness (CRITICAL — ALL iFlows, not just LIPs):**
 - [ ] **Every BPMN element has a BPMNShape** — count all startEvents, endEvents, callActivities, serviceTasks, gateways, subProcesses across ALL processes (main + LIPs + exception subprocesses) and verify the BPMNDiagram has the same count of BPMNShape entries
 - [ ] **Every sequenceFlow has a BPMNEdge** — count all sequenceFlows across ALL processes and verify matching BPMNEdge count
 - [ ] **Every messageFlow has a BPMNEdge** — including messageFlows from serviceTasks inside LIPs to receiver participants
 - [ ] **Every participant has a BPMNShape** — sender, all receivers, main process pool, ALL LIP pools
 - [ ] When multiple messageFlows target the same receiver participant (e.g., 3 JMS error channels to one JMS_ErrorQueue), each channel name MUST be unique
 
-> **Programmatic verification (recommended for iFlows with LIPs):** Use Python to count and cross-check:
-> ```python
-> import xml.etree.ElementTree as ET
-> ns = {'b': 'http://www.omg.org/spec/BPMN/20100524/MODEL', 'd': 'http://www.omg.org/spec/BPMN/20100524/DI'}
-> tree = ET.parse('file.iflw')
-> # Count all BPMN elements that need shapes
-> elements = len(tree.findall('.//b:startEvent', ns)) + len(tree.findall('.//b:endEvent', ns)) + \
->            len(tree.findall('.//b:callActivity', ns)) + len(tree.findall('.//b:serviceTask', ns)) + \
->            len(tree.findall('.//b:exclusiveGateway', ns)) + len(tree.findall('.//b:parallelGateway', ns)) + \
->            len(tree.findall('.//b:subProcess', ns)) + len(tree.findall('.//b:participant', ns))
-> shapes = len(tree.findall('.//d:BPMNShape', ns))
-> seq_flows = len(tree.findall('.//b:sequenceFlow', ns))
-> msg_flows = len(tree.findall('.//b:messageFlow', ns))
-> edges = len(tree.findall('.//d:BPMNEdge', ns))
-> assert shapes == elements, f"BPMNShape mismatch: {shapes} shapes vs {elements} elements"
-> assert edges == seq_flows + msg_flows, f"BPMNEdge mismatch: {edges} edges vs {seq_flows + msg_flows} flows"
-> ```
+### Phase C.1b: BPMNDiagram Validation Gate (MANDATORY)
+
+**This step is BLOCKING — you MUST NOT proceed to Phase D upload until this passes.** Missing shapes/edges causes "Error while loading the details of the integration flow" in the CPI Web UI (the artifact deploys fine, but is unviewable in the designer).
+
+**For complex flows (>8 steps):** Use Python-based XML generation that builds process elements and diagram entries in lockstep — this prevents truncation by construction.
+
+Run the following Python validation on the generated `.iflw` XML:
+
+```python
+import xml.etree.ElementTree as ET
+
+ns = {'b': 'http://www.omg.org/spec/BPMN/20100524/MODEL', 'd': 'http://www.omg.org/spec/BPMN/20100524/DI'}
+tree = ET.parse('path/to/generated.iflw')
+
+# Count all BPMN elements that need shapes
+participants = len(tree.findall('.//b:participant', ns))
+start_events = len(tree.findall('.//b:startEvent', ns))
+end_events = len(tree.findall('.//b:endEvent', ns))
+call_activities = len(tree.findall('.//b:callActivity', ns))
+service_tasks = len(tree.findall('.//b:serviceTask', ns))
+exclusive_gws = len(tree.findall('.//b:exclusiveGateway', ns))
+parallel_gws = len(tree.findall('.//b:parallelGateway', ns))
+sub_processes = len(tree.findall('.//b:subProcess', ns))
+
+expected_shapes = participants + start_events + end_events + call_activities + \
+                  service_tasks + exclusive_gws + parallel_gws + sub_processes
+actual_shapes = len(tree.findall('.//d:BPMNShape', ns))
+
+# Count all flows that need edges
+seq_flows = len(tree.findall('.//b:sequenceFlow', ns))
+msg_flows = len(tree.findall('.//b:messageFlow', ns))
+expected_edges = seq_flows + msg_flows
+actual_edges = len(tree.findall('.//d:BPMNEdge', ns))
+
+print(f"Elements needing shapes: {expected_shapes} (participants={participants}, starts={start_events}, ends={end_events}, activities={call_activities}, tasks={service_tasks}, gateways={exclusive_gws+parallel_gws}, subprocesses={sub_processes})")
+print(f"BPMNShape entries found: {actual_shapes}")
+print(f"Flows needing edges: {expected_edges} (sequence={seq_flows}, message={msg_flows})")
+print(f"BPMNEdge entries found: {actual_edges}")
+
+assert actual_shapes == expected_shapes, f"FAIL: {actual_shapes} shapes vs {expected_shapes} expected"
+assert actual_edges == expected_edges, f"FAIL: {actual_edges} edges vs {expected_edges} expected"
+print("PASS: BPMNDiagram is complete")
+```
+
+**If assertion fails:** Identify which elements are missing shapes/edges, add them to the BPMNDiagram section, and re-run until PASS.
+
+**Only after PASS:** Proceed to Phase D upload.
 
 **Adapter Channels:**
 - [ ] Every messageFlow has ALL 12 standard channel properties: `ComponentType`, `ComponentNS`, `ComponentSWCVName`, `ComponentSWCVId`, `TransportProtocol`, `TransportProtocolVersion`, `MessageProtocol`, `MessageProtocolVersion`, `Name`, `direction`, `system`, `cmdVariantUri`

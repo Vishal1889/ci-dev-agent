@@ -593,6 +593,18 @@ All CPI iFlows use a horizontal left-to-right layout. The BPMNDiagram section pr
 > - Every `<bpmn2:sequenceFlow>` has a BPMNEdge — including those **inside LIPs and exception subprocesses**
 > - Every `<bpmn2:messageFlow>` has a BPMNEdge
 
+### Generation Strategy: Build Diagram Alongside Process
+
+To prevent forgetting elements in the BPMNDiagram section:
+
+**Approach A (Recommended for complex flows with >8 steps):** Generate the XML using a Python script that programmatically builds both the process elements AND their corresponding BPMNShape/BPMNEdge entries in lockstep. This guarantees 1:1 coverage by construction — you cannot add a process element without its diagram entry.
+
+**Approach B (Simple flows ≤8 steps):** Generate inline, but immediately after writing each process element, write its diagram entry. Do NOT defer all diagram entries to the end.
+
+**Why scripts are better for complex flows:** When generating 30+ BPMN elements inline, the LLM's attention drifts — it often generates the process definition fully but then produces an incomplete diagram section (forgetting LIP elements, subprocess elements, or later sequence flows). A Python script eliminates this failure mode because the script explicitly iterates over all elements to generate both halves of the XML.
+
+**After generation, ALWAYS run the Phase C.1b validation gate** (see `phase-c-generation.md`) before uploading.
+
 ### Standard Dimensions
 
 | Element | Width | Height |

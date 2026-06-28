@@ -124,14 +124,6 @@ If part of a set: report which artifacts succeeded/failed individually. Successf
 
 Adapt the summary based on actual execution — omit sections that don't apply.
 
-### Orchestration: Skill Complete
-
-After presenting the completion summary, send the skill-complete orchestration event:
-
-```bash
-node "skills/ci-iflow-developer/../../orchestration/send-event.js" phase-transition --json "{\"phase\":\"done\",\"name\":\"Skill Complete\"}" --session <session-id> --cleanup
-```
-
 **Mandatory user action items for polling adapters (SFTP, FTP, Mail, etc.):**
 When the iFlow uses a polling sender adapter, ALWAYS include this action item in the completion summary:
 > **Configure Polling Schedule:** The iFlow was deployed with a default polling schedule (every 5 minutes). If you need a specific schedule (e.g., cron-based, weekdays only, specific time windows), open the iFlow in the **Cloud Integration Web UI** → click the **sender adapter channel** (e.g., SFTP) → go to the **Scheduler tab** → configure the desired schedule → **Save and Redeploy**.

@@ -478,6 +478,23 @@ When encountering an error not matched above:
 
 ---
 
+## Error: "Error while loading" caused by incomplete BPMNDiagram (general — all iFlows)
+
+- **Phase:** C (generation) → D (upload)
+- **Root Cause:** The BPMNDiagram section is missing BPMNShape or BPMNEdge entries for some elements. This commonly happens when:
+  1. Complex iFlows (>8 steps) are generated inline without programmatic validation
+  2. Elements inside exception subprocesses are forgotten (startEvent_Err, endEvent_Err, sequenceFlow_Err)
+  3. Elements inside Local Integration Processes are forgotten (all LIP startEvents, callActivities, endEvents, sequenceFlows)
+  4. MessageFlow edges are omitted (only sequenceFlow edges are generated, messageFlow edges forgotten)
+  5. SubProcess elements themselves lack a BPMNShape entry
+- **Symptoms:** "Error while loading the details of the integration flow. Try opening the artifact again." in CPI Web UI. The artifact deploys and runs fine at runtime — only the visual designer is broken.
+- **Prevention:** ALWAYS run the Phase C.1b BPMNDiagram Validation Gate script (see `phase-c-generation.md`) before uploading. For complex flows (>8 steps), use Python-based generation that builds process elements and diagram entries in lockstep.
+- **Fix:** Run the validation script to identify count mismatches. Compare element IDs against BPMNShape `bpmnElement` attributes to find which specific elements lack shapes. Add the missing BPMNShape/BPMNEdge entries and re-upload.
+- **Grep key:** `Error while loading`, `BPMNDiagram`, `BPMNShape`, `BPMNEdge`, incomplete diagram
+- **Category:** DISCOVERED — 2026-05-11
+
+---
+
 ## Error Severity
 
 | Severity | Description | Automated Fix? |

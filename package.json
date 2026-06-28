@@ -1,0 +1,26 @@
+{
+  "name": "ci-dev-agent",
+  "version": "1.0.0",
+  "description": "SAP Cloud Integration (CPI) skills for Claude Code — iFlows, message mappings, and script collections.",
+  "bin": {
+    "ci-dev-agent": "./bin/ci-dev-agent.js"
+  },
+  "scripts": {
+    "postinstall": "node ./bin/ci-dev-agent.js _restore-config"
+  },
+  "keywords": [
+    "claude-code",
+    "claude",
+    "sap",
+    "cpi",
+    "cloud-integration",
+    "iflow",
+    "integration-suite",
+    "mcp"
+  ],
+  "author": "Vishal Jain",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16"
+  }
+}
