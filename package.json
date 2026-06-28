@@ -3,7 +3,7 @@
   "version": "2.3.1",
   "description": "SAP Cloud Integration (CPI) skills for Claude Code — iFlows, message mappings, and script collections.",
   "bin": {
-    "ci-dev-agent": "./bin/ci-dev-agent.js"
+    "ci-dev-agent": "bin/ci-dev-agent.js"
   },
   "scripts": {
     "postinstall": "node ./bin/ci-dev-agent.js _restore-config",
