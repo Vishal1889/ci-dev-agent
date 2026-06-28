@@ -307,7 +307,7 @@ async function cmdSetup() {
     // MCP — only prompt if not already configured (and no saved canonical copy)
     if (fileExists(USER_MCP_CONFIG)) {
       header('MCP server configuration');
-      info('Existing MCP config found at ~/.claude/ci-dev-agent/mcp-config.json — regenerating .mcp.json.');
+      info('Existing MCP config found at ~/.claude/ci-dev-agent/mcp-config.json — regenerating config/mcp.json.');
       const saved = readJson(USER_MCP_CONFIG);
       writeJsonAtomic(MCP_JSON, buildMcpJson(saved));
       ok('MCP config restored.');
@@ -370,7 +370,8 @@ function cmdUninstall() {
   console.log('');
   info('Your saved config in ~/.claude/ci-dev-agent/ was preserved.');
   info('Delete it manually if you want a clean slate:');
-  info('  rm -rf ' + USER_STATE_DIR);
+  info('  ' + USER_STATE_DIR);
+  info('  (macOS/Linux: rm -rf <path>   Windows: rmdir /s /q <path>)');
   console.log('');
   info('To fully remove the package: npm uninstall -g ci-dev-agent');
 }

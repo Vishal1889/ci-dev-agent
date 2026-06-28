@@ -55,6 +55,8 @@ After setup, your config lives in two places:
 
 The `postinstall` hook regenerates the package-side files from the canonical ones on every `npm update`.
 
+> If you ever delete `~/.claude/ci-dev-agent/` manually, re-run `ci-dev-agent setup` — without the canonical copies, `npm update` cannot restore the package-side config.
+
 ## Update
 
 ```bash
