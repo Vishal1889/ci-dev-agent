@@ -7,7 +7,7 @@ Distributed as a single npm package. One command installs everything; a short in
 ## Requirements
 
 - [Claude Code](https://claude.com/claude-code) installed and on your `PATH`
-- Node.js ≥ 16
+- **Node.js ≥ 16** — [download the LTS installer from nodejs.org](https://nodejs.org/en/download). npm ships with Node, no separate install needed.
 - An SAP BTP subaccount with the **ci-mcp-server-custom** MCP server deployed (the OAuth client ID, authorize URL, and token URL come from your subaccount service key)
 
 ## Install
