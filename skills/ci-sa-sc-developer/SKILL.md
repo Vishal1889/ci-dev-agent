@@ -8,7 +8,7 @@ description: >
   or for iFlow/Message Mapping work.
 ---
 
-> **Read first:** [`../_shared/installed-package-rules.md`](../_shared/installed-package-rules.md) — this skill is an installed npm package; you cannot edit your own files (only `skills/ci-sa-sc-developer/.tmp/` is writable).
+> **Read first:** [`../_shared/installed-package-rules.md`](../_shared/installed-package-rules.md) — this skill is an installed npm package; you cannot edit your own files. All working files go in `<cwd>/.ci-dev-agent/runs/<artifact-id>/` (the user's current project directory).
 
 Trigger: User asks to create a Script Collection artifact, package shared Groovy scripts, or bundle scripts for reuse across multiple iFlows. Do NOT trigger for in-iFlow Groovy Script steps, iFlow creation, or Message Mapping work.
 
@@ -41,7 +41,7 @@ Before ANY execution (file generation, directory structure creation, or artifact
 
 **What counts as execution (blocked by `EnterPlanMode` until `ExitPlanMode`):**
 - Creating any directory structures or files (MANIFEST.MF, .project, metainfo.prop, scripts)
-- Writing to the `.tmp/` directory
+- Writing to the working directory at `<cwd>/.ci-dev-agent/runs/<artifact-id>/`
 - Any artifact packaging work
 
 **What is allowed in plan mode (before user confirmation):**

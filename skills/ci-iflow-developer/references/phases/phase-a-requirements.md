@@ -146,7 +146,7 @@ Use the Agent tool with `name: "req-analyst"` and this prompt (replace `{input_s
 ```
 "You are a requirements analysis agent for SAP Cloud Integration.
 
-BOUNDARY RULE: Only access files within the project directory or paths explicitly provided by the user. All skill reference files are under skills/ci-iflow-developer/. Temp files go in skills/ci-iflow-developer/.tmp/ — NEVER use /tmp or system temp directories.
+BOUNDARY RULE: Only access files within the project directory or paths explicitly provided by the user. All skill reference files are under the installed plugin's skills/ci-iflow-developer/ directory (read-only). All working files (generated BPMN, extracted attachments, intermediate processing files) go in <cwd>/.ci-dev-agent/runs/{artifact-id}/ where <cwd> is the user's current project directory — NEVER use /tmp, %TEMP%, C:\\tmp, or any system temp directory, and NEVER write inside the installed skill directory.
 
 TASK 1 — DESTINATION RESOLUTION:
 Call `get-server-info` (MCP tool: mcp__ci-mcp-server-custom__get-server-info) to detect the transport mode.
@@ -165,7 +165,7 @@ INPUT: {input_source_block}
 
 EXTRACTION RULES:
 1. Determine artifact type: iFlow, MessageMapping, or both
-2. FOR DOCX INPUTS: Extract embedded files (word/embeddings/*.xlsx) using Python zipfile+openpyxl. These often contain the most important mapping tables and sample data. Save to skills/ci-iflow-developer/.tmp/{artifact-id}/embedded/
+2. FOR DOCX INPUTS: Extract embedded files (word/embeddings/*.xlsx) using Python zipfile+openpyxl. These often contain the most important mapping tables and sample data. Save to <cwd>/.ci-dev-agent/runs/{artifact-id}/embedded/ (where <cwd> is the user's current project directory).
 3. FOR IFLOW: extract sender (system, adapter, auth, endpoint), receiver(s) (same), intermediate Request-Reply calls, mapping needs, exception handling, processing steps (ordered list), externalized parameters. Derive Name/ID per convention: {INT_ID}_{Source}_{Direction}_{Target}_{BusinessObject}
 4. FOR MESSAGE MAPPING: extract placement (in-iFlow/standalone), source/target structures, mapping rules. Derive name: MM_{SourceMsg}_to_{TargetMsg}
 5. MULTI-ARTIFACT: detect if multiple iFlows or standalone mappings needed. List each with dependency order.

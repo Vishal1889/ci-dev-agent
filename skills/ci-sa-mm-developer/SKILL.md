@@ -8,7 +8,7 @@ description: >
   or for iFlow/Script Collection work.
 ---
 
-> **Read first:** [`../_shared/installed-package-rules.md`](../_shared/installed-package-rules.md) — this skill is an installed npm package; you cannot edit your own files (only `skills/ci-sa-mm-developer/.tmp/` is writable).
+> **Read first:** [`../_shared/installed-package-rules.md`](../_shared/installed-package-rules.md) — this skill is an installed npm package; you cannot edit your own files. All working files go in `<cwd>/.ci-dev-agent/runs/<artifact-id>/` (the user's current project directory).
 
 Trigger: User asks to create a standalone Message Mapping artifact (.mmap), a reusable mapping artifact, or a mapping that multiple iFlows will reference. Do NOT trigger for in-iFlow mapping steps, iFlow creation, or Script Collection work.
 
@@ -24,7 +24,7 @@ Build and deploy standalone Message Mapping artifacts using ci-mcp-server-custom
 
 1. Always call `get-message-mapping-content` after `scaffold-message-mapping` to get the exact `.mmap` filepath.
 2. Never overwrite an existing artifact without first reading current content.
-3. All temp files go in `skills/ci-sa-mm-developer/.tmp/` — NEVER system temp dirs.
+3. All temp files go in `<cwd>/.ci-dev-agent/runs/<artifact-id>/` (under the user's current project directory) — NEVER system temp dirs, NEVER inside the installed skill directory.
 
 ## MANDATORY: Design-First Plan Mode
 

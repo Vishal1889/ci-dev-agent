@@ -33,6 +33,20 @@ Restart Claude Code, then type `/ci-iflow-developer` to begin.
 | `/ci-sa-mm-developer` | Standalone Message Mapping artifacts (.mmap) |
 | `/ci-sa-sc-developer` | Standalone Script Collections (Groovy / JavaScript bundles) |
 
+## Working directory
+
+While generating, deploying, and debugging artifacts, the skills stage their working files (`.iflw`, `.mmap`, Groovy/JS scripts, `parameters.prop`, MANIFEST.MF, XSDs — the full unpacked iFlow ZIP layout) in your **current project directory**, under:
+
+```
+<cwd>/.ci-dev-agent/runs/<artifact-id>/
+```
+
+Where `<cwd>` is wherever you opened Claude Code. The first time the skill creates `.ci-dev-agent/`, it drops a self-ignoring `.gitignore` containing `*` so the directory tree stays out of git automatically.
+
+**Cleanup:** the working directory is removed automatically on a successful run. On PARTIAL or FAILED outcomes, it's kept so you can inspect what the skill generated. The Phase H completion summary tells you the exact path. Delete it yourself with `rm -rf .ci-dev-agent/runs/<artifact-id>` when you're done debugging.
+
+**Why this location:** the v2.4.x and earlier releases wrote into the npm install directory (`skills/ci-iflow-developer/.tmp/`), which was wiped on every `npm update` and shared between concurrent runs. v2.5.0+ uses the project directory so working files survive package updates, isolate per project, and live where you naturally look for files in your workspace.
+
 ## Reconfiguring
 
 ```bash
@@ -67,7 +81,9 @@ Your MCP and tenant config are restored automatically.
 
 ## Upgrading from v2.4.x
 
-v2.5.0 renames the plugin identifiers shown in Claude Code's **Manage Plugins** panel:
+v2.5.0 makes two changes you'll notice:
+
+**1. Plugin identifiers shown in Claude Code's "Manage Plugins" panel are renamed:**
 
 | | v2.4.x | v2.5.0 |
 |---|---|---|
@@ -78,7 +94,17 @@ v2.5.0 renames the plugin identifiers shown in Claude Code's **Manage Plugins** 
 
 The previous pairing showed two different names in the UI and confused users who only knew the npm package as `ci-dev-agent`. The new pairing matches the npm package name on the plugin side and reads as a clean `<package>@<publisher>`.
 
-If you installed v2.4.x and want to upgrade, run these three commands (in this order):
+**2. The skill working directory moved out of the npm install:**
+
+| | v2.4.x | v2.5.0 |
+|---|---|---|
+| Location | `<npm-install>/skills/ci-iflow-developer/.tmp/<artifact-id>/` | `<cwd>/.ci-dev-agent/runs/<artifact-id>/` |
+| Survives `npm update`? | No (wiped) | Yes |
+| Per-project isolation? | No (shared) | Yes |
+
+See [Working directory](#working-directory) for the rationale. If any v2.4.x runs are still half-done in the old location, you can manually delete them: `rm -rf <npm-install-dir>/node_modules/ci-dev-agent/skills/ci-iflow-developer/.tmp` — they would have been wiped by the upcoming `npm install` anyway.
+
+**To upgrade, run these three commands (in this order):**
 
 ```bash
 ci-dev-agent uninstall              # removes the old plugin entry from ~/.claude/settings.json

@@ -226,31 +226,38 @@ Step 3: get-deploy-error  — check deployment errors per artifact
 
 ## Execution Mechanics
 
-### Temp Directory
+### Working Directory
 
-> **⛔ NEVER use system temp directories (`/tmp`, `C:\tmp`, `C:\Users\*\AppData\Local\Temp`, or any other path outside the project directory).** All temporary files MUST be created inside `skills/ci-iflow-developer/.tmp/`. This includes files created by sub-agents, extracted archives, intermediate processing files, and any other temporary artifacts.
+> **⛔ NEVER use system temp directories (`/tmp`, `C:\tmp`, `%TEMP%`, `%LOCALAPPDATA%\Temp`, or any other path outside the project directory). NEVER write inside the installed plugin tree** (`skills/ci-iflow-developer/` — the plugin's `PreToolUse` hook rejects writes there). All working files MUST go under `<cwd>/.ci-dev-agent/runs/<artifact-id>/`, where `<cwd>` is the user's current project directory. This includes files created by sub-agents, extracted archives (e.g. DOCX embeddings), intermediate processing files, and any other temporary artifacts.
 
-**Use the `.tmp` folder inside the skill directory — always.**
-
-All paths below are relative to the skill root: `skills/ci-iflow-developer/`. Adjust for your platform (bash shown, adapt for PowerShell/Python as needed).
+**Use `<cwd>/.ci-dev-agent/runs/<artifact-id>/` — always.**
 
 ```bash
-SKILL_DIR="skills/ci-iflow-developer"
-TMPDIR="${SKILL_DIR}/.tmp/${ARTIFACT_ID}"
-mkdir -p "$TMPDIR/META-INF" "$TMPDIR/src/main/resources/scenarioflows/integrationflow" "$TMPDIR/src/main/resources/script"
-# Build artifact in $TMPDIR
+WORK_DIR="$(pwd)/.ci-dev-agent/runs/${ARTIFACT_ID}"
+mkdir -p "$WORK_DIR/META-INF" "$WORK_DIR/src/main/resources/scenarioflows/integrationflow" "$WORK_DIR/src/main/resources/script"
+# On first creation of .ci-dev-agent/, drop a self-ignoring .gitignore (idempotent):
+[[ -f "$(pwd)/.ci-dev-agent/.gitignore" ]] || echo "*" > "$(pwd)/.ci-dev-agent/.gitignore"
+# Build artifact in $WORK_DIR
 ```
 
 **For sub-agents that need temp directories** (e.g., unzipping sample iFlows for study):
-- Include this in the sub-agent prompt: `"Create any temp files under skills/ci-iflow-developer/.tmp/ — NEVER use /tmp or C:\tmp"`
-- Sub-agents should clean up their temp files when done
+- Pass the absolute working directory path in the sub-agent prompt — sub-agents do NOT inherit the main agent's working directory reliably.
+- Sub-agents should clean up their own temp files when done; they should NOT clean up the parent `<cwd>/.ci-dev-agent/runs/<artifact-id>/` (the main agent handles that at end of run).
 
-**Cleanup — MANDATORY after successful completion:**
+**Cleanup — clean on success, KEEP on failure:**
 ```bash
-[[ -n "${ARTIFACT_ID}" ]] && rm -rf "${SKILL_DIR}/.tmp/${ARTIFACT_ID}"
-rmdir "${SKILL_DIR}/.tmp" 2>/dev/null
+if [[ "$FINAL_STATUS" == "SUCCESS" && -n "${ARTIFACT_ID}" ]]; then
+  rm -rf "$(pwd)/.ci-dev-agent/runs/${ARTIFACT_ID}"
+  # Only remove the parent `runs/` dir if it has no other in-progress artifacts:
+  rmdir "$(pwd)/.ci-dev-agent/runs" 2>/dev/null
+  # Keep .ci-dev-agent/ and its .gitignore so subsequent runs reuse them.
+else
+  echo "Working directory kept at $(pwd)/.ci-dev-agent/runs/${ARTIFACT_ID} for debugging."
+  echo "Inspect the generated files there. To clean up manually:"
+  echo "  rm -rf $(pwd)/.ci-dev-agent/runs/${ARTIFACT_ID}"
+fi
 ```
-On failure, leave `.tmp` intact for debugging. Inform the user of the path.
+On PARTIAL or FAILED outcomes, leave the working directory intact so the user can inspect the generated `.iflw`, scripts, and other artifacts. Tell the user the path explicitly in the Phase H summary.
 
 ### Cross-Skill References
 - MCP tool details: `./references/guides/ci-mcp-tool-guide.md`

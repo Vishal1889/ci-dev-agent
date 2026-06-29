@@ -77,17 +77,17 @@ When an iFlow has 3+ Local Integration Processes, 3+ exception subprocesses, or 
 
 **Sub-agent upload pattern:**
 
-Spawn a sub-agent via the `Agent` tool. The sub-agent reads the file from `.tmp/` and calls the MCP tool in its own fresh context — it doesn't carry the main conversation history, so 85-100KB of XML content fits comfortably.
+Spawn a sub-agent via the `Agent` tool. The sub-agent reads the file from the per-run working directory at `<cwd>/.ci-dev-agent/runs/<artifact-id>/` (where `<cwd>` is the user's current project directory — capture it with `pwd` in the main agent before spawning the sub-agent and pass it as an absolute path in the prompt). The sub-agent calls the MCP tool in its own fresh context — it doesn't carry the main conversation history, so 85-100KB of XML content fits comfortably.
 
-**Prompt template (copy and fill in placeholders):**
+**Prompt template (copy and fill in placeholders — `{work_dir}` is the absolute path captured from `pwd` in the main agent):**
 ```
 Agent(
   description: "Upload large iFlow to CPI",
   prompt: "Upload the iFlow '{artifact_id}' to CPI and validate.
 
   STEPS:
-  1. Read the iflw file at: skills/ci-iflow-developer/.tmp/{artifact_id}/{filename}.iflw
-  2. Read any Groovy scripts at: skills/ci-iflow-developer/.tmp/{artifact_id}/*.groovy
+  1. Read the iflw file at: {work_dir}/.ci-dev-agent/runs/{artifact_id}/{filename}.iflw
+  2. Read any Groovy scripts at: {work_dir}/.ci-dev-agent/runs/{artifact_id}/*.groovy
   3. Call mcp__plugin_ci-dev-agent_ci-mcp-server-custom__update-iflow-content with:
      - destinationName: '{destination}'
      - id: '{artifact_id}'
@@ -107,13 +107,13 @@ Agent(
 The sub-agent returns the exact MCP tool responses. The main agent then:
 1. Reads the error text from the Agent tool result
 2. Diagnoses the root cause (e.g., missing property, duplicate channel name, wrong property key)
-3. Fixes the **local `.tmp/` file** using the Edit tool (small surgical fix — not full file rewrite)
+3. Fixes the **local working file** at `<cwd>/.ci-dev-agent/runs/<artifact-id>/...` using the Edit tool (small surgical fix — not full file rewrite)
 4. Spawns a **new** sub-agent for re-upload (the previous sub-agent's context is gone)
 5. Repeats until build passes, or escalates to user after 3 failed fix attempts
 
 **Key principle:** The main agent never needs to hold the full 85KB XML in its context. It only reads error messages (small) and makes targeted edits to the local file (small). The sub-agent handles the bulk content transfer.
 
-**For Phase E re-uploads:** When `deploy-iflow` fails and the fix requires modifying the `.iflw` file, use the same sub-agent pattern. Edit the local `.tmp/` file, then spawn a sub-agent to upload + validate. Never re-read the full artifact content from the API into the main context just to re-upload it — the local `.tmp/` file is the source of truth.
+**For Phase E re-uploads:** When `deploy-iflow` fails and the fix requires modifying the `.iflw` file, use the same sub-agent pattern. Edit the local working file at `<cwd>/.ci-dev-agent/runs/<artifact-id>/...`, then spawn a sub-agent to upload + validate. Never re-read the full artifact content from the API into the main context just to re-upload it — the local working file is the source of truth.
 
 ### For Message Mappings
 

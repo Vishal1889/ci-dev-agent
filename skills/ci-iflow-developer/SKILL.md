@@ -13,7 +13,7 @@ description: >
   (use ci-sa-mm-developer), or standalone script collections (use ci-sa-sc-developer).
 ---
 
-> **Read first:** [`../_shared/installed-package-rules.md`](../_shared/installed-package-rules.md) — this skill is an installed npm package; you cannot edit your own files (only `skills/ci-iflow-developer/.tmp/` is writable).
+> **Read first:** [`../_shared/installed-package-rules.md`](../_shared/installed-package-rules.md) — this skill is an installed npm package; you cannot edit your own files. All working files go in `<cwd>/.ci-dev-agent/runs/<artifact-id>/` (the user's current project directory).
 
 Trigger: User mentions SAP CPI, SAP Cloud Integration, SAP Integration Suite, iFlow, integration flow, or asks to create/deploy/update/debug integration artifacts, configure CPI adapters, check message logs, implement a spec on CPI, send test messages, or manage CPI packages. Do NOT trigger for CI/CD pipelines, Jenkins, GitHub Actions, non-SAP integration work, standalone Message Mapping artifacts (→ ci-sa-mm-developer), or standalone Script Collections (→ ci-sa-sc-developer).
 
@@ -30,7 +30,7 @@ Build, upload, deploy, and manage SAP Cloud Integration artifacts using ci-mcp-s
 **NEVER traverse outside the project directory or the skill directory (`skills/ci-iflow-developer/`) to read, search, or reference files — unless the user explicitly instructs you to access a specific external path (read-only).** This applies to ALL phases, ALL sub-agents, and ALL file operations:
 
 - All reference files (guides, metadata, samples, docs) are inside `./references/` relative to this skill directory
-- All temp files go in `skills/ci-iflow-developer/.tmp/` — **NEVER use system temp directories** (`/tmp`, `C:\tmp`, `C:\Users\*\AppData\Local\Temp`, or any path outside the project). Create a sub-directory with the artifact ID (e.g., `.tmp/CHS_OTC_RackManifest_SemStream_to_S4/`)
+- All working files go in `<cwd>/.ci-dev-agent/runs/<artifact-id>/` — **`<cwd>` is the user's current project directory** (the directory Claude Code was opened in). Create a sub-directory per artifact: e.g. `<cwd>/.ci-dev-agent/runs/CHS_OTC_RackManifest_SemStream_to_S4/`. The skill writes the unpacked iFlow ZIP layout inside (`META-INF/MANIFEST.MF`, `src/main/resources/scenarioflows/integrationflow/*.iflw`, `src/main/resources/script/*.groovy`, etc.). On first creation of `<cwd>/.ci-dev-agent/`, also drop a self-ignoring `.gitignore` containing a single line `*` so the directory tree never enters git. **NEVER use system temp directories** (`/tmp`, `C:\tmp`, `C:\Users\*\AppData\Local\Temp`) and **NEVER write inside the installed skill directory** (`skills/ci-iflow-developer/` is read-only at runtime — enforced by the plugin's PreToolUse hook).
 - Sub-agents spawned via the Agent tool inherit this constraint — include it in their prompts
 - If a required file is not found within the project directory, **ask the user** for the correct path instead of searching outside
 - The ONLY exception is when the user provides an explicit external path (e.g., "read the spec at C:/Users/me/Documents/spec.pdf") — and even then, only **read** from that path, never write to it

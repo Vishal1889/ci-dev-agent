@@ -151,7 +151,16 @@ Common Groovy use cases in CPI:
 
 ### Generation Steps
 
-1. Create temp directory: `mkdir -p skills/ci-iflow-developer/.tmp/<artifact-id>` — **NEVER use `/tmp`, `C:\tmp`, or any system temp path.** All temp files MUST stay inside the skill's `.tmp/` directory.
+1. Create the per-artifact working directory inside the user's current project:
+   ```bash
+   WORK_DIR="$(pwd)/.ci-dev-agent/runs/<artifact-id>"
+   mkdir -p "$WORK_DIR"
+   ```
+   On first creation of `<cwd>/.ci-dev-agent/`, also drop a self-ignoring `.gitignore` so the directory tree never enters git (idempotent):
+   ```bash
+   [[ -f "$(pwd)/.ci-dev-agent/.gitignore" ]] || echo "*" > "$(pwd)/.ci-dev-agent/.gitignore"
+   ```
+   **NEVER use `/tmp`, `C:\tmp`, `%TEMP%`, `%LOCALAPPDATA%\Temp`, or any system temp path. NEVER write inside the installed plugin directory** (`skills/ci-iflow-developer/` is read-only — the plugin's `PreToolUse` hook will reject the write). The user's current working directory is outside the plugin install and freely writable.
 2. **Do NOT generate MANIFEST.MF.** The `scaffold-iflow` tool creates a correct MANIFEST.MF with the right `Bundle-SymbolicName`, `Import-Package`, and `Import-Service` for the tenant. Use the scaffolded version as-is. Only modify it if you need to add `Require-Capability` for Script Collection references (see `bpmn-generation-guide.md` §8). Hand-crafting MANIFEST.MF with wrong `Import-Package` versions or `Import-Service` entries causes silent deployment failures.
 3. Generate `.iflw` BPMN XML using **scaffold-first workflow**:
    - After `scaffold-iflow` + `get-iflow-content` (Phase D steps 1-3), extract the scaffold's structural boilerplate: `<bpmn2:definitions>` attributes, `<bpmn2:collaboration>` extensionElements + documentation, participant extensionElements.
@@ -482,7 +491,7 @@ When an iFlow has 12+ processing steps or 3+ receiver systems:
 - **Coordinate layout:** Large iFlows need careful BPMNDiagram coordinates to avoid overlapping elements. Increase horizontal spacing between steps. See `bpmn-generation-guide.md` §7 for layout rules.
 - **Consider splitting:** If the iFlow exceeds ~20 steps or has unrelated processing branches, consider splitting into multiple iFlows connected via ProcessDirect or JMS. This improves readability, maintainability, and error isolation.
 - **Context management:** When generating BPMN XML for large iFlows, the XML itself may be 500+ lines. Generate incrementally — build the collaboration section first, then each process section, then sequence flows, then the diagram section.
-- **Upload strategy:** iFlows with 3+ LIPs typically produce 60-100KB `.iflw` files. **Always write generated BPMN to the `.tmp/` directory** (not just hold in context). In Phase D, use the **sub-agent upload pattern** instead of inlining large content in `update-iflow-content`. See Phase D "Large iFlow Upload Strategy" for the prompt template and error fix loop.
+- **Upload strategy:** iFlows with 3+ LIPs typically produce 60-100KB `.iflw` files. **Always write generated BPMN to `<cwd>/.ci-dev-agent/runs/<artifact-id>/`** (not just hold in context). In Phase D, use the **sub-agent upload pattern** instead of inlining large content in `update-iflow-content`. See Phase D "Large iFlow Upload Strategy" for the prompt template and error fix loop.
 - **Validation priority:** For large iFlows, run Phase C.1 pre-upload validation extra carefully — more steps means more opportunities for sequenceFlow wiring errors, missing IDs, or orphaned elements.
 
 ### Phase C.1: Pre-Upload Validation Checklist

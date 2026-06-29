@@ -2,10 +2,11 @@
 /**
  * deny-self-edit.js — PreToolUse hook for ci-dev-agent.
  *
- * Blocks Edit/Write/NotebookEdit tool calls that target files inside the
- * installed plugin directory, with a single narrow allowlist exception for
- * each skill's `.tmp/` staging area (where generated `.iflw` / `.mmap` /
- * script files live before MCP upload).
+ * Blocks Edit/Write/NotebookEdit tool calls that target any file inside the
+ * installed plugin directory. As of v2.5.0 the skills write their generated
+ * artifacts (.iflw, .mmap, scripts, parameters.prop, etc.) under the user's
+ * <cwd>/.ci-dev-agent/runs/<artifact-id>/ — outside the plugin entirely — so
+ * the deny is unconditional within the plugin tree (no .tmp/ carve-out).
  *
  * Input: a JSON object on stdin shaped like:
  *   { "tool_input": { "file_path": "..." } }
@@ -13,8 +14,7 @@
  *   { "tool_input": { "notebook_path": "..." } }
  *
  * Exit codes:
- *   0  — allow the tool call (path is outside the plugin, OR inside a
- *        `skills/<any-skill>/.tmp/` directory)
+ *   0  — allow the tool call (path is anywhere outside the plugin install)
  *   2  — deny the tool call. Stderr contains a message explaining why,
  *        which Claude Code surfaces to the agent so it can self-correct.
  *
@@ -134,29 +134,22 @@ const normalizedTarget = normalize(target);
 const normalizedRoot = normalize(pluginRoot);
 
 // ── Rule 1: outside the plugin → allow ──────────────────────────────────────
-// User's project files, system temp, anywhere else — not our concern.
+// User's project files (including `<cwd>/.ci-dev-agent/runs/<artifact-id>/`
+// where the skills stage generated artifacts), system temp, anywhere else —
+// not our concern.
 if (!normalizedTarget.startsWith(normalizedRoot + '/') &&
     normalizedTarget !== normalizedRoot) {
   process.exit(0);
 }
 
-// ── Rule 2: inside a skill's .tmp/ → allow ──────────────────────────────────
-// This is the staging area for generated artifacts (.iflw, .mmap, etc.)
-// before MCP upload. Blocking it would break Phase C/D entirely.
-//
-// Pattern matched: <root>/skills/<any-skill>/.tmp/<anything>
-// We use a regex on the path relative to the plugin root.
-const relativePath = normalizedTarget.slice(normalizedRoot.length + 1);
-const tmpAllowed = /^skills\/[^/]+\/\.tmp(\/|$)/.test(relativePath);
-if (tmpAllowed) {
-  process.exit(0);
-}
-
-// ── Rule 3: anywhere else inside the plugin → deny ──────────────────────────
-// This covers SKILL.md, every references/ file (guides, phases, metadata,
-// samples), tools/, bin/, scripts/, hooks/ (the hook can't disable itself),
+// ── Rule 2: anywhere inside the plugin → deny ──────────────────────────────
+// As of v2.5.0, the skills no longer write inside the plugin directory at
+// all — generated `.iflw`, `.mmap`, scripts etc. live under the user's
+// `<cwd>/.ci-dev-agent/runs/<artifact-id>/`. So this deny is unconditional:
+// SKILL.md, every references/ file (guides, phases, metadata, samples),
+// tools/, bin/, scripts/, hooks/ (the hook can't disable itself),
 // config/*.template, .claude-plugin/*, package.json, LICENSE, README.md,
-// and the shared installed-package-rules.md file itself.
+// and the shared installed-package-rules.md file itself — all denied.
 process.stderr.write(
   '\n' +
   '╔════════════════════════════════════════════════════════════════════════╗\n' +
@@ -167,8 +160,13 @@ process.stderr.write(
   `Plugin root:    ${pluginRoot}\n` +
   '\n' +
   'The ci-dev-agent plugin is installed via npm and its files are immutable\n' +
-  'at runtime. You may write under `skills/<skill>/.tmp/` for working files\n' +
-  '(generated .iflw, .mmap, scripts before MCP upload) only.\n' +
+  'at runtime. Generated artifacts (.iflw, .mmap, scripts, parameters.prop,\n' +
+  'etc.) belong in the user\'s current project directory under:\n' +
+  '\n' +
+  '    <cwd>/.ci-dev-agent/runs/<artifact-id>/\n' +
+  '\n' +
+  'where <cwd> is wherever Claude Code is opened. That path is outside the\n' +
+  'plugin and freely writable. See skills/_shared/installed-package-rules.md.\n' +
   '\n' +
   'To suggest a change to a SKILL.md, guide, metadata file, or any other\n' +
   'reference shipped with this package:\n' +
@@ -176,8 +174,6 @@ process.stderr.write(
   '     under the "New Error Discoveries" block.\n' +
   '  2. Ask the user to forward it to the package maintainer by filing an\n' +
   '     issue at https://github.com/Vishal1889/ci-dev-agent/issues.\n' +
-  '\n' +
-  'See `skills/_shared/installed-package-rules.md` for the full rule.\n' +
   '\n'
 );
 process.exit(2);

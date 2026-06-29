@@ -10,8 +10,8 @@ runtime**.
 
 Under **NO circumstances** call `Edit`, `Write`, or `NotebookEdit` against any
 file shipped with the npm package. **Everything inside the installed plugin
-directory is read-only**, with one narrowly-scoped exception (`.tmp/`, listed
-below). This includes — but is NOT limited to — all of:
+directory is read-only — no exceptions.** This includes, but is NOT limited to,
+all of:
 
 - `SKILL.md` files (any skill, any version)
 - **All reference files shipped with the package**:
@@ -46,20 +46,26 @@ defense.
 
 ## What you CAN write to
 
-- `skills/<skill>/.tmp/<artifact-id>/...` — **this is the staging area for
-  every run.** The skill writes generated `.iflw`, `.mmap`, scripts,
-  `parameters.prop` / `parameters.propdef` files, and any other artifact source
-  files here before uploading via MCP. Read, edit, and delete freely. The skill
-  is responsible for cleaning up after itself (see the SKILL.md cleanup section
-  for the exact `rm -rf` invocation each skill expects).
-- The user's project directory — generated artifacts, scripts, output files,
-  documentation, anything the user asked you to produce in their own workspace.
+- **`<cwd>/.ci-dev-agent/runs/<artifact-id>/`** — the per-run working directory,
+  inside the user's **current project directory** (`<cwd>` = wherever the user
+  opened Claude Code). The skill writes generated `.iflw`, `.mmap`, Groovy/JS
+  scripts, `parameters.prop` / `parameters.propdef`, MANIFEST.MF, XSDs — the
+  full unpacked iFlow ZIP layout — here before uploading via MCP. On first
+  creation of `<cwd>/.ci-dev-agent/`, drop a self-ignoring `.gitignore`
+  containing `*` (idempotent) so the directory tree stays out of git. This
+  location survives `npm update` (it's not under the plugin install) and is
+  per-project (two iFlow generations in different project directories cannot
+  collide).
+- The user's project directory in general — generated artifacts, scripts,
+  output files, documentation, anything the user asked you to produce in their
+  own workspace.
 - `~/.claude/ci-dev-agent/` — user-specific config (canonical MCP and tenant
   configs). This is managed by the `ci-dev-agent` CLI only — do not write here
   from inside a skill.
 
-The `PreToolUse` hook in this plugin enforces this split: writes inside
-`skills/<any-skill>/.tmp/` are allowed, everything else inside the plugin is
-denied. If you attempt a denied write, the hook returns a non-zero exit code
-with a stderr message reminding you to surface the change as a Phase H report
-instead.
+The `PreToolUse` hook in this plugin enforces this split: any write inside the
+plugin install directory is denied unconditionally. Writes outside the plugin
+(the user's `<cwd>`, home directory, etc.) are allowed. If you attempt a denied
+write, the hook returns a non-zero exit code with a stderr message reminding
+you to use `<cwd>/.ci-dev-agent/runs/<artifact-id>/` for working files or
+surface skill-improvement requests as a Phase H report.
