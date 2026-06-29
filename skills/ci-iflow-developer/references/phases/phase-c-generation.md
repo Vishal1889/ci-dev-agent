@@ -1,5 +1,33 @@
 ## Phase C: Artifact Generation
 
+### C.0: PRECONDITION — Phase B template must be in context
+
+Before generating ANY BPMN XML, verify that you completed Phase B:
+
+1. The Phase B gate message *"Phase B complete — Template selected: `<name>.iflw`"* MUST have been emitted earlier in this session.
+2. You MUST have read the template file [`./references/minimal-iflows/<name>.iflw`](../minimal-iflows/) in full via the Read tool.
+
+**If you cannot point to a specific template you read, STOP.** Do NOT proceed to BPMN generation. Go back and execute Phase B: select a template from the lookup table, read it, then return here. Generating BPMN without a template is the failure mode this skill was designed to prevent — the templates encode adapter cmdVariantURI strings, sequenceFlow patterns, and BPMNDiagram coordinates that you cannot reliably reproduce from memory.
+
+If Phase B genuinely found no matching template and the user approved a "no template fits" outcome via AskUserQuestion, STOP here too and escalate to manual development. Do not invent BPMN.
+
+### C.0b: PRECONDITION — Exception Subprocess must be copied from template 07
+
+If the design includes an Exception Subprocess:
+
+1. You MUST have read [`./references/minimal-iflows/07-exception-subprocess.iflw`](../minimal-iflows/07-exception-subprocess.iflw) in full during Phase B (see Phase B §B.0a).
+2. The `<bpmn2:subProcess>` block you emit for the Exception Subprocess MUST be a **structural copy** of template 07 (lines ~348-428 of that file): same attributes, same `activityType=ErrorEventSubProcessTemplate` extensionElement property, same inner ErrorStartEvent / CallActivity / EndEvent shape, same `errorEventDefinition` child elements. You may rename IDs and adjust the inner step type (e.g. swap the example CallActivity for a Groovy Script or Content Modifier) but you may NOT alter the subprocess wrapper structure.
+3. The BPMNDiagram MUST include a `<bpmndi:BPMNShape>` for the subprocess container AND for every element inside it (start event, end event, inner step) AND a `<bpmndi:BPMNEdge>` for every sequenceFlow inside the subprocess. Missing inner shapes is the #1 cause of the empty-box rendering bug — see template 07 lines ~550-593 for the exact BPMNDiagram pattern.
+
+**Forbidden — these are the three failure modes documented in `known-errors.md #30`:**
+- ❌ `triggeredByEvent="true"` on the `<bpmn2:subProcess>` element (template 07 does NOT have this attribute)
+- ❌ `EscalationEndEvent` / `escalationEventDefinition` as the end event (use `ErrorEndEvent` with `errorEventDefinition`, or `MessageEndEvent` if the design wants to silently swallow the error — see [`exception-subprocess-variants.md`](../guides/design-guidelines/handle-errors/exception-subprocess-variants.md))
+- ❌ Missing `activityType=ErrorEventSubProcessTemplate` property on the subprocess
+
+Any one of these causes the subprocess to render as an empty featureless rectangle in the CPI Web UI even though the iFlow deploys and runs. **The fix is mechanical: copy from template 07.** The §C.1b BPMNDiagram Validation Gate later in this phase will reject the iFlow before upload if any of these patterns are present — so it's faster to copy correctly now than to fix at upload time.
+
+If you find yourself writing subprocess XML without an open template 07 in context, STOP and go back to Phase B §B.0a.
+
 ### Zip Folder Structure
 
 | Artifact Type | Key Paths |
@@ -490,7 +518,7 @@ Run the following Python validation on the generated `.iflw` XML:
 ```python
 import xml.etree.ElementTree as ET
 
-ns = {'b': 'http://www.omg.org/spec/BPMN/20100524/MODEL', 'd': 'http://www.omg.org/spec/BPMN/20100524/DI'}
+ns = {'b': 'http://www.omg.org/spec/BPMN/20100524/MODEL', 'd': 'http://www.omg.org/spec/BPMN/20100524/DI', 'ifl': 'http:///com.sap.ifl.model/Ifl.xsd'}
 tree = ET.parse('path/to/generated.iflw')
 
 # Count all BPMN elements that need shapes
@@ -521,6 +549,79 @@ print(f"BPMNEdge entries found: {actual_edges}")
 assert actual_shapes == expected_shapes, f"FAIL: {actual_shapes} shapes vs {expected_shapes} expected"
 assert actual_edges == expected_edges, f"FAIL: {actual_edges} edges vs {expected_edges} expected"
 print("PASS: BPMNDiagram is complete")
+
+# ── Exception Subprocess semantic checks (known-errors.md #30) ─────────────
+# Counts can pass while the subprocess XML still has the three patterns that
+# cause CPI Web UI to render it as an empty featureless rectangle. Catch them.
+
+esub_violations = []
+
+for sp in tree.findall('.//b:subProcess', ns):
+    sp_id = sp.get('id', '<unknown>')
+
+    # Is this an Exception Subprocess (vs a plain subProcess)?
+    # We mark it as exception if EITHER:
+    #   - it has the activityType=ErrorEventSubProcessTemplate property, OR
+    #   - it contains a startEvent with errorEventDefinition.
+    # The OR is deliberate: a missing activityType is itself a violation
+    # we want to catch, so we can't rely on activityType alone to detect
+    # exception subprocesses.
+    #
+    # Note: <ifl:property> elements have unnamespaced <key>/<value> children
+    # (the SAP iFlow XML uses the ifl namespace only on `property` itself).
+    def _prop_value(parent, key):
+        for prop in parent.findall('.//ifl:property', ns):
+            k = prop.find('key')
+            v = prop.find('value')
+            if k is not None and v is not None and (k.text or '').strip() == key:
+                return (v.text or '').strip()
+        return None
+
+    has_error_act_type = _prop_value(sp, 'activityType') == 'ErrorEventSubProcessTemplate'
+    has_error_start = sp.find('.//b:startEvent/b:errorEventDefinition', ns) is not None
+    if not (has_error_act_type or has_error_start):
+        continue  # plain subProcess (rare in CPI) — skip semantic checks
+
+    # Violation 1: triggeredByEvent="true" on the subProcess element.
+    # Template 07 does NOT have this attribute. Its presence triggers the
+    # empty-box rendering bug.
+    if sp.get('triggeredByEvent') == 'true':
+        esub_violations.append(f"{sp_id}: has triggeredByEvent=\"true\" (must be absent)")
+
+    # Violation 2: activityType=ErrorEventSubProcessTemplate must be present.
+    # Without it, CPI's renderer doesn't recognize this as an Exception
+    # Subprocess template and draws a blank box.
+    if not has_error_act_type:
+        esub_violations.append(
+            f"{sp_id}: missing <ifl:property> activityType=ErrorEventSubProcessTemplate"
+        )
+
+    # Violation 3: no escalationEventDefinition or EscalationEndEvent anywhere
+    # inside the subprocess. CPI accepts these at the runtime layer but the
+    # Web UI cannot render them — always use errorEventDefinition + ErrorEndEvent
+    # (or MessageEndEvent for the silent-swallow variant).
+    if sp.find('.//b:escalationEventDefinition', ns) is not None:
+        esub_violations.append(f"{sp_id}: contains escalationEventDefinition (use errorEventDefinition)")
+    for prop in sp.findall('.//ifl:property', ns):
+        k = prop.find('key')
+        v = prop.find('value')
+        if k is None or v is None:
+            continue
+        if (k.text or '').strip() == 'cmdVariantUri' and 'EscalationEndEvent' in (v.text or ''):
+            esub_violations.append(f"{sp_id}: cmdVariantUri references EscalationEndEvent (forbidden)")
+
+if esub_violations:
+    print("Exception Subprocess violations:")
+    for v in esub_violations:
+        print(f"  - {v}")
+    print()
+    print("These cause the empty-box rendering bug in CPI Web UI even though the")
+    print("iFlow deploys successfully. Fix: copy the subprocess structure from")
+    print("./references/minimal-iflows/07-exception-subprocess.iflw (lines ~348-428).")
+    print("See known-errors.md #30 and bpmn-generation-guide.md §4.6.")
+    raise AssertionError(f"FAIL: {len(esub_violations)} Exception Subprocess violation(s)")
+
+print("PASS: Exception Subprocess checks clean")
 ```
 
 **If assertion fails:** Identify which elements are missing shapes/edges, add them to the BPMNDiagram section, and re-run until PASS.

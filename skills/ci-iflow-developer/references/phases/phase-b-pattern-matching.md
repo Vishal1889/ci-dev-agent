@@ -1,5 +1,21 @@
 ## Phase B: Pattern Matching & Reference Selection
 
+### B.0: HARD RULE — Template selection is MANDATORY
+
+You **MUST** select one template from the lookup table below and **READ IT IN FULL** before any BPMN generation in Phase C. **Generating BPMN from scratch is forbidden.** The minimal-iflow templates are the validated source of truth for adapter wiring, sequenceFlow structure, and BPMNDiagram coordinates — every shipped template has been deployment-tested. Going off-template is the single largest cause of `GenerationFailed` and "Error while loading the integration flow" errors.
+
+**If no row in the lookup table matches the user's requirements:** STOP. Do NOT pick a "closest structural match" on your own. Use `AskUserQuestion` to present the 2-3 most-similar templates to the user with a short description of each, and let the user pick. If the user says none fit, STOP and tell them this iFlow shape is outside what the skill supports — escalate to manual development in the CPI Web UI.
+
+### B.0a: Composable templates (Exception Subprocess)
+
+Exception Subprocess is the only "composable" entry in the lookup table — it is NOT a standalone iFlow shape, it is grafted onto a primary template. **If the Phase A design includes ANY error-handling subprocess** (the user asked for one, the template you picked already has one, or the design summary mentioned exception handling / error routing / failure capture), you MUST also read [`./references/minimal-iflows/07-exception-subprocess.iflw`](../minimal-iflows/07-exception-subprocess.iflw) in full before proceeding to Phase C. This is a **SECOND mandatory Read** on top of your primary template.
+
+The Phase B gate output must name BOTH files when this applies:
+
+> "Phase B complete — Template selected: `<primary>.iflw` (read N chars) + `07-exception-subprocess.iflw` (read M chars for composable Exception Subprocess). Reading phase-c-generation.md."
+
+If you forget the second Read, Phase C's §C.0b precondition check will catch it and send you back here. **Why this matters:** generating Exception Subprocess XML from memory produces a subprocess that CPI's runtime accepts but the Web UI cannot render — it shows as an empty featureless rectangle (see known-errors.md #30). The only reliable way to avoid this is to copy the subprocess block from template 07.
+
 ### B.1: Select Template
 
 Match the confirmed requirements from Phase A against this lookup table:
@@ -21,11 +37,12 @@ Match the confirmed requirements from Phase A against this lookup table:
 | Any | 1+ (format conversion) | Optional | No | `13-format-converters-validators` |
 | IDoc/XI/AS2 | 1+ (EDI) | No | Yes | `14-edi-b2b-pipeline` |
 
-**If no row matches exactly:** Use the closest structural match and note customizations needed in the Phase B gate.
+**If no row matches exactly:** STOP. Use `AskUserQuestion` to present the 2-3 closest templates to the user with a short description of each, and let them pick. If none fit, escalate to manual CPI Web UI development. **Do NOT silently pick a "closest structural match" yourself.** (See §B.0 — this is the hard rule that prevents off-template hallucination.)
 
-**Fast path (skip B.2 metadata lookup and go directly to Phase C):**
+**Fast path** (skip B.2 metadata lookup and proceed directly to Phase C):
 IF archetype confidence = High AND COMPLEXITY_MODIFIERS = none AND single sender + single receiver AND no mapping needed
-→ Select template from table above → Read template → proceed to Phase C
+→ Select template from table → **Read the full template file** → proceed to Phase C with the template content in context.
+Even the fast path REQUIRES reading the template — the only thing you skip is metadata lookup, not the template itself.
 
 ### B.2: Read Template + Metadata Lookup
 
@@ -86,5 +103,5 @@ Each metadata file contains: name, cmdVariantUri/adapterVariantURI, BPMN element
 | known error, deploy error, build error, troubleshooting | `./references/guides/known-errors.md` |
 
 
-> **Phase gate:** Output: "Phase B complete — Template: {template-name}. Reading phase-c-generation.md."
+> **Phase gate:** Output: "Phase B complete — Template selected: `{template-name}.iflw` (read {N} chars){if Exception Subprocess in design: ' + 07-exception-subprocess.iflw (read {M} chars for composable Exception Subprocess)'}. Reading phase-c-generation.md."
 > Then: Read `./references/phases/phase-c-generation.md` before proceeding to Phase C.
