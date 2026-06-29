@@ -13,6 +13,8 @@ description: >
   (use ci-sa-mm-developer), or standalone script collections (use ci-sa-sc-developer).
 ---
 
+> **Read first:** [`../_shared/installed-package-rules.md`](../_shared/installed-package-rules.md) — this skill is an installed npm package; you cannot edit your own files (only `skills/ci-iflow-developer/.tmp/` is writable).
+
 Trigger: User mentions SAP CPI, SAP Cloud Integration, SAP Integration Suite, iFlow, integration flow, or asks to create/deploy/update/debug integration artifacts, configure CPI adapters, check message logs, implement a spec on CPI, send test messages, or manage CPI packages. Do NOT trigger for CI/CD pipelines, Jenkins, GitHub Actions, non-SAP integration work, standalone Message Mapping artifacts (→ ci-sa-mm-developer), or standalone Script Collections (→ ci-sa-sc-developer).
 
 # SAP Cloud Integration — iFlow Developer
