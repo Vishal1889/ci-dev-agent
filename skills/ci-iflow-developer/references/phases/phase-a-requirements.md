@@ -267,6 +267,24 @@ EMBEDDED_FILES:
       ```
    e. Maximum **2 additional SendMessage interactions** after the initial call (3 total). After that, proceed with remaining gaps marked as "TBD" in the Phase A Gate summary table and note them as user action items in the Phase H completion summary.
 
+### Optional: Smoke-test payload (for sync sender iFlows only)
+
+After requirement extraction is complete and BEFORE building the Phase A Gate summary, if the iFlow's sender adapter is **HTTP, SOAP, or ProcessDirect** (i.e. synchronous — the runtime endpoint can be called with a payload), ask the user via `AskUserQuestion`:
+
+- question: "Do you want me to send a smoke-test payload after deploy to verify the iFlow processes correctly?"
+- header: `Smoke test`
+- options:
+  - label: "Yes — I'll provide a payload", description: "After deploy, I'll POST your sample payload via send-http-message and check the message log."
+  - label: "No — just check the logs", description: "Default. After deploy, I'll wait 30s and check for FAILED messages, no synthetic invocation."
+
+If the user picks **Yes**, follow up with two free-form prompts (use `AskUserQuestion` again with a single-option freeform field, or simply ask in the chat):
+1. *"Paste the test payload (JSON/XML/etc.):"* — capture as `smokeTestPayload`
+2. *"Content-Type header for the test (default `application/json`):"* — capture as `smokeTestContentType`, defaulting to `application/json` if blank.
+
+Store both in working memory; the §E.6 Step 5 post-deploy check will use them after deploy succeeds.
+
+**For non-synchronous senders** (SFTP, Mail, Timer, JMS, AMQP, IBM MQ, etc.) — **skip this question entirely**. There's no synchronous endpoint to POST to, so the passive log check (§E.6 Step 3) is the only verification possible without external systems. Document this in the Phase A Gate summary so the user knows: "First-run verification for {polling/timer} adapters: see Phase H user-action item."
+
 ### Phase A Gate: Present Requirements for User Confirmation (MANDATORY)
 
 > This gate comes AFTER Phase A steps 1-4 (above) which gather and validate requirements. This step presents them to the user for approval. Do NOT proceed to Phase B without user confirmation.

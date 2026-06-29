@@ -86,6 +86,7 @@ If part of a set: report which artifacts succeeded/failed individually. Successf
   Tenant: {tenant name or "N/A (direct)"}
   Destination(s): {design-time dest} / {runtime dest}
   Status: SUCCESS / PARTIAL / FAILED
+  Runtime Status: CLEAN / ERRORS_DETECTED / NOT_CHECKED
 
   Steps Completed:
     [DONE] Phase A: Requirement analysis and sub-agent extraction
@@ -107,6 +108,35 @@ If part of a set: report which artifacts succeeded/failed individually. Successf
   Errors Encountered & Resolved:
     - [Attempt 2] Missing adapter property → added to BPMN XML
     - [Attempt 4] Schema reference not found → corrected filepath
+
+  Runtime Errors (post-deploy check at T+30s):
+    ─────────────────────────────────────────────────────────────
+    Message ID: {messageId}
+    Time: {logEnd}
+    Error: "{exact error text from MPL detail}"
+    Adapter: {sender or receiver where it failed}
+    ─────────────────────────────────────────────────────────────
+    (Repeat for each failing message, up to 5)
+
+    These errors occurred AFTER deployment but within the 30-second
+    post-deploy window. Common causes: missing credentials in Security
+    Material, wrong destination names in BTP cockpit, parameter
+    decoding bugs (e.g. `&amp;` in schedule values), schema reference
+    paths that don't match the artifact ZIP layout.
+
+    The skill did NOT enter the Phase E error resolution loop because
+    runtime errors usually require user intervention (BTP cockpit,
+    CPI Web UI) — they can't be fixed by changing the .iflw XML.
+
+    Next steps:
+    1. Categorize each error. Credential errors → create the missing
+       alias in CPI Web UI → Security Material.
+    2. Destination errors → check the BTP cockpit destination is
+       correctly configured.
+    3. Configuration runtime errors → review with
+       `get-iflow-configurations` and re-deploy with corrected values.
+    4. If the root cause is a structural skill bug (recurring across
+       runs), capture it in the "New Error Discoveries" block below.
 
   New Error Discoveries (forward to maintainer for next release):
     ─────────────────────────────────────────────────────────────
@@ -141,10 +171,15 @@ Adapt the summary based on actual execution — omit sections that don't apply. 
 
 - **Show the "New Error Discoveries" block only when at least one new error was encountered AND resolved AND is not already in `known-errors.md`** (see [phase-e-deploy.md step 8](./phase-e-deploy.md) for the capture step). If every error you hit was already documented in `known-errors.md`, omit the block entirely. If you encountered no errors at all, omit both this and the "Errors Encountered & Resolved" section.
 - **Always include the block when there ARE new discoveries** — even on a SUCCESS run. This is the only way new findings reach the package maintainer; under no circumstances should you "fix it locally" by editing `known-errors.md` (which is blocked by the plugin's `PreToolUse` hook and would not propagate anyway).
+- **Show the "Runtime Errors" block only when `Runtime Status: ERRORS_DETECTED`** (§E.6 Step 4 found `count > 0`). Omit it entirely when `Runtime Status: CLEAN`. The `Runtime Status:` line itself is always shown — it's the at-a-glance answer to "did the deploy actually work, or just transition to Started state?"
 
-**Mandatory user action items for polling adapters (SFTP, FTP, Mail, etc.):**
-When the iFlow uses a polling sender adapter, ALWAYS include this action item in the completion summary:
+**Mandatory user action items for polling and timer adapters (SFTP, FTP, Mail, JMS, AMQP, IBM MQ, Timer, etc.):**
+
+When the iFlow uses a polling sender adapter OR a timer-triggered start event, ALWAYS include BOTH of these action items:
+
 > **Configure Polling Schedule:** The iFlow was deployed with a default polling schedule (every 5 minutes). If you need a specific schedule (e.g., cron-based, weekdays only, specific time windows), open the iFlow in the **Cloud Integration Web UI** → click the **sender adapter channel** (e.g., SFTP) → go to the **Scheduler tab** → configure the desired schedule → **Save and Redeploy**.
+
+> **Verify first execution:** The §E.6 post-deploy runtime check only covers the first **30 seconds** after deploy. Polling adapters with default 5-minute intervals, and timer iFlows scheduled for later times, **will not have fired yet within that window**. Open the iFlow in CPI Web UI → **Monitor → Message Monitoring** and verify the first execution succeeded within a few minutes of its expected start time. If the first run failed (status FAILED), check the error message — common causes are missing credentials, unreachable hosts, and wrong destination configurations.
 >
 > This is required because the CPI Web UI schedule editor uses an internal serialization format that cannot be reliably set via API upload.
 

@@ -120,5 +120,94 @@ Parameters: {
 | HTTP 403 on any Write tool | Insufficient scope | User needs CI_MCP_Developer role collection |
 
 
-> **Phase gate:** After successful deployment (Phase E step 4 complete), output: "Phase E complete — {ArtifactId} deployed. Reading phase-fgh-completion.md."
+### E.6: Post-deploy runtime check (MANDATORY on SUCCESS)
+
+`deploy-iflow` returning SUCCESS only means the artifact transitioned to "Started" state. It does NOT mean the iFlow is processing messages correctly. Polling adapters can fail their first poll, timer iFlows can fail their first scheduled execution, and configuration errors (credential aliases, parameter decoding) only surface at runtime. **Run this check BEFORE Phase H.**
+
+#### E.6 Step 1: Capture deploy timestamp
+
+Capture an ISO timestamp immediately after the `deploy-iflow` SUCCESS return:
+
+```bash
+DEPLOY_TS=$(date -u +"%Y-%m-%dT%H:%M:%S")
+```
+
+> **Note on Bash dates:** SKILL.md's "do not rely on bash `date` for timing" rule applies to *measuring phase durations* across tool calls (where clock drift between calls breaks accuracy). Capturing a single snapshot timestamp here is fine — `date -u` is identical across Windows git-bash, macOS, and Linux. Store `DEPLOY_TS` in working memory; you'll pass it to `get-messages-count` in Step 3.
+
+#### E.6 Step 2: Wait 30 seconds
+
+```bash
+sleep 30
+```
+
+30 seconds is the right window for catching:
+- Scheduler initialization errors (timer schedule parsing, cron expression validation)
+- Credential lookup failures (Security Material alias resolution on first use)
+- Polling adapters with sub-30s schedules
+
+It is NOT long enough for default 5-minute polling intervals or far-future timer schedules — those are handled by the Phase H user-action item ("Verify first execution").
+
+#### E.6 Step 3: Check for FAILED messages
+
+```
+Tool: get-messages-count
+Parameters: {
+  destinationName: "<design-time-dest>",
+  filterProps: {
+    iflowName: "<DISPLAY NAME>",
+    status: "FAILED",
+    logStart: "<DEPLOY_TS captured in Step 1>"
+  }
+}
+```
+
+> **CRITICAL:** `iflowName` is the **display name** of the iFlow (the `name` attribute on the participant or process), NOT the artifact ID. If you pass the artifact ID by mistake, the filter silently matches zero messages and you get a false PASS. The display name was captured in Phase A and is part of the design summary.
+
+#### E.6 Step 4: Decision
+
+- **If count == 0:** No runtime errors in the 30-second post-deploy window. Output: `"E.6 PASS — 0 failed messages in 30s post-deploy window."` Set `Runtime Status: CLEAN` for the Phase H summary. Proceed to Step 5 (optional smoke test) if applicable, otherwise jump to Step 6.
+
+- **If count > 0:** Runtime errors are happening. Fetch details:
+  ```
+  Tool: get-messages
+  Parameters: {
+    destinationName: "<dest>",
+    filterProps: {
+      iflowName: "<display-name>",
+      status: "FAILED",
+      logStart: "<DEPLOY_TS>",
+      top: 5
+    },
+    includeDetails: true
+  }
+  ```
+  (`top: 5` keeps the cost bounded — `includeDetails: true` triggers 3-5 API calls per message per the MCP tool guide.) Set `Runtime Status: ERRORS_DETECTED` and capture the message ID, time, error text, and adapter for each failing message in working memory; the Phase H "Runtime Errors" block will render them.
+
+  **Do NOT enter the Phase E error resolution loop.** These are runtime errors visible only after deploy. They almost always require user intervention (creating a credential in Security Material, fixing a destination in BTP cockpit, correcting a parameter decoding bug). The skill cannot fix them autonomously — report and let the user act.
+
+#### E.6 Step 5: Optional synthetic smoke test (HTTP/SOAP/ProcessDirect senders only)
+
+Skip this step entirely if EITHER:
+- The iFlow's sender is NOT HTTP, SOAP, or ProcessDirect (e.g. SFTP, Mail, Timer, JMS, AMQP senders — no synchronous endpoint to POST to), OR
+- The user did NOT opt in during Phase A by providing a `smokeTestPayload` (see [phase-a-requirements.md](./phase-a-requirements.md) — "Optional: Smoke-test payload").
+
+When both conditions are met (sync sender + user-provided payload), and Step 4 passed:
+
+```
+Tool: get-iflow-endpoints       — already called earlier in Phase E; reuse the URL path
+Tool: send-http-message
+Parameters: {
+  runtimeDestination: "<runtime-dest>",
+  path: "<path from get-iflow-endpoints>",
+  method: "POST",
+  body: "<user-provided smokeTestPayload from Phase A>",
+  contentType: "<user-provided contentType, default application/json>"
+}
+```
+
+Then re-call `get-messages-count` with `status: FAILED, logStart: <DEPLOY_TS>` to confirm the synthetic message succeeded. If the count is now > 0, the synthetic call surfaced an error that the passive check missed — fetch details with `get-messages` and surface in the Phase H "Runtime Errors" block.
+
+#### E.6 Step 6: Phase E → Phase H gate
+
+> **Phase gate:** Output: "Phase E complete — {ArtifactId} deployed AND runtime check {PASS|FAIL}. Reading phase-fgh-completion.md."
 > Then: Read `./references/phases/phase-fgh-completion.md` before proceeding to Phase F/G/H.
