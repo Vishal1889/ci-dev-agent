@@ -88,12 +88,12 @@ Agent(
   STEPS:
   1. Read the iflw file at: skills/ci-iflow-developer/.tmp/{artifact_id}/{filename}.iflw
   2. Read any Groovy scripts at: skills/ci-iflow-developer/.tmp/{artifact_id}/*.groovy
-  3. Call mcp__plugin_ci-dev-plugin_ci-mcp-server-custom__update-iflow-content with:
+  3. Call mcp__plugin_ci-dev-agent_ci-mcp-server-custom__update-iflow-content with:
      - destinationName: '{destination}'
      - id: '{artifact_id}'
      - files: array containing the .iflw (filepath: 'src/main/resources/scenarioflows/integrationflow/{exact_iflw_name}.iflw')
        and all .groovy scripts (filepath: 'src/main/resources/script/{name}.groovy')
-  4. If update succeeds, call mcp__plugin_ci-dev-plugin_ci-mcp-server-custom__get-iflow-build-errors
+  4. If update succeeds, call mcp__plugin_ci-dev-agent_ci-mcp-server-custom__get-iflow-build-errors
      with destinationName: '{destination}', id: '{artifact_id}'
   5. Return EXACTLY:
      - The update-iflow-content response (status + message)

@@ -1,9 +1,9 @@
 {
-  "name": "ci-dev-agent",
+  "name": "ci-plugins",
   "owner": { "name": "Vishal Jain" },
   "plugins": [
     {
-      "name": "ci-dev-plugin",
+      "name": "ci-dev-agent",
       "source": "."
     }
   ]

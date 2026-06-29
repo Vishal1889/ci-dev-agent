@@ -23,8 +23,8 @@ const MCP_JSON = path.join(PKG_ROOT, 'config', 'mcp.json');
 const MCP_TEMPLATE = path.join(PKG_ROOT, 'config', 'mcp.json.template');
 const TENANT_CONFIG = path.join(PKG_ROOT, 'config', 'tenant-destination-config.json');
 const TENANT_TEMPLATE = path.join(PKG_ROOT, 'config', 'tenant-destination-config.json.template');
-const MARKETPLACE_NAME = 'ci-dev-agent';
-const PLUGIN_KEY = 'ci-dev-plugin@' + MARKETPLACE_NAME;
+const MARKETPLACE_NAME = 'ci-plugins';
+const PLUGIN_KEY = 'ci-dev-agent@' + MARKETPLACE_NAME;
 
 const CLAUDE_HOME = path.join(os.homedir(), '.claude');
 const CLAUDE_SETTINGS = path.join(CLAUDE_HOME, 'settings.json');
@@ -37,7 +37,7 @@ const PLUGIN_CACHE_DIR = path.join(CLAUDE_HOME, 'plugins', 'cache', MARKETPLACE_
 // (Project-level permissions already cover the rest; these are the bare minimum
 //  needed for the skills to work without a permission prompt avalanche.)
 const REQUIRED_PERMISSIONS = [
-  'mcp__plugin_ci-dev-plugin_ci-mcp-server-custom__*',
+  'mcp__plugin_ci-dev-agent_ci-mcp-server-custom__*',
   'mcp__ide__getDiagnostics',
   'mcp__ide__executeCode',
   'Bash(mkdir *)'
