@@ -65,6 +65,31 @@ npm update -g ci-dev-agent
 
 Your MCP and tenant config are restored automatically.
 
+## Upgrading from v2.4.x
+
+v2.5.0 renames the plugin identifiers shown in Claude Code's **Manage Plugins** panel:
+
+| | v2.4.x | v2.5.0 |
+|---|---|---|
+| Plugin name | `ci-dev-plugin` | `ci-dev-agent` |
+| Marketplace name | `ci-dev-agent` | `ci-plugins` |
+| Display | `ci-dev-plugin@ci-dev-agent` | **`ci-dev-agent@ci-plugins`** |
+| MCP tool prefix | `mcp__plugin_ci-dev-plugin_*` | `mcp__plugin_ci-dev-agent_*` |
+
+The previous pairing showed two different names in the UI and confused users who only knew the npm package as `ci-dev-agent`. The new pairing matches the npm package name on the plugin side and reads as a clean `<package>@<publisher>`.
+
+If you installed v2.4.x and want to upgrade, run these three commands (in this order):
+
+```bash
+ci-dev-agent uninstall              # removes the old plugin entry from ~/.claude/settings.json
+npm install -g ci-dev-agent@latest  # pulls v2.5.0
+ci-dev-agent setup                  # re-registers with the new plugin/marketplace names
+```
+
+Restart Claude Code afterward. Your saved MCP and tenant config in `~/.claude/ci-dev-agent/` is preserved by `uninstall` and re-used on `setup` — you do NOT need to re-enter credentials or destinations.
+
+After the restart, the **Manage Plugins** panel shows the plugin as `ci-dev-agent@ci-plugins`. If you still see `ci-dev-plugin@ci-dev-agent` as a separate entry, the old uninstall didn't run — re-run `ci-dev-agent uninstall` while the v2.4.x package is still on disk, then re-install v2.5.0.
+
 ## Uninstall
 
 ```bash
