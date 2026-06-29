@@ -60,28 +60,64 @@ if (!target) {
 }
 
 // ── Path normalization ──────────────────────────────────────────────────────
-// On Windows, paths can arrive in several forms:
-//   - Windows-native:  C:\VSProjects\ci-dev-agent\skills\...
-//   - Forward-slash:   C:/VSProjects/ci-dev-agent/skills/...
-//   - Git-bash/MSYS:   /c/VSProjects/ci-dev-agent/skills/...
-//   - Cygwin:          /cygdrive/c/VSProjects/ci-dev-agent/skills/...
-// All four need to normalize to the same absolute path so comparisons work.
+// Goal: turn whatever path string the harness sends us into a stable absolute
+// path that we can compare against the plugin root with `startsWith`.
+//
+// Cross-platform concerns:
+//   Windows
+//     - Backslashes (`C:\foo\bar`)            → fold to forward slashes
+//     - Git-bash / MSYS (`/c/foo/bar`)        → fold to `C:/foo/bar`
+//     - Cygwin (`/cygdrive/c/foo/bar`)        → fold to `C:/foo/bar`
+//     - Case-insensitive NTFS                 → realpath canonicalizes
+//   macOS
+//     - APFS / HFS+ default case-insensitive  → realpath canonicalizes
+//     - npm global often installed via symlink (Homebrew `/usr/local/bin`
+//       → `/opt/homebrew/...` on Apple Silicon, asdf/nvm shims)
+//                                             → realpath resolves to the
+//                                                actual install path
+//   Linux
+//     - ext4 default case-sensitive           → realpath is a no-op for case
+//     - Symlinks (nvm, npm prefix overrides, asdf)
+//                                             → realpath resolves them
+//
+// We use `fs.realpathSync.native` which is the OS's native canonicalization
+// (case-folds where the filesystem case-folds, follows symlinks). For paths
+// that don't exist on disk (test fixtures, hypothetical targets), realpath
+// throws — we fall back to `path.resolve` which at least makes it absolute,
+// and we apply manual case-folding on Windows + macOS so test fixtures still
+// compare equal even when the file doesn't exist.
+const fs = require('fs');
+
+const HOST_CASE_INSENSITIVE =
+  process.platform === 'win32' || process.platform === 'darwin';
+
 function normalize(p) {
   let s = String(p || '');
 
-  // Convert git-bash and MSYS-style /c/... to C:/...
-  // (Match a leading slash + single letter + slash.)
+  // Git-bash / MSYS-style `/c/...` → `C:/...`
   s = s.replace(/^\/([a-zA-Z])\//, '$1:/');
-
-  // Convert Cygwin-style /cygdrive/c/... to C:/...
+  // Cygwin-style `/cygdrive/c/...` → `C:/...`
   s = s.replace(/^\/cygdrive\/([a-zA-Z])\//, '$1:/');
 
-  // path.resolve() makes it absolute and folds away `..` segments.
-  // Replacing backslashes with forward slashes makes comparison uniform.
-  let resolved = path.resolve(s).replace(/\\/g, '/');
+  // Best-effort canonical path: try realpath (resolves symlinks + folds case
+  // on case-insensitive filesystems). Fall back to path.resolve for paths
+  // that don't exist on disk yet (which is normal for hooks — the agent may
+  // be trying to *create* a file).
+  let resolved;
+  try {
+    resolved = fs.realpathSync.native(s);
+  } catch {
+    resolved = path.resolve(s);
+  }
 
-  // Lowercase on Windows (case-insensitive filesystem).
-  if (process.platform === 'win32') {
+  // Uniform separator for comparison.
+  resolved = resolved.replace(/\\/g, '/');
+
+  // Manual case-folding on case-insensitive hosts. realpath canonicalizes
+  // case for paths that exist on disk, but test fixtures and not-yet-created
+  // files still need this so e.g. `C:/VSProjects/...` and `c:/vsprojects/...`
+  // compare equal.
+  if (HOST_CASE_INSENSITIVE) {
     resolved = resolved.toLowerCase();
   }
   return resolved;

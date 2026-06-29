@@ -81,6 +81,51 @@ run_case "allow malformed JSON"           0 'not json at all'
 run_case "allow NotebookEdit on user nb"  0 '{"tool_input":{"notebook_path":"c:/Users/foo/notebook.ipynb"}}'
 run_case "deny  NotebookEdit on plugin"   2 "{\"tool_input\":{\"notebook_path\":\"$PLUGIN_ROOT/skills/ci-iflow-developer/SKILL.md\"}}"
 
+# ── Cross-platform: case-folding (macOS APFS, Windows NTFS) ─────────────────
+# Convert the plugin root to UPPER and lower case and confirm both are caught.
+# On case-sensitive Linux ext4 these paths name different files and would not
+# match — but our manual fold is only enabled on win32/darwin, so on Linux
+# these specific cases legitimately exit 0 (allow) and we skip them there.
+case "$(uname -s)" in
+  Darwin*|MINGW*|MSYS*|CYGWIN*)
+    UPPER="$(echo "$PLUGIN_ROOT" | tr '[:lower:]' '[:upper:]')"
+    LOWER="$(echo "$PLUGIN_ROOT" | tr '[:upper:]' '[:lower:]')"
+    run_case "deny  uppercase path variant"  2 "{\"tool_input\":{\"file_path\":\"$UPPER/skills/ci-iflow-developer/SKILL.md\"}}"
+    run_case "deny  lowercase path variant"  2 "{\"tool_input\":{\"file_path\":\"$LOWER/skills/ci-iflow-developer/SKILL.md\"}}"
+    ;;
+  *)
+    echo "  SKIP  case-folding tests (Linux ext4 is case-sensitive)"
+    ;;
+esac
+
+# ── Cross-platform: symlink resolution (npm prefix often symlinked on mac/Linux) ──
+# Create a temp symlink pointing at the plugin root, then send a path that
+# goes through the symlink. The hook should resolve through realpath and
+# still recognize the target as inside the plugin.
+#
+# On Windows git-bash, `ln -s` to a directory creates a copy, not a real
+# symlink — so this test only runs on macOS/Linux where `ln -s` works.
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*)
+    echo "  SKIP  symlink tests (git-bash ln -s doesn't create real symlinks on Windows)"
+    ;;
+  *)
+    if command -v ln >/dev/null 2>&1; then
+      SYMLINK_DIR="$(mktemp -d)"
+      if ln -s "$PLUGIN_ROOT" "$SYMLINK_DIR/plugin-link" 2>/dev/null && [ -L "$SYMLINK_DIR/plugin-link" ]; then
+        run_case "deny  path through a symlink"  2 "{\"tool_input\":{\"file_path\":\"$SYMLINK_DIR/plugin-link/skills/ci-iflow-developer/SKILL.md\"}}"
+        run_case "allow .tmp/ through a symlink" 0 "{\"tool_input\":{\"file_path\":\"$SYMLINK_DIR/plugin-link/skills/ci-iflow-developer/.tmp/abc/foo.iflw\"}}"
+        rm -f "$SYMLINK_DIR/plugin-link"
+      else
+        echo "  SKIP  symlink tests (ln -s failed or not a real symlink)"
+      fi
+      rm -rf "$SYMLINK_DIR" 2>/dev/null
+    else
+      echo "  SKIP  symlink tests (ln command unavailable)"
+    fi
+    ;;
+esac
+
 echo
 echo "----------------------------------------"
 echo "Results: $PASS passed, $FAIL failed"
