@@ -4,9 +4,14 @@
 When encountering a deployment or runtime error:
 1. Grep for the key part of the error message against this file
 2. If matched: apply the documented fix directly
-3. If not matched: use `get-deploy-error`, `get-iflow-build-errors`, `get-messages` to investigate, then append a DISCOVERED entry
+3. If not matched: use `get-deploy-error`, `get-iflow-build-errors`, `get-messages` to investigate, then **capture the discovery for the Phase H "New Error Discoveries" report**
 
-When appending new entries: use `## Error:` heading with the exact error string as the title, add Phase/Root Cause/Fix/Grep key.
+> **This file is READ-ONLY.** ci-dev-agent is an immutable npm package — do not
+> attempt to append entries here. New discoveries are surfaced to the user in the
+> Phase H completion summary and forwarded to the maintainer at
+> https://github.com/Vishal1889/ci-dev-agent/issues for inclusion in the next
+> release. See [phase-e-deploy.md step 8](../phases/phase-e-deploy.md) for the
+> capture format.
 
 ---
 
@@ -439,7 +444,7 @@ When encountering an error not matched above:
 3. Call `get-messages` filtered by artifact ID for runtime errors
 4. Read the `.iflw` XML via `get-iflow-content` for structural issues
 5. Check adapter property keys via `Read ./references/metadata/adapters/{adapter}_{direction}.json`
-6. After resolving: append a DISCOVERED entry to this file
+6. After resolving: capture the discovery for the Phase H "New Error Discoveries" report — this file is read-only, do NOT append entries here. The user forwards the report to the maintainer at https://github.com/Vishal1889/ci-dev-agent/issues for inclusion in the next release.
 
 ---
 

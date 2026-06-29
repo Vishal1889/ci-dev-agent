@@ -108,6 +108,21 @@ If part of a set: report which artifacts succeeded/failed individually. Successf
     - [Attempt 2] Missing adapter property → added to BPMN XML
     - [Attempt 4] Schema reference not found → corrected filepath
 
+  New Error Discoveries (forward to maintainer for next release):
+    ─────────────────────────────────────────────────────────────
+    ## Error: "{exact error string}"
+    - **Phase:** {D/E/runtime}
+    - **Root Cause:** {one-paragraph explanation}
+    - **Fix:** {what actually resolved it}
+    - **Grep key:** `{3-8 word fragment for future matching}`
+    ─────────────────────────────────────────────────────────────
+
+    These errors were NOT in known-errors.md. Send the block(s) above
+    to the ci-dev-agent maintainer so they can be added to
+    known-errors.md in the next release. File at:
+      https://github.com/Vishal1889/ci-dev-agent/issues
+    (Suggested labels: known-errors, triage)
+
   User Action Required:
     - Update credential '{alias}' with real values in Cloud Integration web UI
     - Review externalized parameters via get-iflow-configurations
@@ -122,7 +137,10 @@ If part of a set: report which artifacts succeeded/failed individually. Successf
 ═══════════════════════════════════════════════════
 ```
 
-Adapt the summary based on actual execution — omit sections that don't apply.
+Adapt the summary based on actual execution — omit sections that don't apply. In particular:
+
+- **Show the "New Error Discoveries" block only when at least one new error was encountered AND resolved AND is not already in `known-errors.md`** (see [phase-e-deploy.md step 8](./phase-e-deploy.md) for the capture step). If every error you hit was already documented in `known-errors.md`, omit the block entirely. If you encountered no errors at all, omit both this and the "Errors Encountered & Resolved" section.
+- **Always include the block when there ARE new discoveries** — even on a SUCCESS run. This is the only way new findings reach the package maintainer; under no circumstances should you "fix it locally" by editing `known-errors.md` (which is blocked by the plugin's `PreToolUse` hook and would not propagate anyway).
 
 **Mandatory user action items for polling adapters (SFTP, FTP, Mail, etc.):**
 When the iFlow uses a polling sender adapter, ALWAYS include this action item in the completion summary:
