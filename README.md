@@ -12,18 +12,53 @@ Distributed as a single npm package. One command installs everything; a short in
 
 ## Install
 
+### Windows
+
 ```bash
 npm install -g ci-dev-agent
 ci-dev-agent setup
 ```
 
-The setup wizard will:
+### macOS / Linux
+
+The default npm global prefix on macOS and many Linux setups is root-owned, so a plain `npm install -g` fails with `EACCES`. **Do not run `npm install -g` with `sudo`** — root-owned files break later `ci-dev-agent setup` (which needs to lock skill files read-only as your user). Instead, transfer ownership of the npm prefix to your user once, then install normally:
+
+```bash
+# One-time fix: take ownership of npm's global prefix
+sudo chown -R "$(whoami)" "$(npm config get prefix)/lib/node_modules" \
+                          "$(npm config get prefix)/bin" \
+                          "$(npm config get prefix)/share"
+
+# Then install + run setup with your normal user (no sudo)
+npm install -g ci-dev-agent
+ci-dev-agent setup
+```
+
+After the one-time `chown`, every future `npm install -g <anything>` works without `sudo`.
+
+**Alternative:** if you use a Node version manager (`nvm`, `volta`, `fnm`, `asdf`) or installed Node via Homebrew on Apple Silicon (`/opt/homebrew/`), the npm prefix is already user-owned — skip the `chown` step and just run `npm install -g ci-dev-agent && ci-dev-agent setup`.
+
+### What setup does
 
 1. Register the marketplace and enable the plugin in `~/.claude/settings.json`
 2. Prompt for your MCP server URL + OAuth credentials and write `config/mcp.json`
 3. Prompt for tenant → destination mappings and write `config/tenant-destination-config.json`
+4. Lock the skill files read-only at the OS level (cross-platform: NTFS `READONLY` attribute on Windows, `chmod 0o444` on macOS/Linux) so the Claude Code skill editor cannot silently modify your installed plugin files
 
 Restart Claude Code, then type `/ci-iflow-developer` to begin.
+
+### Recovering from a previous `sudo npm install -g`
+
+If you previously installed with `sudo npm install -g ci-dev-agent`, the skill files are root-owned and `ci-dev-agent setup` will warn that it could not chmod them. Fix it once with the same `chown` command as above, then re-run setup:
+
+```bash
+sudo chown -R "$(whoami)" "$(npm config get prefix)/lib/node_modules" \
+                          "$(npm config get prefix)/bin" \
+                          "$(npm config get prefix)/share"
+ci-dev-agent setup
+```
+
+Subsequent `npm update -g ci-dev-agent` will then work without `sudo` and the read-only lock will apply correctly.
 
 ## Skills
 
@@ -73,48 +108,31 @@ The `postinstall` hook regenerates the package-side files from the canonical one
 
 ## Update
 
+### Normal update (user-owned npm prefix)
+
 ```bash
 npm update -g ci-dev-agent
 ```
 
-Your MCP and tenant config are restored automatically.
+The `postinstall` hook (runs automatically inside `npm update`) regenerates `config/mcp.json` and `config/tenant-destination-config.json` from your canonical copies in `~/.claude/ci-dev-agent/` and re-locks the new skill files read-only. **No further action needed.**
 
-## Upgrading from v2.4.x
+### Update after a `sudo` install (macOS / Linux)
 
-v2.5.0 makes two changes you'll notice:
-
-**1. Plugin identifiers shown in Claude Code's "Manage Plugins" panel are renamed:**
-
-| | v2.4.x | v2.5.0 |
-|---|---|---|
-| Plugin name | `ci-dev-plugin` | `ci-dev-agent` |
-| Marketplace name | `ci-dev-agent` | `ci-plugins` |
-| Display | `ci-dev-plugin@ci-dev-agent` | **`ci-dev-agent@ci-plugins`** |
-| MCP tool prefix | `mcp__plugin_ci-dev-plugin_*` | `mcp__plugin_ci-dev-agent_*` |
-
-The previous pairing showed two different names in the UI and confused users who only knew the npm package as `ci-dev-agent`. The new pairing matches the npm package name on the plugin side and reads as a clean `<package>@<publisher>`.
-
-**2. The skill working directory moved out of the npm install:**
-
-| | v2.4.x | v2.5.0 |
-|---|---|---|
-| Location | `<npm-install>/skills/ci-iflow-developer/.tmp/<artifact-id>/` | `<cwd>/.ci-dev-agent/runs/<artifact-id>/` |
-| Survives `npm update`? | No (wiped) | Yes |
-| Per-project isolation? | No (shared) | Yes |
-
-See [Working directory](#working-directory) for the rationale. If any v2.4.x runs are still half-done in the old location, you can manually delete them: `rm -rf <npm-install-dir>/node_modules/ci-dev-agent/skills/ci-iflow-developer/.tmp` — they would have been wiped by the upcoming `npm install` anyway.
-
-**To upgrade, run these three commands (in this order):**
+If you previously installed with `sudo npm install -g`, the existing skill files are root-owned and `npm update` will fail with `EACCES` (or worse, silently leave a half-updated state). Fix it once, then update normally:
 
 ```bash
-ci-dev-agent uninstall              # removes the old plugin entry from ~/.claude/settings.json
-npm install -g ci-dev-agent@latest  # pulls v2.5.0
-ci-dev-agent setup                  # re-registers with the new plugin/marketplace names
+# One-time: transfer the npm prefix to your user
+sudo chown -R "$(whoami)" "$(npm config get prefix)/lib/node_modules" \
+                          "$(npm config get prefix)/bin" \
+                          "$(npm config get prefix)/share"
+
+# Then a normal update (no sudo)
+ci-dev-agent uninstall            # unlocks the locked skill files
+npm update -g ci-dev-agent        # pulls new version, postinstall re-locks
+ci-dev-agent setup                # re-registers with Claude Code
 ```
 
-Restart Claude Code afterward. Your saved MCP and tenant config in `~/.claude/ci-dev-agent/` is preserved by `uninstall` and re-used on `setup` — you do NOT need to re-enter credentials or destinations.
-
-After the restart, the **Manage Plugins** panel shows the plugin as `ci-dev-agent@ci-plugins`. If you still see `ci-dev-plugin@ci-dev-agent` as a separate entry, the old uninstall didn't run — re-run `ci-dev-agent uninstall` while the v2.4.x package is still on disk, then re-install v2.5.0.
+After the one-time `chown`, every future `npm update -g ci-dev-agent` runs cleanly with just `npm update -g ci-dev-agent` — no `uninstall`/`setup` dance needed.
 
 ## Uninstall
 

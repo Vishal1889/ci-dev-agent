@@ -72,6 +72,56 @@ function rmrf(p) {
   try { fs.rmSync(p, { recursive: true, force: true }); } catch { /* ignore */ }
 }
 
+// ── Skill file locking (cross-platform via fs.chmodSync) ────────────────────
+// The Claude Code skill editor bypasses the PreToolUse hook and writes
+// directly to disk. Making skill files read-only at the OS level closes
+// that path on every platform:
+//   - macOS / Linux: chmod 0o444 → write returns EACCES
+//   - Windows:       chmod 0o444 → sets FILE_ATTRIBUTE_READONLY → write returns EPERM
+// We lock in setup and _restore-config (postinstall), unlock in uninstall
+// so npm can overwrite on the next install.
+function walkFiles(dirPath, callback) {
+  let entries;
+  try { entries = fs.readdirSync(dirPath, { withFileTypes: true }); }
+  catch { return; }
+  for (const entry of entries) {
+    const full = path.join(dirPath, entry.name);
+    if (entry.isDirectory()) walkFiles(full, callback);
+    else if (entry.isFile()) callback(full);
+  }
+}
+
+function chmodSafe(file, mode) {
+  try { fs.chmodSync(file, mode); } catch { /* best-effort */ }
+}
+
+function lockSkillFiles() {
+  const skillsDir = path.join(PKG_ROOT, 'skills');
+  const manifestDir = path.join(PKG_ROOT, '.claude-plugin');
+  let locked = 0;
+  let failed = 0;
+  const tryLock = (f) => {
+    try { fs.chmodSync(f, 0o444); locked++; }
+    catch { failed++; }
+  };
+  walkFiles(skillsDir, tryLock);
+  walkFiles(manifestDir, tryLock);
+  if (failed > 0 && process.platform !== 'win32') {
+    warn(`Could not chmod ${failed} file(s) — likely root-owned (installed with sudo).`);
+    warn('Fix once with:');
+    warn(`  sudo chown -R "$(whoami)" "${PKG_ROOT}"`);
+    warn('Then re-run: ci-dev-agent setup');
+  }
+  return locked;
+}
+
+function unlockSkillFiles() {
+  const skillsDir = path.join(PKG_ROOT, 'skills');
+  const manifestDir = path.join(PKG_ROOT, '.claude-plugin');
+  walkFiles(skillsDir, (f) => chmodSafe(f, 0o644));
+  walkFiles(manifestDir, (f) => chmodSafe(f, 0o644));
+}
+
 function prompt(rl, question, defaultValue) {
   const suffix = defaultValue ? ` [${defaultValue}]: ` : ': ';
   return new Promise(resolve => {
@@ -302,6 +352,9 @@ async function cmdSetup() {
   rmrf(PLUGIN_CACHE_DIR);
   ok('Plugin cache cleared.');
 
+  lockSkillFiles();
+  ok('Skill files locked read-only (skill editor cannot overwrite them).');
+
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   try {
     // MCP — only prompt if not already configured (and no saved canonical copy)
@@ -364,6 +417,7 @@ async function cmdConfigure(target) {
 
 function cmdUninstall() {
   console.log('ci-dev-agent uninstaller');
+  unlockSkillFiles();  // restore write permission so npm can overwrite on next install
   unregisterMarketplace();
   rmrf(PLUGIN_CACHE_DIR);
   ok('Marketplace + plugin registration removed from ~/.claude/settings.json.');
@@ -388,6 +442,10 @@ function cmdRestoreConfig() {
       const tenants = readJson(USER_TENANT_CONFIG);
       writeJsonAtomic(TENANT_CONFIG, tenants);
     }
+    // Re-lock skill files after every npm install/update.
+    // npm writes the new files first (world-writable), then postinstall runs.
+    // Without this lock, the skill editor could edit the freshly-written files.
+    lockSkillFiles();
   } catch (err) {
     // Never fail an npm install on this.
     if (process.env.CI_DEV_AGENT_DEBUG) {
