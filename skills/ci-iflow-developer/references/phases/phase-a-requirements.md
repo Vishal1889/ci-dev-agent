@@ -380,17 +380,13 @@ Then present a **flow diagram** showing the end-to-end message flow. Use the sub
 
 Note: These flow diagrams are **simplified conceptual representations** for requirements approval. They show the high-level message flow, not exact BPMN structure. Exact BPMN wiring rules (Request-Reply vs Send vs EndEvent) are defined in Phase C under "Receiver Adapter Wiring Rules."
 
-**After presenting the summary and diagram, ask the user using the `AskUserQuestion` tool:**
+**After presenting the requirements summary table and flow diagram, call `ExitPlanMode` to request user approval.**
 
-Use `AskUserQuestion` with:
-- question: "Does this iFlow design match your requirements? Please review the summary table and flow diagram."
-- header: `Design`
-- options:
-  - label: "Approve — proceed to generation", description: "The design is correct, proceed to Phase B"
-  - label: "Request changes", description: "I want to modify steps, adapters, authentication, parameters, or other details before proceeding"
+ExitPlanMode is the **single approval gate** for this skill. The user reviews the design (which you have already presented above in this turn — the requirements summary table and flow diagram) inside the ExitPlanMode dialog and either approves to proceed, or rejects to go back and revise.
 
-**Do NOT proceed to Phase B until the user confirms the design is correct.**
+**Do NOT use `AskUserQuestion` for design approval here** — that creates a confusing double prompt (the skill's own Approve/Request-changes dialog, then Claude Code's native ExitPlanMode confirmation right after). Use `AskUserQuestion` only for *clarifying* the design before the summary is built (e.g. "Which OAuth flow?", "Should I externalize this parameter?", "Confirm: 3 receivers or 2?"). Once you have enough information to draw the summary table, present it and call ExitPlanMode directly.
 
-> **Phase gate:** After receiving user confirmation (user selects "Approve"), call `ExitPlanMode` to unblock write tools, then output: "Phase A complete — user confirmed design. Exited plan mode. Reading phase-b-pattern-matching.md."
+> **Phase gate:** After ExitPlanMode is approved, output: "Phase A complete — user approved design. Reading phase-b-pattern-matching.md."
 > Then: Read `./references/phases/phase-b-pattern-matching.md` before proceeding to Phase B.
-> If you find yourself generating BPMN XML without having received user confirmation on the requirements summary, stop immediately and go back to Phase A Gate.
+> If the user rejects the plan in ExitPlanMode, stay in plan mode, address their feedback, rebuild the summary, and call ExitPlanMode again.
+> If you find yourself generating BPMN XML without having had ExitPlanMode approved, stop immediately and go back to Phase A Gate.

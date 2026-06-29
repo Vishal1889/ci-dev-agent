@@ -74,6 +74,25 @@ npm uninstall -g ci-dev-agent
 
 Your saved config in `~/.claude/ci-dev-agent/` is preserved — delete it manually for a clean slate.
 
+## Reporting new errors
+
+The `/ci-iflow-developer` skill ships with a curated `known-errors.md` listing the deployment and runtime errors it knows how to fix. If the skill encounters and resolves an error that is **not** already in that file, it surfaces a structured **"New Error Discoveries"** block at the end of the Phase H completion summary, like:
+
+```
+New Error Discoveries (forward to maintainer for next release):
+─────────────────────────────────────────────────────────────
+## Error: "..."
+- **Phase:** E
+- **Root Cause:** ...
+- **Fix:** ...
+- **Grep key:** `...`
+─────────────────────────────────────────────────────────────
+```
+
+**Please forward these blocks** to the maintainer by filing an issue at https://github.com/Vishal1889/ci-dev-agent/issues (suggested labels: `known-errors`, `triage`). They get added to `known-errors.md` in the next release, and **all users** receive the new entry on `npm update` — the skill learns once, everyone benefits.
+
+The package is read-only at runtime (enforced by a `PreToolUse` hook), so the skill does NOT edit its own files. The "report → maintainer → release → npm update" cycle is the only way knowledge propagates across the user base.
+
 ## Tenant destination mapping
 
 Each entry maps a logical environment name to the BTP **destination names** that the MCP server uses for design-time and runtime traffic:
