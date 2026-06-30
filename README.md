@@ -21,53 +21,58 @@ ci-dev-agent setup
 
 ### macOS / Linux
 
-The default npm global prefix on macOS and many Linux setups is root-owned, so `npm install -g` requires elevated privileges. The flow below requests elevation only for the install + ownership transfer, then drops it before running `ci-dev-agent setup` — this avoids accidentally creating root-owned files under your home directory that would block future operations.
+The default npm global prefix on macOS and many Linux setups is root-owned, so `npm install -g` and the subsequent `ci-dev-agent setup` both require elevated privileges. On managed Macs the recommended flow is to activate privileges, run the setup commands under `sudo`, then deactivate. These are one-time operations.
 
-**On SAP-managed Macs (and similar org environments):**
+**On SAP-managed Macs (and similar org-managed environments):**
 
 1. **Activate elevated privileges** via your org's privilege management tool (e.g. SAP's "Request Administrator Privileges" — confirms in a dialog and grants temporary admin access, typically 20 minutes).
 
-2. **Install + take ownership** (both commands while privileges are active):
+2. **Install the package:**
 
    ```bash
    sudo npm install -g ci-dev-agent
-   sudo chown -R "$(whoami)" "$(npm config get prefix)/lib/node_modules" \
-                             "$(npm config get prefix)/bin" \
-                             "$(npm config get prefix)/share"
    ```
 
-   The `chown` transfers the just-installed package directory to your user. After this one-time transfer, every future `npm install -g` and `npm update -g` works without elevation.
-
-3. **Deactivate elevated privileges** (or just let them expire — you don't need them for the remaining steps).
-
-4. **Run setup as your normal user** (no `sudo`):
+3. **Run setup** (still under `sudo`):
 
    ```bash
-   ci-dev-agent setup
+   sudo ci-dev-agent setup
    ```
 
-   This writes to `~/.claude/settings.json` and `~/.claude/ci-dev-agent/` — both under your home directory. **Do NOT run `setup` with `sudo`** or while privileges are active — that would create root-owned files in your home dir, breaking future `ci-dev-agent` commands (you'd get `EACCES` on every non-elevated invocation).
+   The interactive prompts will ask for your MCP server URL, OAuth client ID, OAuth authorize/token URLs, and tenant → destination mappings.
+
+4. **Deactivate elevated privileges** (or let them expire).
 
 5. **Restart Claude Code**, then type `/ci-iflow-developer` to begin.
 
-**Direct-sudo alternative** (if you have direct `sudo` access without a privilege tool, on personal Macs / Linux workstations):
+> **Reconfiguring later:** the same elevated pattern applies. To change MCP credentials, tenant mappings, or to update the package, activate privileges and use `sudo`:
+>
+> ```bash
+> sudo ci-dev-agent configure mcp        # update MCP credentials
+> sudo ci-dev-agent configure tenants    # add/edit tenant mappings
+> sudo npm update -g ci-dev-agent        # pull a newer release
+> sudo ci-dev-agent uninstall            # remove from Claude Code
+> ```
+>
+> Deactivate privileges when done. None of these operations need to be permanent or frequent — they're triggered when you actually need to change something.
+
+**Direct-sudo alternative** (personal Macs / Linux workstations with direct `sudo` access — no privilege management tool):
 
 ```bash
 sudo npm install -g ci-dev-agent
-sudo chown -R "$(whoami)" "$(npm config get prefix)/lib/node_modules" \
-                          "$(npm config get prefix)/bin" \
-                          "$(npm config get prefix)/share"
-ci-dev-agent setup        # no sudo
+sudo ci-dev-agent setup
 ```
 
-**User-owned Node alternative:** if you use a Node version manager (`nvm`, `volta`, `fnm`, `asdf`) or installed Node via Homebrew on Apple Silicon (`/opt/homebrew/`), the npm prefix is already user-owned — skip the privilege steps entirely:
+Same pattern, just without the activate/deactivate wrapper.
+
+**User-owned Node alternative:** if you use a Node version manager (`nvm`, `volta`, `fnm`, `asdf`) or installed Node via Homebrew on Apple Silicon (`/opt/homebrew/`), the npm prefix is already user-owned. Run without `sudo`:
 
 ```bash
 npm install -g ci-dev-agent
 ci-dev-agent setup
 ```
 
-**If you've already done `sudo npm install -g ci-dev-agent`** but skipped the `chown`: the install worked, but you'll hit `EACCES` later. Re-activate privileges briefly and run just the `chown` command above, then carry on.
+This is the simplest flow and avoids needing privileges entirely, but it requires you to have chosen a user-scope Node installer at OS-setup time.
 
 ### What setup does
 
@@ -132,39 +137,45 @@ The `postinstall` hook regenerates the package-side files from the canonical one
 ci-dev-agent version
 ```
 
-Prints the installed version, Node/platform info, and queries the npm registry for the latest published version.
+Prints the installed version, Node/platform info, and queries the npm registry for the latest published version. No elevation needed for the version check itself.
 
 ### Upgrade
+
+The upgrade command follows the same elevation pattern as the initial install.
+
+**On managed Macs (SAP-managed and similar):**
+
+1. Activate elevated privileges
+2. `sudo npm update -g ci-dev-agent`
+3. Deactivate privileges
+4. Restart Claude Code
+
+Postinstall re-registers the hook with the freshly-installed path automatically. Your MCP credentials and tenant config in `~/.claude/ci-dev-agent/` are preserved — you do NOT need to re-enter them.
+
+**On Macs / Linux with direct sudo access:**
+
+```bash
+sudo npm update -g ci-dev-agent
+```
+
+**On user-owned Node installs (nvm, volta, fnm, asdf, Homebrew on Apple Silicon):**
 
 ```bash
 npm update -g ci-dev-agent
 ```
 
-That's it. Postinstall re-registers the hook with the freshly-installed path. Your MCP credentials and tenant config in `~/.claude/ci-dev-agent/` are preserved automatically — you do NOT need to re-enter them. Restart Claude Code after the update completes.
+### Guided upgrade check
 
-If you'd like a guided check first:
+If you'd like to see what's available before running the update:
 
 ```bash
 ci-dev-agent upgrade
 ```
 
-`upgrade` checks the registry; when a newer version exists, it shows the upgrade command. When you're already on the latest, it exits with a "no upgrade needed" message. Use `--force` to force-reinstall the same version (handy if you suspect the local install is corrupted).
+`upgrade` checks the registry; when a newer version exists, it shows the upgrade command. When you're already on the latest, it exits with a "no upgrade needed" message. Use `--force` to force-reinstall the same version (handy if you suspect the local install is corrupted). No elevation needed for the check itself; the printed command still needs `sudo` on managed Macs.
 
 The CLI also prints a small notice at the end of any `ci-dev-agent` command when a newer version is available (cached for 24 hours so the registry isn't hit on every invocation).
 
-### Update after a `sudo` install (macOS / Linux)
-
-If you previously installed with `sudo npm install -g`, the existing files are root-owned and `npm update -g` will fail with `EACCES`. Fix it once, then update normally:
-
-```bash
-# One-time: transfer the npm prefix to your user
-sudo chown -R "$(whoami)" "$(npm config get prefix)/lib/node_modules" \
-                          "$(npm config get prefix)/bin" \
-                          "$(npm config get prefix)/share"
-
-# Then a normal update (no sudo)
-npm update -g ci-dev-agent
-```
 
 After the one-time `chown`, every future `npm update -g ci-dev-agent` runs cleanly without `sudo`.
 

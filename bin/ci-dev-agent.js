@@ -169,9 +169,16 @@ async function checkForUpdate({ force = false, timeoutMs = 1500 } = {}) {
 function printUpdateNotice(latest) {
   if (!latest) return;
   if (compareSemver(CURRENT_VERSION, latest) >= 0) return;
-  // Compose a contained box that's the same width regardless of versions
+  // Compose a contained box that's the same width regardless of versions.
+  // On non-Windows we prefix the update command with `sudo` because the
+  // default npm prefix is root-owned; users on user-owned installs (nvm,
+  // Homebrew Apple Silicon, etc.) just drop the sudo. On Windows the
+  // prefix is per-user, no sudo needed.
+  const cmd = process.platform === 'win32'
+    ? 'npm update -g ci-dev-agent'
+    : 'sudo npm update -g ci-dev-agent';
   const line1 = `  ci-dev-agent ${CURRENT_VERSION} → ${latest} available`;
-  const line2 = `  Run:  npm update -g ci-dev-agent`;
+  const line2 = `  Run:  ${cmd}`;
   const width = Math.max(line1.length, line2.length) + 2;
   const bar = '─'.repeat(width);
   console.log('');
@@ -610,9 +617,18 @@ async function cmdUpgrade({ force = false } = {}) {
   info('~/.claude/settings.json is re-registered by the postinstall step so');
   info('it points at the new install path.');
   console.log('');
-  console.log('Run:');
-  console.log('');
-  console.log('  npm update -g ci-dev-agent');
+  if (process.platform === 'win32') {
+    console.log('Run:');
+    console.log('');
+    console.log('  npm update -g ci-dev-agent');
+  } else {
+    console.log('Run (on managed Macs: activate elevated privileges first, then run under sudo):');
+    console.log('');
+    console.log('  sudo npm update -g ci-dev-agent');
+    console.log('');
+    info('On user-owned Node installs (nvm/volta/fnm/asdf/Homebrew Apple');
+    info('Silicon), drop the sudo: `npm update -g ci-dev-agent`.');
+  }
   console.log('');
   info('After the install finishes, restart Claude Code.');
 }
