@@ -554,6 +554,47 @@ async function cmdVersion() {
   }
 }
 
+async function cmdUpgrade({ force = false } = {}) {
+  console.log(`ci-dev-agent ${CURRENT_VERSION}`);
+  console.log('');
+  console.log('Checking npm registry for newer version…');
+  const latest = await checkForUpdate({ force: true, timeoutMs: 3000 });
+
+  if (!latest) {
+    warn('Could not reach the npm registry. Check your network and try again.');
+    process.exit(1);
+  }
+
+  const cmp = compareSemver(CURRENT_VERSION, latest);
+  if (cmp >= 0 && !force) {
+    ok(`You're on the latest version (${latest}). No upgrade needed.`);
+    info('Force-reinstall the same version with: ci-dev-agent upgrade --force');
+    return;
+  }
+
+  // Show what we're about to do.
+  console.log('');
+  if (cmp < 0) {
+    header(`Upgrade plan — ${CURRENT_VERSION} → ${latest}`);
+  } else {
+    header(`Reinstall plan — ${CURRENT_VERSION} (forced)`);
+  }
+  console.log('');
+  info('The skill files are locked read-only at the OS level, which prevents');
+  info('npm itself from overwriting them in place. The 3-command sequence');
+  info('below unlocks the files, runs npm install, then re-locks them. Your');
+  info('saved MCP credentials and tenant config in ~/.claude/ci-dev-agent/');
+  info('are preserved automatically.');
+  console.log('');
+  console.log('Copy-paste this single line:');
+  console.log('');
+  console.log('  ci-dev-agent uninstall && \\');
+  console.log('    npm install -g ci-dev-agent@latest && \\');
+  console.log('    ci-dev-agent setup');
+  console.log('');
+  info('After the install finishes, restart Claude Code.');
+}
+
 function usage() {
   console.log('ci-dev-agent — SAP Cloud Integration skills for Claude Code');
   console.log('');
@@ -562,6 +603,7 @@ function usage() {
   console.log('  ci-dev-agent configure mcp        Update MCP server credentials');
   console.log('  ci-dev-agent configure tenants    Add/edit tenant destination mappings');
   console.log('  ci-dev-agent version              Show installed version + check for updates');
+  console.log('  ci-dev-agent upgrade [--force]    Show the upgrade command for the latest version');
   console.log('  ci-dev-agent uninstall            Remove from Claude Code settings');
   console.log('  ci-dev-agent help                 Show this help');
 }
@@ -570,10 +612,10 @@ function usage() {
 async function main() {
   const [cmd, sub] = process.argv.slice(2);
 
-  // Commands that handle their own update reporting (`version`) or that run
-  // inside an `npm install` lifecycle hook (`_restore-config`, must stay
-  // silent or it pollutes npm's install output) skip the trailing notice.
-  const skipUpdateNotice = new Set(['version', '--version', '-v', '_restore-config']);
+  // Commands that handle their own update reporting (`version`, `upgrade`) or
+  // that run inside an `npm install` lifecycle hook (`_restore-config`, must
+  // stay silent or it pollutes npm's install output) skip the trailing notice.
+  const skipUpdateNotice = new Set(['version', '--version', '-v', 'upgrade', '_restore-config']);
 
   switch (cmd) {
     case 'setup':
@@ -589,6 +631,9 @@ async function main() {
     case '--version':
     case '-v':
       await cmdVersion();
+      break;
+    case 'upgrade':
+      await cmdUpgrade({ force: process.argv.includes('--force') });
       break;
     case '_restore-config':
       cmdRestoreConfig();

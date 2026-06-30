@@ -108,17 +108,37 @@ The `postinstall` hook regenerates the package-side files from the canonical one
 
 ## Update
 
-### Normal update (user-owned npm prefix)
+### Check what's installed and what's available
 
 ```bash
-npm update -g ci-dev-agent
+ci-dev-agent version
 ```
 
-The `postinstall` hook (runs automatically inside `npm update`) regenerates `config/mcp.json` and `config/tenant-destination-config.json` from your canonical copies in `~/.claude/ci-dev-agent/` and re-locks the new skill files read-only. **No further action needed.**
+Prints the installed version, Node/platform info, and queries the npm registry for the latest published version.
+
+### Upgrade
+
+```bash
+ci-dev-agent upgrade
+```
+
+`upgrade` is informational — it checks the registry, and if a newer version exists, prints the single-line command to run:
+
+```bash
+ci-dev-agent uninstall && \
+  npm install -g ci-dev-agent@latest && \
+  ci-dev-agent setup
+```
+
+Why three commands instead of plain `npm update -g ci-dev-agent`? The skill files are locked read-only at the OS level (so the Claude Code skill editor cannot silently modify them — see [Working directory](#working-directory)). The lock blocks npm itself from overwriting the files. `ci-dev-agent uninstall` unlocks them, `npm install` writes the new version, `ci-dev-agent setup` re-locks them. Your saved MCP credentials and tenant config in `~/.claude/ci-dev-agent/` are preserved automatically — you do NOT need to re-enter them.
+
+If you're already on the latest version, `ci-dev-agent upgrade` prints `You're on the latest version (X.Y.Z). No upgrade needed.` and exits. Use `ci-dev-agent upgrade --force` to force-reinstall the same version (useful if you suspect the local install is corrupted).
+
+The CLI also prints a small notice at the end of any `ci-dev-agent` command when a newer version is available (cached for 24 hours so the registry isn't hit on every invocation).
 
 ### Update after a `sudo` install (macOS / Linux)
 
-If you previously installed with `sudo npm install -g`, the existing skill files are root-owned and `npm update` will fail with `EACCES` (or worse, silently leave a half-updated state). Fix it once, then update normally:
+If you previously installed with `sudo npm install -g`, the existing files are root-owned and the upgrade chain above will fail with `EACCES`. Fix it once, then upgrade normally:
 
 ```bash
 # One-time: transfer the npm prefix to your user
@@ -126,13 +146,11 @@ sudo chown -R "$(whoami)" "$(npm config get prefix)/lib/node_modules" \
                           "$(npm config get prefix)/bin" \
                           "$(npm config get prefix)/share"
 
-# Then a normal update (no sudo)
-ci-dev-agent uninstall            # unlocks the locked skill files
-npm update -g ci-dev-agent        # pulls new version, postinstall re-locks
-ci-dev-agent setup                # re-registers with Claude Code
+# Then a normal upgrade (no sudo)
+ci-dev-agent upgrade
 ```
 
-After the one-time `chown`, every future `npm update -g ci-dev-agent` runs cleanly with just `npm update -g ci-dev-agent` — no `uninstall`/`setup` dance needed.
+After the one-time `chown`, every future `ci-dev-agent upgrade` runs cleanly without `sudo`.
 
 ## Uninstall
 
