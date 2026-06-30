@@ -5,6 +5,5 @@
   "author": {
     "name": "Vishal Jain"
   },
-  "mcpServers": "./config/mcp.json",
-  "hooks": "./hooks/hooks.json"
+  "mcpServers": "./config/mcp.json"
 }

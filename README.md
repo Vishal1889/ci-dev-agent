@@ -21,7 +21,7 @@ ci-dev-agent setup
 
 ### macOS / Linux
 
-The default npm global prefix on macOS and many Linux setups is root-owned, so a plain `npm install -g` fails with `EACCES`. **Do not run `npm install -g` with `sudo`** — root-owned files break later `ci-dev-agent setup` (which needs to lock skill files read-only as your user). Instead, transfer ownership of the npm prefix to your user once, then install normally:
+The default npm global prefix on macOS and many Linux setups is root-owned, so a plain `npm install -g` fails with `EACCES`. **Avoid `sudo npm install -g`** if you can — root-owned files later complicate `npm update -g`. Take ownership of the prefix once:
 
 ```bash
 # One-time fix: take ownership of npm's global prefix
@@ -29,7 +29,7 @@ sudo chown -R "$(whoami)" "$(npm config get prefix)/lib/node_modules" \
                           "$(npm config get prefix)/bin" \
                           "$(npm config get prefix)/share"
 
-# Then install + run setup with your normal user (no sudo)
+# Then install + run setup as your normal user (no sudo)
 npm install -g ci-dev-agent
 ci-dev-agent setup
 ```
@@ -38,28 +38,16 @@ After the one-time `chown`, every future `npm install -g <anything>` works witho
 
 **Alternative:** if you use a Node version manager (`nvm`, `volta`, `fnm`, `asdf`) or installed Node via Homebrew on Apple Silicon (`/opt/homebrew/`), the npm prefix is already user-owned — skip the `chown` step and just run `npm install -g ci-dev-agent && ci-dev-agent setup`.
 
+**If you've already done `sudo npm install -g ci-dev-agent`:** the elevated install works, but `ci-dev-agent setup` should still be run as your regular user — it writes to `~/.claude/settings.json` (yours, not root's). If anything looks off, run the `chown` command above and re-run `ci-dev-agent setup`.
+
 ### What setup does
 
 1. Register the marketplace and enable the plugin in `~/.claude/settings.json`
-2. Prompt for your MCP server URL + OAuth credentials and write `config/mcp.json`
-3. Prompt for tenant → destination mappings and write `config/tenant-destination-config.json`
-4. Lock the skill files read-only at the OS level (cross-platform: NTFS `READONLY` attribute on Windows, `chmod 0o444` on macOS/Linux) so the Claude Code skill editor cannot silently modify your installed plugin files
+2. Register a `PreToolUse` hook in `~/.claude/settings.json` that blocks `Edit`, `Write`, and `NotebookEdit` calls targeting files inside the installed plugin tree — including the Claude Code plugin cache copy. This prevents both the agent (via Edit tool) and the user (via the Claude Code skill editor UI) from silently mutating installed plugin files.
+3. Prompt for your MCP server URL + OAuth credentials and write `config/mcp.json`
+4. Prompt for tenant → destination mappings and write `config/tenant-destination-config.json`
 
 Restart Claude Code, then type `/ci-iflow-developer` to begin.
-
-### Recovering from a previous `sudo npm install -g`
-
-If you previously installed with `sudo npm install -g ci-dev-agent`, the skill files are root-owned and `ci-dev-agent setup` will warn that it could not chmod them. Fix it once with the same `chown` command as above, then re-run setup:
-
-```bash
-sudo chown -R "$(whoami)" "$(npm config get prefix)/lib/node_modules" \
-                          "$(npm config get prefix)/bin" \
-                          "$(npm config get prefix)/share"
-ci-dev-agent setup
-```
-
-Subsequent `npm update -g ci-dev-agent` will then work without `sudo` and the read-only lock will apply correctly.
-
 ## Skills
 
 | Skill | Use it for |
@@ -119,26 +107,24 @@ Prints the installed version, Node/platform info, and queries the npm registry f
 ### Upgrade
 
 ```bash
+npm update -g ci-dev-agent
+```
+
+That's it. Postinstall re-registers the hook with the freshly-installed path. Your MCP credentials and tenant config in `~/.claude/ci-dev-agent/` are preserved automatically — you do NOT need to re-enter them. Restart Claude Code after the update completes.
+
+If you'd like a guided check first:
+
+```bash
 ci-dev-agent upgrade
 ```
 
-`upgrade` is informational — it checks the registry, and if a newer version exists, prints the single-line command to run:
-
-```bash
-ci-dev-agent uninstall && \
-  npm install -g ci-dev-agent@latest && \
-  ci-dev-agent setup
-```
-
-Why three commands instead of plain `npm update -g ci-dev-agent`? The skill files are locked read-only at the OS level (so the Claude Code skill editor cannot silently modify them — see [Working directory](#working-directory)). The lock blocks npm itself from overwriting the files. `ci-dev-agent uninstall` unlocks them, `npm install` writes the new version, `ci-dev-agent setup` re-locks them. Your saved MCP credentials and tenant config in `~/.claude/ci-dev-agent/` are preserved automatically — you do NOT need to re-enter them.
-
-If you're already on the latest version, `ci-dev-agent upgrade` prints `You're on the latest version (X.Y.Z). No upgrade needed.` and exits. Use `ci-dev-agent upgrade --force` to force-reinstall the same version (useful if you suspect the local install is corrupted).
+`upgrade` checks the registry; when a newer version exists, it shows the upgrade command. When you're already on the latest, it exits with a "no upgrade needed" message. Use `--force` to force-reinstall the same version (handy if you suspect the local install is corrupted).
 
 The CLI also prints a small notice at the end of any `ci-dev-agent` command when a newer version is available (cached for 24 hours so the registry isn't hit on every invocation).
 
 ### Update after a `sudo` install (macOS / Linux)
 
-If you previously installed with `sudo npm install -g`, the existing files are root-owned and the upgrade chain above will fail with `EACCES`. Fix it once, then upgrade normally:
+If you previously installed with `sudo npm install -g`, the existing files are root-owned and `npm update -g` will fail with `EACCES`. Fix it once, then update normally:
 
 ```bash
 # One-time: transfer the npm prefix to your user
@@ -146,11 +132,11 @@ sudo chown -R "$(whoami)" "$(npm config get prefix)/lib/node_modules" \
                           "$(npm config get prefix)/bin" \
                           "$(npm config get prefix)/share"
 
-# Then a normal upgrade (no sudo)
-ci-dev-agent upgrade
+# Then a normal update (no sudo)
+npm update -g ci-dev-agent
 ```
 
-After the one-time `chown`, every future `ci-dev-agent upgrade` runs cleanly without `sudo`.
+After the one-time `chown`, every future `npm update -g ci-dev-agent` runs cleanly without `sudo`.
 
 ## Uninstall
 

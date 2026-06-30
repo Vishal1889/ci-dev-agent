@@ -33,6 +33,24 @@ run_case() {
   fi
 }
 
+# Like run_case but does NOT set CLAUDE_PLUGIN_ROOT. Simulates user-scope hook
+# registration where the plugin harness doesn't inject the env var — the
+# hook must self-derive the plugin root from __dirname.
+run_case_no_env() {
+  local name="$1"
+  local expected="$2"
+  local input="$3"
+  local actual
+  actual=$(echo "$input" | env -u CLAUDE_PLUGIN_ROOT node "$HOOK" >/dev/null 2>&1; echo $?)
+  if [ "$actual" = "$expected" ]; then
+    echo "  PASS  $name"
+    PASS=$((PASS+1))
+  else
+    echo "  FAIL  $name  (expected exit $expected, got $actual)"
+    FAIL=$((FAIL+1))
+  fi
+}
+
 echo
 echo "Testing hooks/deny-self-edit.js"
 echo "Plugin root: $PLUGIN_ROOT"
@@ -88,6 +106,45 @@ run_case "allow no tool_input"            0 '{}'
 run_case "allow malformed JSON"           0 'not json at all'
 run_case "allow NotebookEdit on user nb"  0 '{"tool_input":{"notebook_path":"c:/Users/foo/notebook.ipynb"}}'
 run_case "deny  NotebookEdit on plugin"   2 "{\"tool_input\":{\"notebook_path\":\"$PLUGIN_ROOT/skills/ci-iflow-developer/SKILL.md\"}}"
+
+# ── User-scope hook (no CLAUDE_PLUGIN_ROOT env var) ─────────────────────────
+# v2.6.0 change: the hook is now registered in ~/.claude/settings.json (user-
+# scope) on macOS because plugin-scope hooks don't load there. User-scope
+# hook commands don't get CLAUDE_PLUGIN_ROOT injected — the hook self-derives
+# from __dirname. Verify the deny still fires.
+run_case_no_env "deny  SKILL.md (no env)"     2 "{\"tool_input\":{\"file_path\":\"$PLUGIN_ROOT/skills/ci-iflow-developer/SKILL.md\"}}"
+run_case_no_env "allow user project (no env)" 0 '{"tool_input":{"file_path":"c:/Users/foo/myproject/iflow.iflw"}}'
+
+# ── Cache path (the macOS skill editor target) ──────────────────────────────
+# v2.6.0 change: the hook now also denies writes to the Claude Code plugin
+# cache at ~/.claude/plugins/cache/ci-plugins/ci-dev-agent/<version>/. This
+# is where the skill editor on macOS reads and writes — without explicit
+# coverage, edits to the cache copy would slip past the deny. We use Node to
+# build the platform-correct home-derived path.
+CACHE_TEST_JSON="$(node -e '
+  const path = require("path"); const os = require("os");
+  const f = path.join(os.homedir(), ".claude", "plugins", "cache",
+                      "ci-plugins", "ci-dev-agent", "2.5.1",
+                      "skills", "ci-iflow-developer", "SKILL.md");
+  process.stdout.write(JSON.stringify({tool_input: {file_path: f}}));
+')"
+actual=$(echo "$CACHE_TEST_JSON" | CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" node "$HOOK" >/dev/null 2>&1; echo $?)
+if [ "$actual" = "2" ]; then
+  echo "  PASS  deny  cache path (skill editor target on macOS)"
+  PASS=$((PASS+1))
+else
+  echo "  FAIL  deny  cache path (expected exit 2, got $actual)"
+  FAIL=$((FAIL+1))
+fi
+# Same test without the env var (user-scope mode):
+actual=$(echo "$CACHE_TEST_JSON" | env -u CLAUDE_PLUGIN_ROOT node "$HOOK" >/dev/null 2>&1; echo $?)
+if [ "$actual" = "2" ]; then
+  echo "  PASS  deny  cache path (no env)"
+  PASS=$((PASS+1))
+else
+  echo "  FAIL  deny  cache path (no env) (expected exit 2, got $actual)"
+  FAIL=$((FAIL+1))
+fi
 
 # ── Cross-platform: case-folding (macOS APFS, Windows NTFS) ─────────────────
 # Convert the plugin root to UPPER and lower case and confirm both are caught.

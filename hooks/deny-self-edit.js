@@ -124,21 +124,61 @@ function normalize(p) {
 }
 
 const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT;
-if (!pluginRoot) {
-  // No plugin root means we're not running under Claude Code's plugin
-  // harness — we have nothing to compare against. Allow.
+
+// ── Protected roots ─────────────────────────────────────────────────────────
+// We deny writes that fall inside ANY of these directories. The multiple
+// roots are necessary because:
+//   1. Plugin-scope hooks (registered via plugin.json) inject CLAUDE_PLUGIN_ROOT
+//      and that's the npm install path.
+//   2. User-scope hooks (registered via ~/.claude/settings.json by `ci-dev-agent
+//      setup`) do NOT inject CLAUDE_PLUGIN_ROOT — we fall back to __dirname,
+//      which resolves to the same npm install path.
+//   3. The Claude Code skill editor on macOS reads and writes from
+//      `~/.claude/plugins/cache/ci-plugins/ci-dev-agent/<version>/`, NOT the
+//      npm install path. Without explicit coverage of the cache root, the
+//      editor's writes to the cache copy would slip through the rule-1 deny.
+// All failure paths fail open (return [] of roots) so we never block writes
+// based on partial information.
+function getProtectedRoots() {
+  const roots = new Set();
+
+  // 1. Plugin-scope harness injection (if set)
+  if (pluginRoot) roots.add(normalize(pluginRoot));
+
+  // 2. Self-derived from this script's location. Works for user-scope hooks
+  //    where CLAUDE_PLUGIN_ROOT is unset. __dirname is .../<pkg>/hooks/,
+  //    so the package root is one level up.
+  try { roots.add(normalize(path.resolve(__dirname, '..'))); } catch { /* ignore */ }
+
+  // 3. Claude Code plugin cache for our specific marketplace/plugin.
+  //    Path shape: <homedir>/.claude/plugins/cache/ci-plugins/ci-dev-agent/
+  //    (matches the marketplace name 'ci-plugins' + plugin name 'ci-dev-agent'
+  //    from .claude-plugin/plugin.json and marketplace.json). Versions sit
+  //    under here as subdirs, so denying the whole parent covers them all.
+  try {
+    const os = require('os');
+    roots.add(normalize(path.join(os.homedir(), '.claude', 'plugins', 'cache', 'ci-plugins', 'ci-dev-agent')));
+  } catch { /* ignore */ }
+
+  return [...roots];
+}
+
+const protectedRoots = getProtectedRoots();
+if (protectedRoots.length === 0) {
+  // No way to know what's protected. Fail open.
   process.exit(0);
 }
 
 const normalizedTarget = normalize(target);
-const normalizedRoot = normalize(pluginRoot);
 
-// ── Rule 1: outside the plugin → allow ──────────────────────────────────────
+// ── Rule 1: outside every protected root → allow ────────────────────────────
 // User's project files (including `<cwd>/.ci-dev-agent/runs/<artifact-id>/`
 // where the skills stage generated artifacts), system temp, anywhere else —
 // not our concern.
-if (!normalizedTarget.startsWith(normalizedRoot + '/') &&
-    normalizedTarget !== normalizedRoot) {
+const insideProtected = protectedRoots.some(root =>
+  normalizedTarget === root || normalizedTarget.startsWith(root + '/')
+);
+if (!insideProtected) {
   process.exit(0);
 }
 
@@ -157,7 +197,8 @@ process.stderr.write(
   '╚════════════════════════════════════════════════════════════════════════╝\n' +
   '\n' +
   `Blocked target: ${target}\n` +
-  `Plugin root:    ${pluginRoot}\n` +
+  `Protected roots:\n` +
+  protectedRoots.map(r => `  - ${r}\n`).join('') +
   '\n' +
   'The ci-dev-agent plugin is installed via npm and its files are immutable\n' +
   'at runtime. Generated artifacts (.iflw, .mmap, scripts, parameters.prop,\n' +

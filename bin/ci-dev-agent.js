@@ -72,56 +72,6 @@ function rmrf(p) {
   try { fs.rmSync(p, { recursive: true, force: true }); } catch { /* ignore */ }
 }
 
-// ── Skill file locking (cross-platform via fs.chmodSync) ────────────────────
-// The Claude Code skill editor bypasses the PreToolUse hook and writes
-// directly to disk. Making skill files read-only at the OS level closes
-// that path on every platform:
-//   - macOS / Linux: chmod 0o444 → write returns EACCES
-//   - Windows:       chmod 0o444 → sets FILE_ATTRIBUTE_READONLY → write returns EPERM
-// We lock in setup and _restore-config (postinstall), unlock in uninstall
-// so npm can overwrite on the next install.
-function walkFiles(dirPath, callback) {
-  let entries;
-  try { entries = fs.readdirSync(dirPath, { withFileTypes: true }); }
-  catch { return; }
-  for (const entry of entries) {
-    const full = path.join(dirPath, entry.name);
-    if (entry.isDirectory()) walkFiles(full, callback);
-    else if (entry.isFile()) callback(full);
-  }
-}
-
-function chmodSafe(file, mode) {
-  try { fs.chmodSync(file, mode); } catch { /* best-effort */ }
-}
-
-function lockSkillFiles() {
-  const skillsDir = path.join(PKG_ROOT, 'skills');
-  const manifestDir = path.join(PKG_ROOT, '.claude-plugin');
-  let locked = 0;
-  let failed = 0;
-  const tryLock = (f) => {
-    try { fs.chmodSync(f, 0o444); locked++; }
-    catch { failed++; }
-  };
-  walkFiles(skillsDir, tryLock);
-  walkFiles(manifestDir, tryLock);
-  if (failed > 0 && process.platform !== 'win32') {
-    warn(`Could not chmod ${failed} file(s) — likely root-owned (installed with sudo).`);
-    warn('Fix once with:');
-    warn(`  sudo chown -R "$(whoami)" "${PKG_ROOT}"`);
-    warn('Then re-run: ci-dev-agent setup');
-  }
-  return locked;
-}
-
-function unlockSkillFiles() {
-  const skillsDir = path.join(PKG_ROOT, 'skills');
-  const manifestDir = path.join(PKG_ROOT, '.claude-plugin');
-  walkFiles(skillsDir, (f) => chmodSafe(f, 0o644));
-  walkFiles(manifestDir, (f) => chmodSafe(f, 0o644));
-}
-
 function prompt(rl, question, defaultValue) {
   const suffix = defaultValue ? ` [${defaultValue}]: ` : ': ';
   return new Promise(resolve => {
@@ -293,6 +243,77 @@ function unregisterMarketplace() {
   saveGlobalSettings(settings);
 }
 
+// ── Hook registration (user-scope, not plugin-scope) ─────────────────────────
+// Plugin-scope hooks declared via plugin.json work on Windows but fail to
+// load on macOS (verified empirically). User-scope hooks in
+// ~/.claude/settings.json work everywhere, so that's where we register the
+// deny-self-edit hook. The hook script self-detects the plugin root from
+// `__dirname`, so we don't need to set CLAUDE_PLUGIN_ROOT inline.
+const HOOK_SCRIPT_REL = path.join('hooks', 'deny-self-edit.js');
+const HOOK_MATCHER = 'Edit|Write|NotebookEdit';
+
+function buildHookCommand() {
+  // node + absolute path to our hook script. JSON.stringify gives us a quoted
+  // form that handles paths with spaces. Works on Windows, macOS, and Linux.
+  const scriptAbs = path.join(PKG_ROOT, HOOK_SCRIPT_REL);
+  return `node ${JSON.stringify(scriptAbs)}`;
+}
+
+function isOurHook(hookEntry) {
+  // Match by the unique script filename so we find our entries regardless
+  // of which prefix npm installed under, what version, or whether the user
+  // hand-edited the command (e.g. added an env-var prefix).
+  return typeof hookEntry?.command === 'string'
+    && hookEntry.command.includes('deny-self-edit.js');
+}
+
+function registerHook() {
+  const settings = loadGlobalSettings();
+
+  if (!settings.hooks) settings.hooks = {};
+  if (!Array.isArray(settings.hooks.PreToolUse)) settings.hooks.PreToolUse = [];
+
+  // Remove any existing deny-self-edit entries first — they may point at a
+  // stale path (different npm prefix, older plugin version, manual setup).
+  // Filtering at both the matcher level (inner `hooks` array) and the entry
+  // level (outer PreToolUse array) cleans up entries left empty after the
+  // filter.
+  settings.hooks.PreToolUse = settings.hooks.PreToolUse
+    .map(entry => ({
+      ...entry,
+      hooks: Array.isArray(entry.hooks) ? entry.hooks.filter(h => !isOurHook(h)) : entry.hooks
+    }))
+    .filter(entry => !Array.isArray(entry.hooks) || entry.hooks.length > 0);
+
+  // Add the fresh entry pointing at this install's hook script.
+  settings.hooks.PreToolUse.push({
+    matcher: HOOK_MATCHER,
+    hooks: [{ type: 'command', command: buildHookCommand() }]
+  });
+
+  saveGlobalSettings(settings);
+}
+
+function unregisterHook() {
+  if (!fileExists(CLAUDE_SETTINGS)) return;
+  const settings = readJson(CLAUDE_SETTINGS, {});
+  if (!settings.hooks || !Array.isArray(settings.hooks.PreToolUse)) return;
+
+  settings.hooks.PreToolUse = settings.hooks.PreToolUse
+    .map(entry => ({
+      ...entry,
+      hooks: Array.isArray(entry.hooks) ? entry.hooks.filter(h => !isOurHook(h)) : entry.hooks
+    }))
+    .filter(entry => !Array.isArray(entry.hooks) || entry.hooks.length > 0);
+
+  // If PreToolUse is now empty, remove the key entirely (and hooks if it has
+  // no other events) so settings.json stays tidy.
+  if (settings.hooks.PreToolUse.length === 0) delete settings.hooks.PreToolUse;
+  if (Object.keys(settings.hooks).length === 0) delete settings.hooks;
+
+  saveGlobalSettings(settings);
+}
+
 // ── MCP config ───────────────────────────────────────────────────────────────
 function buildMcpJson(creds) {
   // Read template (or fall back to a minimal default) and merge user creds.
@@ -432,8 +453,8 @@ async function cmdSetup() {
   rmrf(PLUGIN_CACHE_DIR);
   ok('Plugin cache cleared.');
 
-  lockSkillFiles();
-  ok('Skill files locked read-only (skill editor cannot overwrite them).');
+  registerHook();
+  ok('PreToolUse deny-self-edit hook registered (blocks edits to plugin files).');
 
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   try {
@@ -497,10 +518,10 @@ async function cmdConfigure(target) {
 
 function cmdUninstall() {
   console.log('ci-dev-agent uninstaller');
-  unlockSkillFiles();  // restore write permission so npm can overwrite on next install
+  unregisterHook();
   unregisterMarketplace();
   rmrf(PLUGIN_CACHE_DIR);
-  ok('Marketplace + plugin registration removed from ~/.claude/settings.json.');
+  ok('Marketplace + plugin + hook registration removed from ~/.claude/settings.json.');
   console.log('');
   info('Your saved config in ~/.claude/ci-dev-agent/ was preserved.');
   info('Delete it manually if you want a clean slate:');
@@ -522,10 +543,14 @@ function cmdRestoreConfig() {
       const tenants = readJson(USER_TENANT_CONFIG);
       writeJsonAtomic(TENANT_CONFIG, tenants);
     }
-    // Re-lock skill files after every npm install/update.
-    // npm writes the new files first (world-writable), then postinstall runs.
-    // Without this lock, the skill editor could edit the freshly-written files.
-    lockSkillFiles();
+    // Re-register the deny-self-edit hook with the freshly-installed path.
+    // npm install/update writes new files to a new path (especially when the
+    // version is part of the cache layout). Without this, the hook command
+    // in settings.json would point at the previous version's hook script.
+    // Skipped silently if ~/.claude/settings.json doesn't exist yet (the
+    // user hasn't run `ci-dev-agent setup` yet — they will, and setup also
+    // registers the hook).
+    if (fileExists(CLAUDE_SETTINGS)) registerHook();
   } catch (err) {
     // Never fail an npm install on this.
     if (process.env.CI_DEV_AGENT_DEBUG) {
@@ -580,17 +605,14 @@ async function cmdUpgrade({ force = false } = {}) {
     header(`Reinstall plan — ${CURRENT_VERSION} (forced)`);
   }
   console.log('');
-  info('The skill files are locked read-only at the OS level, which prevents');
-  info('npm itself from overwriting them in place. The 3-command sequence');
-  info('below unlocks the files, runs npm install, then re-locks them. Your');
-  info('saved MCP credentials and tenant config in ~/.claude/ci-dev-agent/');
-  info('are preserved automatically.');
+  info('Your MCP credentials and tenant config in ~/.claude/ci-dev-agent/');
+  info('are preserved automatically. The PreToolUse deny-self-edit hook in');
+  info('~/.claude/settings.json is re-registered by the postinstall step so');
+  info('it points at the new install path.');
   console.log('');
-  console.log('Copy-paste this single line:');
+  console.log('Run:');
   console.log('');
-  console.log('  ci-dev-agent uninstall && \\');
-  console.log('    npm install -g ci-dev-agent@latest && \\');
-  console.log('    ci-dev-agent setup');
+  console.log('  npm update -g ci-dev-agent');
   console.log('');
   info('After the install finishes, restart Claude Code.');
 }
