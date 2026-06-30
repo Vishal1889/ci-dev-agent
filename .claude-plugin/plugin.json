@@ -1,7 +1,7 @@
 {
   "name": "ci-dev-agent",
   "description": "Skills for SAP Integration Suite - Cloud Integration development. Includes skills for Integration Flows (ci-iflow-developer), standalone Message Mappings (ci-sa-mm-developer), and standalone Script Collections (ci-sa-sc-developer).",
-  "version": "2.5.1",
+  "version": "2.6.0",
   "author": {
     "name": "Vishal Jain"
   },
