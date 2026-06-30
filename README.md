@@ -21,24 +21,53 @@ ci-dev-agent setup
 
 ### macOS / Linux
 
-The default npm global prefix on macOS and many Linux setups is root-owned, so a plain `npm install -g` fails with `EACCES`. **Avoid `sudo npm install -g`** if you can — root-owned files later complicate `npm update -g`. Take ownership of the prefix once:
+The default npm global prefix on macOS and many Linux setups is root-owned, so `npm install -g` requires elevated privileges. The flow below requests elevation only for the install + ownership transfer, then drops it before running `ci-dev-agent setup` — this avoids accidentally creating root-owned files under your home directory that would block future operations.
+
+**On SAP-managed Macs (and similar org environments):**
+
+1. **Activate elevated privileges** via your org's privilege management tool (e.g. SAP's "Request Administrator Privileges" — confirms in a dialog and grants temporary admin access, typically 20 minutes).
+
+2. **Install + take ownership** (both commands while privileges are active):
+
+   ```bash
+   sudo npm install -g ci-dev-agent
+   sudo chown -R "$(whoami)" "$(npm config get prefix)/lib/node_modules" \
+                             "$(npm config get prefix)/bin" \
+                             "$(npm config get prefix)/share"
+   ```
+
+   The `chown` transfers the just-installed package directory to your user. After this one-time transfer, every future `npm install -g` and `npm update -g` works without elevation.
+
+3. **Deactivate elevated privileges** (or just let them expire — you don't need them for the remaining steps).
+
+4. **Run setup as your normal user** (no `sudo`):
+
+   ```bash
+   ci-dev-agent setup
+   ```
+
+   This writes to `~/.claude/settings.json` and `~/.claude/ci-dev-agent/` — both under your home directory. **Do NOT run `setup` with `sudo`** or while privileges are active — that would create root-owned files in your home dir, breaking future `ci-dev-agent` commands (you'd get `EACCES` on every non-elevated invocation).
+
+5. **Restart Claude Code**, then type `/ci-iflow-developer` to begin.
+
+**Direct-sudo alternative** (if you have direct `sudo` access without a privilege tool, on personal Macs / Linux workstations):
 
 ```bash
-# One-time fix: take ownership of npm's global prefix
+sudo npm install -g ci-dev-agent
 sudo chown -R "$(whoami)" "$(npm config get prefix)/lib/node_modules" \
                           "$(npm config get prefix)/bin" \
                           "$(npm config get prefix)/share"
+ci-dev-agent setup        # no sudo
+```
 
-# Then install + run setup as your normal user (no sudo)
+**User-owned Node alternative:** if you use a Node version manager (`nvm`, `volta`, `fnm`, `asdf`) or installed Node via Homebrew on Apple Silicon (`/opt/homebrew/`), the npm prefix is already user-owned — skip the privilege steps entirely:
+
+```bash
 npm install -g ci-dev-agent
 ci-dev-agent setup
 ```
 
-After the one-time `chown`, every future `npm install -g <anything>` works without `sudo`.
-
-**Alternative:** if you use a Node version manager (`nvm`, `volta`, `fnm`, `asdf`) or installed Node via Homebrew on Apple Silicon (`/opt/homebrew/`), the npm prefix is already user-owned — skip the `chown` step and just run `npm install -g ci-dev-agent && ci-dev-agent setup`.
-
-**If you've already done `sudo npm install -g ci-dev-agent`:** the elevated install works, but `ci-dev-agent setup` should still be run as your regular user — it writes to `~/.claude/settings.json` (yours, not root's). If anything looks off, run the `chown` command above and re-run `ci-dev-agent setup`.
+**If you've already done `sudo npm install -g ci-dev-agent`** but skipped the `chown`: the install worked, but you'll hit `EACCES` later. Re-activate privileges briefly and run just the `chown` command above, then carry on.
 
 ### What setup does
 
@@ -48,6 +77,7 @@ After the one-time `chown`, every future `npm install -g <anything>` works witho
 4. Prompt for tenant → destination mappings and write `config/tenant-destination-config.json`
 
 Restart Claude Code, then type `/ci-iflow-developer` to begin.
+
 ## Skills
 
 | Skill | Use it for |
