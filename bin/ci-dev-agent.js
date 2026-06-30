@@ -159,6 +159,86 @@ function warn(text) {
   console.log('  ! ' + text);
 }
 
+// ── Update check (zero-dep, 24h cache) ───────────────────────────────────────
+// Once a day, hit the npm registry for the latest published version. Cache the
+// result in `~/.claude/ci-dev-agent/.update-check.json` so we don't pound the
+// registry on every CLI invocation. All failure paths fail silently — the user
+// is running our CLI for a reason, we don't want to derail them with a network
+// hiccup notice.
+const CURRENT_VERSION = require('../package.json').version;
+const UPDATE_CHECK_CACHE = path.join(USER_STATE_DIR, '.update-check.json');
+const UPDATE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
+const NPM_REGISTRY_URL = 'https://registry.npmjs.org/ci-dev-agent/latest';
+
+function compareSemver(a, b) {
+  // Returns -1 if a<b, 0 if a==b, 1 if a>b. Strips pre-release suffix.
+  const parse = (v) => String(v || '0').split('-')[0].split('.').map(n => parseInt(n, 10) || 0);
+  const [a1, a2, a3] = parse(a);
+  const [b1, b2, b3] = parse(b);
+  if (a1 !== b1) return a1 < b1 ? -1 : 1;
+  if (a2 !== b2) return a2 < b2 ? -1 : 1;
+  if (a3 !== b3) return a3 < b3 ? -1 : 1;
+  return 0;
+}
+
+function fetchLatestVersion(timeoutMs) {
+  return new Promise((resolve) => {
+    let settled = false;
+    const done = (v) => { if (!settled) { settled = true; resolve(v); } };
+    try {
+      const https = require('https');
+      const req = https.get(NPM_REGISTRY_URL, { timeout: timeoutMs }, (res) => {
+        if (res.statusCode !== 200) { res.resume(); done(null); return; }
+        let data = '';
+        res.on('data', (chunk) => { data += chunk; });
+        res.on('end', () => {
+          try { done(JSON.parse(data).version || null); }
+          catch { done(null); }
+        });
+      });
+      req.on('error', () => done(null));
+      req.on('timeout', () => { req.destroy(); done(null); });
+    } catch { done(null); }
+  });
+}
+
+async function checkForUpdate({ force = false, timeoutMs = 1500 } = {}) {
+  let cache = readJson(UPDATE_CHECK_CACHE, { lastCheck: 0, latest: null });
+  const stale = Date.now() - (cache.lastCheck || 0) > UPDATE_CHECK_INTERVAL_MS;
+  if (force || stale) {
+    const latest = await fetchLatestVersion(timeoutMs);
+    if (latest) {
+      cache = { lastCheck: Date.now(), latest };
+      try { ensureDir(USER_STATE_DIR); writeJsonAtomic(UPDATE_CHECK_CACHE, cache); }
+      catch { /* cache write failure is non-fatal */ }
+    }
+  }
+  return cache.latest;
+}
+
+function printUpdateNotice(latest) {
+  if (!latest) return;
+  if (compareSemver(CURRENT_VERSION, latest) >= 0) return;
+  // Compose a contained box that's the same width regardless of versions
+  const line1 = `  ci-dev-agent ${CURRENT_VERSION} → ${latest} available`;
+  const line2 = `  Run:  npm update -g ci-dev-agent`;
+  const width = Math.max(line1.length, line2.length) + 2;
+  const bar = '─'.repeat(width);
+  console.log('');
+  console.log('┌' + bar + '┐');
+  console.log('│' + line1.padEnd(width) + '│');
+  console.log('│' + line2.padEnd(width) + '│');
+  console.log('└' + bar + '┘');
+}
+
+// Convenience: run the (cached) check + print notice. Never throws.
+async function maybeNotifyUpdate() {
+  try {
+    const latest = await checkForUpdate();
+    printUpdateNotice(latest);
+  } catch { /* silent */ }
+}
+
 // ── Settings.json management ─────────────────────────────────────────────────
 function loadGlobalSettings() {
   ensureDir(CLAUDE_HOME);
@@ -454,6 +534,26 @@ function cmdRestoreConfig() {
   }
 }
 
+async function cmdVersion() {
+  console.log(`ci-dev-agent ${CURRENT_VERSION}`);
+  console.log(`Node ${process.version}  (${process.platform}-${process.arch})`);
+  console.log('');
+  console.log('Checking npm registry for newer version…');
+  // Force a fresh check (bypass the 24h cache) so the version command always
+  // gives an authoritative answer.
+  const latest = await checkForUpdate({ force: true, timeoutMs: 3000 });
+  if (!latest) {
+    console.log('  (no response from registry — try again later)');
+    return;
+  }
+  const cmp = compareSemver(CURRENT_VERSION, latest);
+  if (cmp >= 0) {
+    ok(`You're on the latest version (${latest}).`);
+  } else {
+    printUpdateNotice(latest);
+  }
+}
+
 function usage() {
   console.log('ci-dev-agent — SAP Cloud Integration skills for Claude Code');
   console.log('');
@@ -461,6 +561,7 @@ function usage() {
   console.log('  ci-dev-agent setup                First-time install + interactive config');
   console.log('  ci-dev-agent configure mcp        Update MCP server credentials');
   console.log('  ci-dev-agent configure tenants    Add/edit tenant destination mappings');
+  console.log('  ci-dev-agent version              Show installed version + check for updates');
   console.log('  ci-dev-agent uninstall            Remove from Claude Code settings');
   console.log('  ci-dev-agent help                 Show this help');
 }
@@ -468,6 +569,11 @@ function usage() {
 // ── Entry point ──────────────────────────────────────────────────────────────
 async function main() {
   const [cmd, sub] = process.argv.slice(2);
+
+  // Commands that handle their own update reporting (`version`) or that run
+  // inside an `npm install` lifecycle hook (`_restore-config`, must stay
+  // silent or it pollutes npm's install output) skip the trailing notice.
+  const skipUpdateNotice = new Set(['version', '--version', '-v', '_restore-config']);
 
   switch (cmd) {
     case 'setup':
@@ -478,6 +584,11 @@ async function main() {
       break;
     case 'uninstall':
       cmdUninstall();
+      break;
+    case 'version':
+    case '--version':
+    case '-v':
+      await cmdVersion();
       break;
     case '_restore-config':
       cmdRestoreConfig();
@@ -493,6 +604,10 @@ async function main() {
       console.error('');
       usage();
       process.exit(1);
+  }
+
+  if (!skipUpdateNotice.has(cmd)) {
+    await maybeNotifyUpdate();
   }
 }
 
